@@ -2,31 +2,24 @@ Package: RecFIN
 Title: Work with Recreational Data from RecFIN
 Version: 0.0.1
 Authors@R: c(
-    person(given = c("Kelli", "F."),
-      family = "Johnson",
-      role = c("aut", "cre"),
-      email = "kelli.johnson@noaa.gov",
-      comment = c(ORCID = "0000-0002-5149-451X")
-      ),
-    person(given = c("Chantel", "R."),
-      family = "Wetzel",
-      role = "ctb",
-      email = "chantel.wetzel@noaa.gov",
-      comment = c(ORCID = "0000-0002-7573-8240")
-      )
-    )
+    person(c("Kelli", "F."), "Johnson", , "kelli.johnson@noaa.gov", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-5149-451X")),
+    person(c("Chantel", "R."), "Wetzel", , "chantel.wetzel@noaa.gov", role = "ctb",
+           comment = c(ORCID = "0000-0002-7573-8240"))
+  )
 Description: Recreational Fisheries Information Network
     ([RecFIN](https://www.recfin.org/) is a joint effort guided by the
-    Pacific States Marine Fisheries Commission to sample recreational fishing.
-    This R package, RecFIN, is meant to work with the sampled data.
+    Pacific States Marine Fisheries Commission to sample recreational
+    fishing.  This R package, RecFIN, is meant to work with the sampled
+    data.
 License: GPL (>= 3)
+Depends:
+    dplyr (>= 1.0.0),
+    magrittr (>= 2.0.0),
+    R (>= 3.5)
+Suggests:
+    xlsx
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
-Depends:
-    R (>= 3.5),
-    dplyr (>= 1.0.0),
-    magrittr (>= 2.0.0)
-Suggests:
-    xlsx
+RoxygenNote: 7.3.3
