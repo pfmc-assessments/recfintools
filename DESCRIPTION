@@ -1,16 +1,22 @@
-Package: RecFIN
+Package: recfintools
 Title: Work with Recreational Data from RecFIN
-Version: 0.0.1
+Version: 0.1.0
 Authors@R: c(
+    person(given = c("Brian", "J."),
+      family = "Langseth",
+      role = c("aut", "cre"),
+      email = "brian.langseth@noaa.gov",
+      comment = c(ORCID = "0000-0002-9901-6146")
+      ),
     person(given = c("Kelli", "F."),
       family = "Johnson",
-      role = c("aut", "cre"),
+      role = c("aut"),
       email = "kelli.johnson@noaa.gov",
       comment = c(ORCID = "0000-0002-5149-451X")
       ),
     person(given = c("Chantel", "R."),
       family = "Wetzel",
-      role = "ctb",
+      role = "aut",
       email = "chantel.wetzel@noaa.gov",
       comment = c(ORCID = "0000-0002-7573-8240")
       )
