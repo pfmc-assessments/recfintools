@@ -7,6 +7,7 @@
 #'
 #' @inheritParams sql
 #' @inheritParams pacfintools::getDB
+#' 
 #' @param recfin_species_name A vector of strings specifying the RecFIN species 
 #' name desired. Must be a valid name, in all caps. For list of species codes 
 #' see sql_species.
@@ -22,8 +23,7 @@
 #' }
 #' 
 #'
-
-pull_catch_recfin <- function(
+pull_catch_recfin_recent <- function(
     recfin_species_name,
     username = pacfintools::getUserName("PacFIN"),
     #password = pacfintools::ask_password(),
@@ -40,7 +40,7 @@ pull_catch_recfin <- function(
       file_species_name <- paste(sub(" .*", "", recfin_species_name), collapse = "--")
       
       catch_recfin <- pacfintools::getDB(
-        sql = sql_catch(recfin_species_name),
+        sql = sql_catch_recent(recfin_species_name),
         username = username,
         password = password
       )
@@ -65,7 +65,7 @@ pull_catch_recfin <- function(
         paste(
           "RecFIN",
           file_species_name,
-          "Catch",
+          "Catch", "Recent",
           format(Sys.Date(), "%d.%b.%Y"),
           "RData",
           sep = "."
@@ -74,7 +74,62 @@ pull_catch_recfin <- function(
       save(catch_recfin, file = savefn)
       
       return(invisible(catch_recfin))
-    }
+}
+
+
+
+pull_catch_recfin_hist <- function(
+    recfin_species_name,
+    username = pacfintools::getUserName("PacFIN"),
+    #password = pacfintools::ask_password(),
+    password = ask_password(),
+    savedir = getwd(),
+    verbose = TRUE
+  ) {
+  # Input checks
+  stopifnot(
+    "`verbose` must be a logical." = is.logical(verbose) &&
+      length(verbose) == 1
+  )
+  
+  file_species_name <- paste(sub(" .*", "", recfin_species_name), collapse = "--")
+  
+  catch_recfin <- lapply(sql_catch_hist(recfin_species_name),
+                         pacfintools::getDB,
+                         username = username, password = password)
+  
+  # # message calls
+  # if (verbose) {
+  #   n_species <- dplyr::count(catch.pacfin, PACFIN_SPECIES_CODE)
+  #   message <- paste0(
+  #     unique(n_species$PACFIN_SPECIES_CODE),
+  #     " (",
+  #     n_species$n,
+  #     ")"
+  #   )
+  #   cli::cli_alert_info(
+  #     "The following PACFIN_SPECIES_CODE(s) were found: {message}"
+  #   )
+  #}
+  
+  # Save pulled data
+  savefn <- file.path(
+    savedir,
+    paste(
+      "RecFIN",
+      file_species_name,
+      "Catch", "Hist",
+      format(Sys.Date(), "%d.%b.%Y"),
+      "RData",
+      sep = "."
+    )
+  )
+  save(catch_recfin, file = savefn)
+  
+  return(invisible(catch_recfin))
+}
+
+
 #'
 #'
 #'
