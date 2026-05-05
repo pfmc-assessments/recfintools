@@ -9,10 +9,10 @@
 #' @inheritParams pacfintools::getDB
 #' 
 #' @param recfin_species_name A vector of strings specifying the RecFIN species 
-#' name desired. Must be a valid name, in all caps. For list of species codes 
-#' see sql_species.
+#' name desired. Must be a valid name though case is automatically corrected. 
+#' For list of species codes see sql_species.
 #' @param savedir A file path to the directory where the results will be saved.
-#' The default is the current working directory.
+#' The default is the current working directory. If dont want to save use NULL
 #' @param verbose Currently a holdover from pacfin nominal species. Can delete.
 #' 
 #' @author Brian J Langseth
@@ -59,19 +59,21 @@ pull_catch_recfin_recent <- function(
       #   )
       #}
       
-      # Save pulled data
-      savefn <- file.path(
-        savedir,
-        paste(
-          "RecFIN",
-          file_species_name,
-          "Catch", "Recent",
-          format(Sys.Date(), "%d.%b.%Y"),
-          "RData",
-          sep = "."
+      # Save pulled data if provided
+      if(!is.null(savedir)) {
+        savefn <- file.path(
+          savedir,
+          paste(
+            "RecFIN",
+            file_species_name,
+            "Catch", "Recent",
+            format(Sys.Date(), "%d.%b.%Y"),
+            "RData",
+            sep = "."
+          )
         )
-      )
-      save(catch_recfin, file = savefn)
+        save(catch_recfin, file = savefn)
+      }
       
       return(invisible(catch_recfin))
 }
@@ -112,19 +114,21 @@ pull_catch_recfin_hist <- function(
   #   )
   #}
   
-  # Save pulled data
-  savefn <- file.path(
-    savedir,
-    paste(
-      "RecFIN",
-      file_species_name,
-      "Catch", "Hist",
-      format(Sys.Date(), "%d.%b.%Y"),
-      "RData",
-      sep = "."
+  # Save pulled data if provided
+  if(!is.null(savedir)) {
+    savefn <- file.path(
+      savedir,
+      paste(
+        "RecFIN",
+        file_species_name,
+        "Catch", "Hist",
+        format(Sys.Date(), "%d.%b.%Y"),
+        "RData",
+        sep = "."
+      )
     )
-  )
-  save(catch_recfin, file = savefn)
+    save(catch_recfin, file = savefn)
+  }
   
   return(invisible(catch_recfin))
 }

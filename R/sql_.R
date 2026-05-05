@@ -6,7 +6,8 @@
 #' Basing on the similar file in pacfintools
 #' 
 #' @param species_name A vector of strings specifying the RecFIN species name
-#' desired. Must be a valid name, in all caps. For list of species codes see sql_species.   
+#' desired. Must be a valid name though case is automatically corrected. 
+#' For list of species codes see sql_species.   
 #'
 #' @return A single character string formatted as an sql call.
 #' @author Brian J Langseth 
@@ -23,7 +24,7 @@ sql_catch_recent <- function(species_name) {
     "
     SELECT *
     FROM RECFIN_MARTS.COMPREHENSIVE_REC_CATCH_EST
-    WHERE SPECIES_NAME = {species}
+    WHERE SPECIES_NAME = {toupper(species)}
     "
   )
   sqlcall <- gsub("\\n", " ", sqlcall)
