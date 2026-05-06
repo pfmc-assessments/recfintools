@@ -2,7 +2,7 @@
 #'
 #' Read in a MRFSS file containing catch estimates and total mortality reports.
 #' Read in RecFIN data
-#' 
+#'
 #' Read in an excel file that contains information from RecFIN.
 #'
 #' @section cte501:
