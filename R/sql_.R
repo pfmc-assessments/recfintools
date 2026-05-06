@@ -2,15 +2,15 @@
 #'
 #' Write SQL text as a single character string that will result in getting the
 #' relevant data from the RecFIN database.
-#' 
+#'
 #' Basing on the similar file in pacfintools
-#' 
+#'
 #' @param species_name A vector of strings specifying the RecFIN species name
-#' desired. Must be a valid name though case is automatically corrected. 
-#' For list of species codes see sql_species.   
+#' desired. Must be a valid name though case is automatically corrected.
+#' For list of species codes see sql_species.
 #'
 #' @return A single character string formatted as an sql call.
-#' @author Brian J Langseth 
+#' @author Brian J Langseth
 #' @name sql
 NULL
 #'
@@ -19,7 +19,7 @@ NULL
 sql_catch_recent <- function(species_name) {
   species <- paste(sQuote(species_name, q = FALSE), collapse = ", ")
   stopifnot(length(species) == 1)
-  
+
   sqlcall <- glue::glue(
     "
     SELECT *
@@ -36,7 +36,7 @@ sql_catch_recent <- function(species_name) {
 sql_catch_hist <- function(species_name) {
   species <- paste(sQuote(species_name, q = FALSE), collapse = ", ")
   stopifnot(length(species) == 1)
-  
+
   sqlcall_W <- glue::glue(
     "
     SELECT *
@@ -61,11 +61,13 @@ sql_catch_hist <- function(species_name) {
   sqlcall_W <- gsub("\\n", " ", sqlcall_W)
   sqlcall_O <- gsub("\\n", " ", sqlcall_O)
   sqlcall_C <- gsub("\\n", " ", sqlcall_C)
-  
-  sqlcall <- list("WA" = sqlcall_W, 
-                  "OR" = sqlcall_O,
-                  "CA" = sqlcall_C)
-  
+
+  sqlcall <- list(
+    "WA" = sqlcall_W,
+    "OR" = sqlcall_O,
+    "CA" = sqlcall_C
+  )
+
   return(sqlcall)
 }
 
