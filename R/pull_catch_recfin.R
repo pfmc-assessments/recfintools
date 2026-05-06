@@ -26,8 +26,8 @@
 pull_catch_recfin_recent <- function(
     recfin_species_name,
     username = pacfintools::getUserName("PacFIN"),
-    #password = pacfintools::ask_password(),
-    password = ask_password(),
+    password = pacfintools:::ask_password(),
+    #password = ask_password(),
     savedir = getwd(),
     verbose = TRUE
     ) {
@@ -83,8 +83,8 @@ pull_catch_recfin_recent <- function(
 pull_catch_recfin_hist <- function(
     recfin_species_name,
     username = pacfintools::getUserName("PacFIN"),
-    #password = pacfintools::ask_password(),
-    password = ask_password(),
+    password = pacfintools:::ask_password(),
+    #password = ask_password(),
     savedir = getwd(),
     verbose = TRUE
   ) {
