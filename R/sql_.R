@@ -15,7 +15,7 @@
 NULL
 #'
 #' @rdname sql
-#' @details `sql_catch()` results in recent catch data
+#' @details `sql_catch_recent()` Results in recent catch data
 sql_catch_recent <- function(species_name) {
   species <- paste(sQuote(species_name, q = FALSE), collapse = ", ")
   stopifnot(length(species) == 1)
@@ -32,7 +32,7 @@ sql_catch_recent <- function(species_name) {
 }
 
 #' @rdname sql
-#' @details `sql_catch_hist()` results in historical catch data
+#' @details `sql_catch_hist()` Results in historical catch data
 sql_catch_hist <- function(species_name) {
   species <- paste(sQuote(species_name, q = FALSE), collapse = ", ")
   stopifnot(length(species) == 1)
@@ -66,6 +66,23 @@ sql_catch_hist <- function(species_name) {
                   "OR" = sqlcall_O,
                   "CA" = sqlcall_C)
   
+  return(sqlcall)
+}
+
+#' @rdname sql
+#' @details `sql_catch_mrfss()` Results in MRFSS catch data
+sql_catch_mrfss <- function(species_name) {
+  species <- paste(sQuote(species_name, q = FALSE), collapse = ", ")
+  stopifnot(length(species) == 1)
+  
+  sqlcall <- glue::glue(
+    "
+    SELECT *
+    FROM RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_ESTIMATES
+    WHERE COMMON = {toupper(species)}
+    "
+  )
+  sqlcall <- gsub("\\n", " ", sqlcall)
   return(sqlcall)
 }
 

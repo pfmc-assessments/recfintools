@@ -19,7 +19,9 @@
 #'
 #' @examples
 #' \dontrun{
-#' catch.recfin <- pull_catch_recfin("QUILLBACK ROCKFISH")
+#' catch.recfin <- pull_catch_recfin_recent("QUILLBACK ROCKFISH")
+#' catch.hist <- pull_catch_recfin_hist("QUILLBACK ROCKFISH")
+#' catch.mrffs <- pull_catch_recfin_mrfss("QUILLBACK ROCKFISH")
 #' }
 #' 
 #'
@@ -27,7 +29,6 @@ pull_catch_recfin_recent <- function(
     recfin_species_name,
     username = pacfintools::getUserName("PacFIN"),
     password = pacfintools:::ask_password(),
-    #password = ask_password(),
     savedir = getwd(),
     verbose = TRUE
     ) {
@@ -84,7 +85,6 @@ pull_catch_recfin_hist <- function(
     recfin_species_name,
     username = pacfintools::getUserName("PacFIN"),
     password = pacfintools:::ask_password(),
-    #password = ask_password(),
     savedir = getwd(),
     verbose = TRUE
   ) {
@@ -99,6 +99,60 @@ pull_catch_recfin_hist <- function(
   catch_recfin <- lapply(sql_catch_hist(recfin_species_name),
                          pacfintools::getDB,
                          username = username, password = password)
+  
+  # # message calls
+  # if (verbose) {
+  #   n_species <- dplyr::count(catch.pacfin, PACFIN_SPECIES_CODE)
+  #   message <- paste0(
+  #     unique(n_species$PACFIN_SPECIES_CODE),
+  #     " (",
+  #     n_species$n,
+  #     ")"
+  #   )
+  #   cli::cli_alert_info(
+  #     "The following PACFIN_SPECIES_CODE(s) were found: {message}"
+  #   )
+  #}
+  
+  # Save pulled data if provided
+  if(!is.null(savedir)) {
+    savefn <- file.path(
+      savedir,
+      paste(
+        "RecFIN",
+        file_species_name,
+        "Catch", "Hist",
+        format(Sys.Date(), "%d.%b.%Y"),
+        "RData",
+        sep = "."
+      )
+    )
+    save(catch_recfin, file = savefn)
+  }
+  
+  return(invisible(catch_recfin))
+}
+
+
+pull_catch_recfin_mrfss <- function(
+    recfin_species_name,
+    username = pacfintools::getUserName("PacFIN"),
+    password = pacfintools:::ask_password(),
+    savedir = getwd(),
+    verbose = TRUE
+) {
+  # Input checks
+  stopifnot(
+    "`verbose` must be a logical." = is.logical(verbose) &&
+      length(verbose) == 1
+  )
+  
+  file_species_name <- paste(sub(" .*", "", recfin_species_name), collapse = "--")
+  
+  catch_recfin <- pacfintools::getDB(sql = sql_catch_mrfss(recfin_species_name),
+    username = username,
+    password = password
+  )
   
   # # message calls
   # if (verbose) {
