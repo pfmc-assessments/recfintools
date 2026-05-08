@@ -2,18 +2,24 @@
 #' 
 #' Read catch data from the various total mortality reports in recfin: 
 #' 'CTE501' or 'SDE001'
-#' Historical times series
-#' MRFSS
+#' Historical times series for each state
+#' MRFSS catch data
 #'
 #' @inheritParams sql
 #' @inheritParams pacfintools::getDB
-#' 
+#'
 #' @param recfin_species_name A vector of strings specifying the RecFIN species 
 #' name desired. Must be a valid name though case is automatically corrected. 
 #' For list of species codes see sql_species.
 #' @param savedir A file path to the directory where the results will be saved.
-#' The default is the current working directory. If dont want to save use NULL
+#' The default is the current working directory. If dont want to save use NULL.
 #' @param verbose Currently a holdover from pacfin nominal species. Can delete.
+#' 
+#' @export
+#' @returns An `.RData` file is saved with the object. This same data frame is 
+#' also returned invisibly.
+#' @seealso [pacfintools::getUserName()], [pacfintools::ask_password] which are
+#' inputs to this function
 #' 
 #' @author Brian J Langseth
 #'
@@ -78,9 +84,10 @@ pull_catch_recfin_recent <- function(
       
       return(invisible(catch_recfin))
 }
-
-
-
+#'
+#'
+#' @inheritParams pull_catch_recfin_recent
+#'
 pull_catch_recfin_hist <- function(
     recfin_species_name,
     username = pacfintools::getUserName("PacFIN"),
@@ -132,8 +139,10 @@ pull_catch_recfin_hist <- function(
   
   return(invisible(catch_recfin))
 }
-
-
+#'
+#'
+#' @inheritParams pull_catch_recfin_recent
+#'
 pull_catch_recfin_mrfss <- function(
     recfin_species_name,
     username = pacfintools::getUserName("PacFIN"),
