@@ -6,8 +6,10 @@
 # File mrfss_files_column_definitions_20190326.xlsx
 # Provided by Chantel R. Wetzel
 # Read in multiple tabs saved under type and rbind them into data frame
-mrfss_coldefs <- bind_rows(.id = "Type",
-  mapply(FUN = xlsx::read.xlsx,
+mrfss_coldefs <- bind_rows(
+  .id = "Type",
+  mapply(
+    FUN = xlsx::read.xlsx,
     SIMPLIFY = FALSE,
     sheetIndex = c(
       estimate = 2,
@@ -44,7 +46,6 @@ cte501_coldefs[, "Type"] <- "estimate"
 #### Make global object
 recfin_coldefs <- rbind(
   mrfss_coldefs, cte501_coldefs
-
 )
 
 #### Clean up

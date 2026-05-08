@@ -2,6 +2,7 @@
 
 export(clean_cte501)
 export(clean_mrfss)
+export(pull_catch_recfin_recent)
 export(read_cte501)
 export(read_mrfss)
 import(dplyr)
