@@ -35,7 +35,6 @@
 #' column names and their contents.
 #'
 clean_cte501 <- function(data) {
-
   colnames(data) <- gsub("RECFIN_", "", colnames(data))
   colnames(data)[grep("YEAR", colnames(data))] <- "Year"
 
@@ -53,7 +52,6 @@ clean_cte501 <- function(data) {
 #' @export
 #' @rdname clean_cte501
 clean_mrfss <- function(data) {
-
   #### YEAR
   colnames(data)[grep("^year", colnames(data), ignore.case = TRUE)] <- "Year"
 
