@@ -46,7 +46,7 @@ pull_catch_recfin_recent <- function(
   file_species_name <- paste(sub(" .*", "", recfin_species_name), collapse = "--")
 
   catch_recfin <- pacfintools::getDB(
-    sql = sql_catch_recent(recfin_species_name),
+    sql = sql_catch(recfin_species_name, type = "recent"),
     username = username,
     password = password
   )
@@ -102,7 +102,7 @@ pull_catch_recfin_hist <- function(
 
   file_species_name <- paste(sub(" .*", "", recfin_species_name), collapse = "--")
 
-  catch_recfin <- lapply(sql_catch_hist(recfin_species_name),
+  catch_recfin <- lapply(sql_catch(recfin_species_name, type = "hist"),
     pacfintools::getDB,
     username = username, password = password
   )
@@ -159,7 +159,7 @@ pull_catch_recfin_mrfss <- function(
   file_species_name <- paste(sub(" .*", "", recfin_species_name), collapse = "--")
 
   catch_recfin <- pacfintools::getDB(
-    sql = sql_catch_mrfss(recfin_species_name),
+    sql = sql_catch(recfin_species_name, type = "mrfss"),
     username = username,
     password = password
   )
