@@ -35,7 +35,8 @@ pull_catch_recfin_recent <- function(
   username = pacfintools::getUserName("PacFIN"),
   password = pacfintools:::ask_password(),
   savedir = getwd(),
-  verbose = TRUE
+  verbose = TRUE,
+  apex = FALSE
 ) {
   # Input checks
   stopifnot(
@@ -44,9 +45,10 @@ pull_catch_recfin_recent <- function(
   )
 
   file_species_name <- paste(sub(" .*", "", recfin_species_name), collapse = "--")
+  file_apex_name <- 
 
   catch_recfin <- pacfintools::getDB(
-    sql = sql_catch(recfin_species_name, type = "recent"),
+    sql = sql_catch(recfin_species_name, type = "recent", apex = apex),
     username = username,
     password = password
   )
@@ -72,7 +74,7 @@ pull_catch_recfin_recent <- function(
       paste(
         "RecFIN",
         file_species_name,
-        "Catch", "Recent",
+        "Catch", paste0("Recent", if(apex != FALSE) paste0("_", apex)),
         format(Sys.Date(), "%d.%b.%Y"),
         "RData",
         sep = "."
@@ -185,7 +187,7 @@ pull_catch_recfin_mrfss <- function(
       paste(
         "RecFIN",
         file_species_name,
-        "Catch", "Hist",
+        "Catch", "MRFSS",
         format(Sys.Date(), "%d.%b.%Y"),
         "RData",
         sep = "."
