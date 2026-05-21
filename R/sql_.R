@@ -182,7 +182,7 @@ sql_catch <- function(species_name, type, apex = FALSE) {
 
 
 #'
-#' @rdname sql
+#' @rdname sql_
 #' @details `sql_species()` A data frame of species names
 sql_species <- function() {
   sqlcall <- glue::glue(
@@ -193,5 +193,509 @@ sql_species <- function() {
     "
   )
   sqlcall <- gsub("\\n", " ", sqlcall)
+  return(sqlcall)
+}
+
+
+#'
+#' @inheritParams sql_catch
+#' @rdname sql_
+#' @details `sql_bds_len()` For length data
+#' 
+#' @param type A vector specifying the type of the data. Available options
+#' include "recent" for estimates from recent state sponsored surveys; "mrfss" 
+#' for estimates from the MRFSS survey. There is no default so the user must 
+#' specify a valid option.
+#' @param apex The specific recfin apex report that you want to reproduce. 
+#' This only works when type equals "recent" or "mrfss". Available options 
+#' include "SD001" and "SD501" (which are for lengths) and "SD506" 
+#' (which is for ages) when type equals "recent", and "SD508" and "SD509" 
+#' when type equals "mrfss". There is no default so the user must specify a 
+#' valid option.    
+#' 
+sql_bds <- function(species_name, type, apex) {
+  species <- paste(sQuote(species_name, q = FALSE), collapse = ", ")
+  stopifnot(length(species) == 1)
+  
+  #Recent years surveys corresponding to CRFS, ORBS, or OSP samples
+  if(type == "recent"){
+    # sqlcall <- glue::glue(
+    #   "
+    #   SELECT *
+    #   FROM RECFIN_MARTS.COMPREHENSIVE_BIO_DETAIL
+    #   WHERE SPECIES_NAME = {toupper(species)}
+    #   "
+    # )
+    
+    if(apex == "SD001"){
+      #Based on SD001
+      sqlcall <- glue::glue(
+        "
+        SELECT
+          cbd.bio_detail_id,
+          cbd.state_name,
+          cbd.recfin_year,
+          CASE
+            WHEN cbd.recfin_port_code is null then 'NOT KNOWN'
+            ELSE cbd.recfin_port_name
+          END as recfin_port_name,
+          CASE
+            WHEN cbd.recfin_trip_type_code is null then 'NOT KNOWN'
+            ELSE cbd.recfin_trip_type_name
+          END as recfin_trip_type_name,
+          cbd.agency_water_area_name, 
+          cbd.agency_fished_area_name ,
+          CASE
+              WHEN cbd.recfin_mode_code is null then 'NOT KNOWN'
+              ELSE cbd.recfin_mode_name
+          END as recfin_mode_name,
+          cbd.species_name,
+          cbd.scientific_name,
+          cbd.species_group_name,
+          cbd.stock_complex_name,
+          cbd.fishery_management_plan ,
+          cbd.agency_length,
+          cbd.agency_length_units,
+          cbd.is_agency_length_within_max,
+          cbd.agency_weight,
+          cbd.agency_weight_units,
+          cbd.recfin_length_mm,
+          null as recfin_imputed_length,
+          cbd.recfin_length_type,
+          cbd.recfin_imputed_weight_kg,
+          cbd.recfin_sex_code,
+          cbd.recfin_sex_name,
+          CASE
+              WHEN cbd.is_retained = 'T' THEN 'RETAINED'
+              WHEN cbd.is_retained = 'F' THEN 'RELEASED'
+              ELSE 'UNKNOWN' 
+          END is_retained,
+          CASE
+              WHEN cbd.caught_by_observed_angler = 'T' THEN 'YES'
+              WHEN cbd.caught_by_observed_angler = 'F' THEN 'NO'
+              ELSE cbd.caught_by_observed_angler
+          END caught_by_observed_angler,
+          cbd.source_code
+        FROM
+          RECFIN_MARTS.COMPREHENSIVE_BIO_DETAIL cbd
+        LEFT JOIN recfin_foundation.agency_fished_area afa
+          ON cbd.agency_code = afa.agency_code
+          AND cbd.agency_fished_area_code = afa.agency_fished_area_code
+        WHERE RECFIN_SPECIES_NAME = {toupper(species)}
+          AND (agency_length is not null 
+          OR agency_weight is not null)
+        "
+      )
+    }
+    
+    if(apex == "SD501"){
+      #Based on SD501
+      sqlcall <- glue::glue(
+        "
+        SELECT
+          cbd.bio_detail_id,
+          cbd.state_name,
+          cbd.recfin_year,
+          cbd.recfin_date,
+          cbd.county_number ,
+          cbd.interview_site,
+          CASE
+            WHEN cbd.recfin_port_code is null then 'NOT KNOWN'
+            ELSE cbd.recfin_port_name
+          END as recfin_port_name,
+          CASE
+            WHEN cbd.recfin_trip_type_code is null then 'NOT KNOWN'
+            ELSE cbd.recfin_trip_type_name
+          END as recfin_trip_type_name,
+          cbd.agency_water_area_name, 
+          cbd.agency_fished_area_name ,
+          CASE
+            WHEN cbd.recfin_mode_code is null then 'NOT KNOWN'
+            ELSE cbd.recfin_mode_name
+          END as recfin_mode_name,
+          cbd.fishery_management_plan ,
+          cbd.stock_complex_name, 
+          cbd.species_group_name,
+          cbd.species_name,
+          cbd.scientific_name,
+          cbd.agency_length,
+          cbd.agency_length_units,
+          cbd.is_agency_length_within_max,
+          cbd.agency_weight,
+          cbd.agency_weight_units,
+          cbd.recfin_length_mm,
+          null as recfin_imputed_length,
+          cbd.recfin_length_type,
+          cbd.recfin_imputed_weight_kg,
+          CASE
+            WHEN cbd.is_retained = 'T' THEN 'RETAINED'
+            WHEN cbd.is_retained = 'F' THEN 'RELEASED'
+            ELSE 'UNKNOWN' 
+          END is_retained,
+          CASE
+            WHEN cbd.caught_by_observed_angler = 'T' THEN 'YES'
+            WHEN cbd.caught_by_observed_angler = 'F' THEN 'NO'
+            ELSE cbd.caught_by_observed_angler
+          END caught_by_observed_angler,
+          cbd.source_code,
+          cbd.recfin_sex_code,
+          cbd.recfin_sex_name, 
+          cbd.interview_time,
+          cbd.cpfv_location_id
+        FROM
+          RECFIN_MARTS.COMPREHENSIVE_BIO_DETAIL cbd
+        LEFT JOIN recfin_foundation.agency_fished_area afa
+          ON cbd.agency_code = afa.agency_code
+          AND cbd.agency_fished_area_code = afa.agency_fished_area_code
+        WHERE RECFIN_SPECIES_NAME = {toupper(species)}
+          AND (agency_length is not null 
+          OR agency_weight is not null)
+        "
+      )
+    }
+    
+    if(apex == "SD506"){
+      #Based on SD506 for ages
+      sqlcall <- glue::glue(
+        "
+        WITH 
+          base as (
+            SELECT 
+              SAMPLE_ID,
+              AGEING_ID,
+              CASE
+                WHEN SAMPLING_AGENCY_NAME = 'O' THEN
+                  'ODFW'
+                WHEN SAMPLING_AGENCY_NAME = 'W' THEN
+                  'WDFW'
+                ELSE SAMPLING_AGENCY_NAME
+              END SAMPLING_AGENCY_NAME,
+              SAMPLING_AGENCY_NAME AS SAMPLING_AGENCY_CODE,
+              AGEING_LOCATION,
+              AGEING_AGENCY_NAME,
+              AGED_BY,
+              READ_DATE,
+              EQUIPMENT_DESCRIPTION,
+              RECFIN_STRUCTURE_DESCRIPTION,
+              CLARITY_DESCRIPTION,
+              AGE_READABILITY_DESCRIPTION,
+              RECFIN_AGEING_METHOD_DESC,
+              RECFIN_SELECTION_METHOD_DESC,
+              EDGE_TYPE_DESCRIPTION,
+              READ_ESTIMATE,
+              USE_THIS_AGE,
+              MULTIPLE_READS,
+              RECFIN_READ_NUMBER,
+              NUMBER_OF_READS,
+              AGE_COMMENTS,
+              SAMPLE_DATE,
+              SAMPLE_YEAR,
+              SAMPLE_MONTH,
+              PORT_NAME,
+              SURVEY_PROGRAM_CATCH_AREA_CODE,
+              SURVEY_PROGRAM_CATCH_AREA_NAME,
+              RECFIN_CATCH_AREA_ID,
+              RECFIN_CATCH_AREA_NAME,
+              VESSEL_NAME,
+              NVL(RECFIN_MODE_CODE,9) as RECFIN_MODE_CODE_QUERY, -- 9 - UNKNOWN
+              RECFIN_MODE_CODE,
+              RECFIN_MODE_NAME,
+              RECFIN_SPECIES_NAME,
+              REEF_NUMBER,
+              CUBICLE_NUMBER,
+              SAMPLER_NAME,
+              SAMPLE_COMMENTS,
+              RECFIN_SEX_CODE,
+              RECFIN_SEX_NAME,
+              MEASURED_LENGTH,
+              LENGTH_UNITS,
+              LENGTH_TYPE,
+              RECFIN_LENGTH_MM,
+              RETURN_TIME
+            FROM 
+              RECFIN_MARTS.COMPREHENSIVE_REC_AGEING b
+          )
+        SELECT 
+          SAMPLE_ID,
+          AGEING_ID,
+          SAMPLING_AGENCY_NAME,
+          AGEING_LOCATION,
+          AGEING_AGENCY_NAME,
+          AGED_BY,
+          READ_DATE,
+          EQUIPMENT_DESCRIPTION,
+          RECFIN_STRUCTURE_DESCRIPTION,
+          CLARITY_DESCRIPTION,
+          AGE_READABILITY_DESCRIPTION,
+          RECFIN_AGEING_METHOD_DESC,
+          RECFIN_SELECTION_METHOD_DESC,
+          EDGE_TYPE_DESCRIPTION,
+          READ_ESTIMATE,
+          USE_THIS_AGE,
+          MULTIPLE_READS,
+          RECFIN_READ_NUMBER,
+          NUMBER_OF_READS,
+          AGE_COMMENTS,
+          SAMPLE_DATE,
+          SAMPLE_YEAR,
+          SAMPLE_MONTH,
+          PORT_NAME,
+          SURVEY_PROGRAM_CATCH_AREA_CODE,
+          SURVEY_PROGRAM_CATCH_AREA_NAME,
+          RECFIN_CATCH_AREA_ID,
+          RECFIN_CATCH_AREA_NAME,
+          VESSEL_NAME,
+          RECFIN_MODE_CODE,
+          RECFIN_MODE_NAME,
+          RECFIN_SPECIES_NAME,
+          REEF_NUMBER,
+          CUBICLE_NUMBER,
+          SAMPLER_NAME,
+          SAMPLE_COMMENTS,
+          RECFIN_SEX_CODE,
+          RECFIN_SEX_NAME,
+          MEASURED_LENGTH,
+          LENGTH_UNITS,
+          LENGTH_TYPE,
+          RECFIN_LENGTH_MM,
+          RETURN_TIME
+        FROM 
+          base t
+        WHERE RECFIN_SPECIES_NAME = {toupper(species)}
+        "
+      )
+    }
+    sqlcall <- gsub("\\n", " ", sqlcall)
+  }
+  
+  #Catches from years during MRFSS sampling
+  if(type == "mrfss"){
+    # sqlcall <- glue::glue(
+    #   "
+    #   SELECT *
+    #   FROM RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_ESTIMATES
+    #   WHERE COMMON = {toupper(species)}
+    #   "
+    # )
+    
+    if(apex == "SD508"){
+      #Based on SD508 for unavailable catch (Type 2 - B1 and B2)
+      sqlcall <- glue::glue(
+        "
+        SELECT  
+          ID_CODE,	    
+          YEAR,   
+          WAVE,      
+          MONTH,       
+          WEEK, 		
+          TIME,     	
+          DATE1, 	
+          ST,       
+          ST_NAME,      
+          CNTY, 	
+          SUB_REG,     
+          SUB_REG_NAME,	  
+          DIST,		
+          MODE_FX,     
+          MODE_FX_NAME,
+          MODE_F,  
+          MODE_F_NAME, 
+          AREA_X, 
+          AREA_X_NAME, 
+          AREA, 
+          AREA_NAME,  	   
+          PORT,
+          SP_CODE,	
+          SP_NAME,	   
+          PRIM1,  
+          PRIM2,   
+          INTSITE,          
+          GEAR,  
+          HRSF,        
+          CNTRBTRS,    
+          NUM_TYP2,    
+          NUM2,    
+          NUM_FISH,      
+          PUNCH,         
+          ADD_HRS,     
+          ID_CODE2,    
+          DISPO,   
+          NUMBER,     
+          C,      
+          FSHINSP,     
+          AREA_NC,     
+          SP_OCDE,     
+          NUM_TYP4,    
+          CATCH,   
+          STATUS,      
+          INVALID,     
+          SALMON,     
+          SHORT,      
+          CODE,       
+          SP,        
+          FFDAYS2,     
+          FFDAYS12,    
+          TRIPSAMP,    
+          DISP3,   
+          SFCODE,      
+          HLOC,      
+          DISTRICT,    
+          ASSNID,    
+          CRFS,      
+          RECN,        
+          SPN,        
+          LOCN,        
+          DEPTHN,      
+          SURVEY,        
+          TRIPTYPE,    
+          DEPTH,       
+          SPECIES,     
+          ADFISH,     
+          HLOC2,       
+          TBENC_DATE,  
+          P,  
+          DD,          
+          ALPHA5,      
+          REF_NUM,     
+          RELS_DD,     
+          RELDEVNUM,   
+          DEPTHFT,   
+          DEPTHNR,     
+          RECFIN_VDATE
+        FROM 
+          RECFIN_MARTS.COMPREHENSIVE_MRFSS_TYPE_2
+        WHERE 
+          SP_NAME = {toupper(species)}
+        "
+      )
+    }
+    
+    if(apex == "SD509"){
+      #Based on SD509 for ages available catch (Type 3 - A)
+      sqlcall <- glue::glue(
+        "
+        SELECT 
+          ID_CODE,	       
+          YEAR,           
+          WAVE,         
+          MONTH,          
+          WEEK,            
+          TIME,  
+          DATE1,	    
+          ST,             
+          ST_NAME,   	
+          CNTY, 
+          SUB_REG,        
+          SUB_REG_NAME,	  	
+          DIST,           
+          MODE_FX,		
+          MODE_FX_NAME,	
+          MODE_F,		
+          MODE_F_NAME,	
+          AREA_X,		
+          AREA_X_NAME,	
+          AREA,			
+          AREA_NAME, 	        
+          PORT,   
+          SP_CODE,		
+          SP_NAME,	
+          PRIM1,		
+          PRIM2,        
+          INTSITE,        
+          GEAR,         
+          HRSF,           
+          CNTRBTRS,       
+          NUM_TYP3,       
+          NUM3,       
+          NUM_FISH,          
+          PUNCH,          
+          ADD_HRS,       
+          ID_CODE3,	       
+          DISPO,           
+          NUMBER,            
+          C,         
+          FSHINSP,        
+          AREA_NC,         
+          LNGTH,          
+          WGT,            
+          X1,                 
+          T_LEN,          
+          OLD_WGT,        
+          WGT_FLAG,         
+          OLD_LEN,           
+          RIG,           
+          DISP3,           
+          LEADER,         
+          OLDWGT,         
+          FISHINSP,       
+          NUM_TYP4,       
+          CATCH,          
+          A_FT,           
+          B_FT,           
+          R,              
+          Z,              
+          STATUS,         
+          INVALID,        
+          TEMP,           
+          SALMON,         
+          SHORT,          
+          F_SEX,          
+          SP_CPDE,        
+          LENGTH,         
+          FFDAYS2,       
+          FFDAYS12,       
+          TRIPSAMP,       
+          FSEX,           
+          LEN,        
+          SFCODE,         
+          HLOC,          
+          TAG,            
+          DISTRICT,       
+          ASSNID,         
+          CRFS,           
+          RECN,           
+          SPN,            
+          LOCN,           
+          DEPTHN,         
+          SURVEY,         
+          NRS,            
+          MEASN,          
+          LENFLAG,        
+          REC,             
+          TRIPTYPE,       
+          DEPTH,          
+          SPECIES,        
+          CWTFISH,        
+          ADFISH,         
+          OTOFISH,        
+          HLOC3,          
+          SCAN_RSLT,      
+          MAXLEN,         
+          HEART,          
+          TBENC_DATE,     
+          DD,             
+          P,            
+          PC,            
+          SP,             
+          BT,             
+          TRIPSPECIES,    
+          TT,        
+          ALPHA5,
+          TINY,         
+          MICRO,         
+          REF_NUM,        
+          RELDEVNUM,      
+          DEPTHFT,        
+          DEPTHNR,        
+          RECFIN_VDATE
+        FROM 
+          RECFIN_MARTS.COMPREHENSIVE_MRFSS_TYPE_3
+        WHERE
+          SP_NAME = {toupper(species)}
+        "
+      )
+    }
+    sqlcall <- gsub("\\n", " ", sqlcall)
+  }
   return(sqlcall)
 }
