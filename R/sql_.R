@@ -207,11 +207,10 @@ sql_species <- function() {
 #' for estimates from the MRFSS survey. There is no default so the user must 
 #' specify a valid option.
 #' @param apex The specific recfin apex report that you want to reproduce. 
-#' This only works when type equals "recent" or "mrfss". Available options 
-#' include "SD001" and "SD501" (which are for lengths) and "SD506" 
-#' (which is for ages) when type equals "recent", and "SD508" and "SD509" 
+#' Available options include "SD001" and "SD501" (which are for lengths) and 
+#' "SD506" (which is for ages) when type equals "recent", and "SD508" and "SD509" 
 #' when type equals "mrfss". There is no default so the user must specify a 
-#' valid option.    
+#' valid option. Currently, there is no option to keep just the raw sql data.    
 #' 
 sql_bds <- function(species_name, type, apex) {
   species <- paste(sQuote(species_name, q = FALSE), collapse = ", ")
@@ -219,13 +218,6 @@ sql_bds <- function(species_name, type, apex) {
   
   #Recent years surveys corresponding to CRFS, ORBS, or OSP samples
   if(type == "recent"){
-    # sqlcall <- glue::glue(
-    #   "
-    #   SELECT *
-    #   FROM RECFIN_MARTS.COMPREHENSIVE_BIO_DETAIL
-    #   WHERE SPECIES_NAME = {toupper(species)}
-    #   "
-    # )
     
     if(apex == "SD001"){
       #Based on SD001
@@ -470,13 +462,6 @@ sql_bds <- function(species_name, type, apex) {
   
   #Catches from years during MRFSS sampling
   if(type == "mrfss"){
-    # sqlcall <- glue::glue(
-    #   "
-    #   SELECT *
-    #   FROM RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_ESTIMATES
-    #   WHERE COMMON = {toupper(species)}
-    #   "
-    # )
     
     if(apex == "SD508"){
       #Based on SD508 for unavailable catch (Type 2 - B1 and B2)
