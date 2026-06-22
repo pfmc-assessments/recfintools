@@ -200,12 +200,12 @@ sql_species <- function() {
 #'
 #' @inheritParams sql_catch
 #' @rdname sql_
-#' @details `sql_bds_len()` For length data
+#' @details `sql_bds`
 #' 
 #' @param type A vector specifying the type of the data. Available options
-#' include "recent" for estimates from recent state sponsored surveys; "mrfss" 
-#' for estimates from the MRFSS survey. There is no default so the user must 
-#' specify a valid option.
+#' include "recent" for estimates from recent state sponsored surveys; and 
+#' "mrfss" for estimates from the MRFSS survey. There is no default so the user 
+#' must specify a valid option.
 #' @param apex The specific recfin apex report that you want to reproduce. 
 #' Available options include "SD001" and "SD501" (which are for lengths) and 
 #' "SD506" (which is for ages) when type equals "recent", and "SD508" and "SD509" 

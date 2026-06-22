@@ -1,9 +1,11 @@
 #' Functions to pull catch data from recfin
 #'
 #' Read catch data from the various total mortality reports in recfin:
-#' 'CTE501' or 'SDE001'
-#' Historical times series for each state
-#' MRFSS catch data
+#' 'CTE501' or 'CTE001'
+#' Historical times series for each state:
+#' 'CTE503' or 'CTE507'
+#' MRFSS catch data:
+#' 'CTE510'
 #'
 #' @inheritParams sql
 #' @inheritParams pacfintools::getDB
@@ -27,7 +29,7 @@
 #' \dontrun{
 #' catch.recfin <- pull_catch_recfin_recent("QUILLBACK ROCKFISH")
 #' catch.hist <- pull_catch_recfin_hist("QUILLBACK ROCKFISH")
-#' catch.mrffs <- pull_catch_recfin_mrfss("QUILLBACK ROCKFISH")
+#' catch.mrfss <- pull_catch_recfin_mrfss("QUILLBACK ROCKFISH")
 #' }
 #'
 pull_catch_recfin_recent <- function(
@@ -45,7 +47,6 @@ pull_catch_recfin_recent <- function(
   )
 
   file_species_name <- paste(sub(" .*", "", recfin_species_name), collapse = "--")
-  file_apex_name <- 
 
   catch_recfin <- pacfintools::getDB(
     sql = sql_catch(recfin_species_name, type = "recent", apex = apex),
@@ -199,48 +200,3 @@ pull_catch_recfin_mrfss <- function(
   return(invisible(catch_recfin))
 }
 
-
-#'
-#'
-#'
-#'
-#'
-#' @section cte501:
-#' Estimates of recent catches.
-#'
-#' @section mrfss:
-#' Estimates of catches from thes
-#' Marine Recreational Fisheries Statistics Survey (MRFSS).
-#' Catches are for the years between 1980 and approximately 2003
-#' for all three states.
-#'
-#' @section Historical time series:
-#' Estimates of catches from the historical time periods prior to but
-#' possibly including 1980
-#'
-#' @return
-#' An `.RData` file is saved with the object inside the file stored as
-#' `catch_recfin`. This same data frame is also returned invisibly.
-#'
-#' @author Brian J Langseth
-#' @export
-#' @return Separate Rdata files containing pulled catch data
-#'
-#'
-read_cte501 <- function(file) {
-  data <- utils::read.csv(file)
-
-  datacleaned <- clean_cte501(data)
-
-  return(datacleaned)
-}
-
-#' @export
-#' @rdname read_cte501
-#'
-read_mrfss <- function(file) {
-  data <- utils::read.csv(file)
-
-  datacleaned <- clean_mrfss(data)
-  return(datacleaned)
-}
