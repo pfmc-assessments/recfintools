@@ -28,6 +28,8 @@
 #' @examples
 #' \dontrun{
 #' catch.recfin <- pull_catch_recfin_recent("QUILLBACK ROCKFISH")
+#' catch.recfin001 <- pull_catch_recfin_recent("QUILLBACK ROCKFISH", apex = "CTE001")
+#' catch.recfin501 <- pull_catch_recfin_recent("QUILLBACK ROCKFISH", apex = "CTE501")
 #' catch.hist <- pull_catch_recfin_hist("QUILLBACK ROCKFISH")
 #' catch.mrfss <- pull_catch_recfin_mrfss("QUILLBACK ROCKFISH")
 #' }
