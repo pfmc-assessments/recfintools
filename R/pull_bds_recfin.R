@@ -106,7 +106,7 @@ pull_bds_recfin_mrfss <- function(
   file_species_name <- paste(sub(" .*", "", recfin_species_name), collapse = "--")
   
   bio_recfin <- pacfintools::getDB(
-    sql = sql_catch(recfin_species_name, type = "mrfss", apex = apex),
+    sql = sql_bds(recfin_species_name, type = "mrfss", apex = apex),
     username = username,
     password = password
   )

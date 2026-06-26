@@ -273,7 +273,7 @@ sql_bds <- function(species_name, type, apex) {
         LEFT JOIN recfin_foundation.agency_fished_area afa
           ON cbd.agency_code = afa.agency_code
           AND cbd.agency_fished_area_code = afa.agency_fished_area_code
-        WHERE RECFIN_SPECIES_NAME = {toupper(species)}
+        WHERE SPECIES_NAME = {toupper(species)}
           AND (agency_length is not null 
           OR agency_weight is not null)
         "
@@ -339,7 +339,7 @@ sql_bds <- function(species_name, type, apex) {
         LEFT JOIN recfin_foundation.agency_fished_area afa
           ON cbd.agency_code = afa.agency_code
           AND cbd.agency_fished_area_code = afa.agency_fished_area_code
-        WHERE RECFIN_SPECIES_NAME = {toupper(species)}
+        WHERE SPECIES_NAME = {toupper(species)}
           AND (agency_length is not null 
           OR agency_weight is not null)
         "
@@ -350,62 +350,61 @@ sql_bds <- function(species_name, type, apex) {
       #Based on SD506 for ages
       sqlcall <- glue::glue(
         "
-        WITH 
-          base as (
-            SELECT 
-              SAMPLE_ID,
-              AGEING_ID,
-              CASE
-                WHEN SAMPLING_AGENCY_NAME = 'O' THEN
-                  'ODFW'
-                WHEN SAMPLING_AGENCY_NAME = 'W' THEN
-                  'WDFW'
-                ELSE SAMPLING_AGENCY_NAME
-              END SAMPLING_AGENCY_NAME,
-              SAMPLING_AGENCY_NAME AS SAMPLING_AGENCY_CODE,
-              AGEING_LOCATION,
-              AGEING_AGENCY_NAME,
-              AGED_BY,
-              READ_DATE,
-              EQUIPMENT_DESCRIPTION,
-              RECFIN_STRUCTURE_DESCRIPTION,
-              CLARITY_DESCRIPTION,
-              AGE_READABILITY_DESCRIPTION,
-              RECFIN_AGEING_METHOD_DESC,
-              RECFIN_SELECTION_METHOD_DESC,
-              EDGE_TYPE_DESCRIPTION,
-              READ_ESTIMATE,
-              USE_THIS_AGE,
-              MULTIPLE_READS,
-              RECFIN_READ_NUMBER,
-              NUMBER_OF_READS,
-              AGE_COMMENTS,
-              SAMPLE_DATE,
-              SAMPLE_YEAR,
-              SAMPLE_MONTH,
-              PORT_NAME,
-              SURVEY_PROGRAM_CATCH_AREA_CODE,
-              SURVEY_PROGRAM_CATCH_AREA_NAME,
-              RECFIN_CATCH_AREA_ID,
-              RECFIN_CATCH_AREA_NAME,
-              VESSEL_NAME,
-              NVL(RECFIN_MODE_CODE,9) as RECFIN_MODE_CODE_QUERY, -- 9 - UNKNOWN
-              RECFIN_MODE_CODE,
-              RECFIN_MODE_NAME,
-              RECFIN_SPECIES_NAME,
-              REEF_NUMBER,
-              CUBICLE_NUMBER,
-              SAMPLER_NAME,
-              SAMPLE_COMMENTS,
-              RECFIN_SEX_CODE,
-              RECFIN_SEX_NAME,
-              MEASURED_LENGTH,
-              LENGTH_UNITS,
-              LENGTH_TYPE,
-              RECFIN_LENGTH_MM,
-              RETURN_TIME
-            FROM 
-              RECFIN_MARTS.COMPREHENSIVE_REC_AGEING b
+        WITH base AS (
+          SELECT 
+            SAMPLE_ID,
+            AGEING_ID,
+            CASE
+              WHEN SAMPLING_AGENCY_NAME = 'O' THEN
+                'ODFW'
+              WHEN SAMPLING_AGENCY_NAME = 'W' THEN
+                'WDFW'
+              ELSE SAMPLING_AGENCY_NAME
+            END SAMPLING_AGENCY_NAME,
+            SAMPLING_AGENCY_NAME AS SAMPLING_AGENCY_CODE,
+            AGEING_LOCATION,
+            AGEING_AGENCY_NAME,
+            AGED_BY,
+            READ_DATE,
+            EQUIPMENT_DESCRIPTION,
+            RECFIN_STRUCTURE_DESCRIPTION,
+            CLARITY_DESCRIPTION,
+            AGE_READABILITY_DESCRIPTION,
+            RECFIN_AGEING_METHOD_DESC,
+            RECFIN_SELECTION_METHOD_DESC,
+            EDGE_TYPE_DESCRIPTION,
+            READ_ESTIMATE,
+            USE_THIS_AGE,
+            MULTIPLE_READS,
+            RECFIN_READ_NUMBER,
+            NUMBER_OF_READS,
+            AGE_COMMENTS,
+            SAMPLE_DATE,
+            SAMPLE_YEAR,
+            SAMPLE_MONTH,
+            PORT_NAME,
+            SURVEY_PROGRAM_CATCH_AREA_CODE,
+            SURVEY_PROGRAM_CATCH_AREA_NAME,
+            RECFIN_CATCH_AREA_ID,
+            RECFIN_CATCH_AREA_NAME,
+            VESSEL_NAME,
+            NVL(RECFIN_MODE_CODE,9) as RECFIN_MODE_CODE_QUERY,
+            RECFIN_MODE_CODE,
+            RECFIN_MODE_NAME,
+            RECFIN_SPECIES_NAME,
+            REEF_NUMBER,
+            CUBICLE_NUMBER,
+            SAMPLER_NAME,
+            SAMPLE_COMMENTS,
+            RECFIN_SEX_CODE,
+            RECFIN_SEX_NAME,
+            MEASURED_LENGTH,
+            LENGTH_UNITS,
+            LENGTH_TYPE,
+            RECFIN_LENGTH_MM,
+            RETURN_TIME
+          FROM 
+            RECFIN_MARTS.COMPREHENSIVE_REC_AGEING b
           )
         SELECT 
           SAMPLE_ID,
@@ -460,103 +459,104 @@ sql_bds <- function(species_name, type, apex) {
     sqlcall <- gsub("\\n", " ", sqlcall)
   }
   
-  #Catches from years during MRFSS sampling
+  #Biological data from years during MRFSS sampling
   if(type == "mrfss"){
     
     if(apex == "SD508"){
-      #Based on SD508 for unavailable catch (Type 2 - B1 and B2)
+      #Based on SD508 bio data for unavailable catch (Type 2 - B1 and B2)
       sqlcall <- glue::glue(
         "
-        SELECT  
-          ID_CODE,	    
-          YEAR,   
-          WAVE,      
-          MONTH,       
-          WEEK, 		
-          TIME,     	
-          DATE1, 	
-          ST,       
-          ST_NAME,      
-          CNTY, 	
-          SUB_REG,     
-          SUB_REG_NAME,	  
-          DIST,		
-          MODE_FX,     
-          MODE_FX_NAME,
-          MODE_F,  
-          MODE_F_NAME, 
-          AREA_X, 
-          AREA_X_NAME, 
-          AREA, 
-          AREA_NAME,  	   
+        SELECT
+          ID_CODE,
+          YEAR,
+          WAVE,
+          MONTH,
+          WEEK,
+          TIME,
+          DATE1,
+          ST,
+          /* ST_NAME, */
+          CNTY,
+          SUB_REG,
+          /* SUB_REG_NAME, */
+          DIST,
+          MODE_FX,
+          /* MODE_FX_NAME, */
+          MODE_F,
+          /* MODE_F_NAME,	*/
+          AREA_X,
+          /* AREA_X_NAME,	*/
+          AREA,
+          /* AREA_NAME, */
           PORT,
-          SP_CODE,	
-          SP_NAME,	   
-          PRIM1,  
-          PRIM2,   
-          INTSITE,          
-          GEAR,  
-          HRSF,        
-          CNTRBTRS,    
-          NUM_TYP2,    
-          NUM2,    
-          NUM_FISH,      
-          PUNCH,         
-          ADD_HRS,     
-          ID_CODE2,    
-          DISPO,   
-          NUMBER,     
-          C,      
-          FSHINSP,     
-          AREA_NC,     
-          SP_OCDE,     
-          NUM_TYP4,    
-          CATCH,   
-          STATUS,      
-          INVALID,     
-          SALMON,     
-          SHORT,      
-          CODE,       
-          SP,        
-          FFDAYS2,     
-          FFDAYS12,    
-          TRIPSAMP,    
-          DISP3,   
-          SFCODE,      
-          HLOC,      
-          DISTRICT,    
-          ASSNID,    
-          CRFS,      
-          RECN,        
-          SPN,        
-          LOCN,        
-          DEPTHN,      
-          SURVEY,        
-          TRIPTYPE,    
-          DEPTH,       
-          SPECIES,     
-          ADFISH,     
-          HLOC2,       
-          TBENC_DATE,  
-          P,  
-          DD,          
-          ALPHA5,      
-          REF_NUM,     
-          RELS_DD,     
-          RELDEVNUM,   
-          DEPTHFT,   
-          DEPTHNR,     
+          SP_CODE,
+          /* SP_NAME,	*/
+          PRIM1,
+          PRIM2,
+          INTSITE,  
+          GEAR,
+          HRSF,
+          CNTRBTRS,
+          NUM_TYP2,
+          NUM2,
+          NUM_FISH,
+          PUNCH,
+          ADD_HRS,
+          ID_CODE2,
+          DISPO,
+          \"NUMBER\", /* Syntax needed because NUMBER is a special keyword in oracle */
+          C,
+          FSHINSP,
+          AREA_NC,
+          SP_OCDE,
+          NUM_TYP4,
+          CATCH,
+          STATUS,
+          INVALID,
+          SALMON,
+          SHORT,
+          CODE,
+          SP,
+          FFDAYS2,
+          FFDAYS12,
+          TRIPSAMP,
+          DISP3,
+          SFCODE,
+          HLOC,
+          DISTRICT,
+          ASSNID,
+          CRFS,
+          RECN,
+          SPN,
+          LOCN,
+          DEPTHN,
+          SURVEY,
+          TRIPTYPE,
+          DEPTH,
+          SPECIES,
+          ADFISH,
+          HLOC2,
+          TBENC_DATE,
+          P,
+          DD,
+          ALPHA5,
+          REF_NUM,
+          RELS_DD,
+          RELDEVNUM,
+          DEPTHFT,
+          DEPTHNR,
           RECFIN_VDATE
         FROM 
-          RECFIN_MARTS.COMPREHENSIVE_MRFSS_TYPE_2
+          RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_TYPE_2
         WHERE 
-          SP_NAME = {toupper(species)}
+          YEAR = 1980
+          /* SP_NAME = {toupper(species)} */
         "
       )
     }
     
     if(apex == "SD509"){
-      #Based on SD509 for ages available catch (Type 3 - A)
+      #Based on SD509 bio data for available catch (Type 3 - A)
       sqlcall <- glue::glue(
         "
         SELECT 
@@ -568,22 +568,22 @@ sql_bds <- function(species_name, type, apex) {
           TIME,  
           DATE1,	    
           ST,             
-          ST_NAME,   	
+          /* ST_NAME, */  	
           CNTY, 
           SUB_REG,        
-          SUB_REG_NAME,	  	
+          /* SUB_REG_NAME, */	  	
           DIST,           
           MODE_FX,		
-          MODE_FX_NAME,	
+          /* MODE_FX_NAME, */	
           MODE_F,		
-          MODE_F_NAME,	
+          /* MODE_F_NAME,	*/
           AREA_X,		
-          AREA_X_NAME,	
+          /* AREA_X_NAME,	*/
           AREA,			
-          AREA_NAME, 	        
+          /* AREA_NAME, */	        
           PORT,   
           SP_CODE,		
-          SP_NAME,	
+          /* SP_NAME,	*/
           PRIM1,		
           PRIM2,        
           INTSITE,        
@@ -597,7 +597,7 @@ sql_bds <- function(species_name, type, apex) {
           ADD_HRS,       
           ID_CODE3,	       
           DISPO,           
-          NUMBER,            
+          \"NUMBER\", /* Syntax needed because NUMBER is a special keyword in oracle */            
           C,         
           FSHINSP,        
           AREA_NC,         
@@ -674,9 +674,10 @@ sql_bds <- function(species_name, type, apex) {
           DEPTHNR,        
           RECFIN_VDATE
         FROM 
-          RECFIN_MARTS.COMPREHENSIVE_MRFSS_TYPE_3
+          RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_TYPE_3
         WHERE
-          SP_NAME = {toupper(species)}
+          YEAR = 1980
+          /* SP_NAME = {toupper(species)} */
         "
       )
     }
