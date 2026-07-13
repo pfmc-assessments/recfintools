@@ -475,10 +475,26 @@ sql_bds <- function(species_name, type, apex) {
           crl.TIME,
           crl.DATE1,
           crl.ST,
-          /* ST_NAME, */
+          CASE  /* Manually adding ST_NAME into script */
+            WHEN crl.ST = 6 THEN
+              'California'
+            WHEN crl.ST = 41 THEN 
+              'Oregon'
+            WHEN crl.ST = 53 THEN
+              'Washington'
+          END AS ST_NAME,
           crl.CNTY,
           crl.SUB_REG,
-          /* SUB_REG_NAME, */
+          CASE  /* Manually adding ST_NAME into script */
+            WHEN crl.SUB_REG = 1 THEN
+              'Southern California'
+            WHEN crl.SUB_REG = 2 THEN 
+              'Northern California'
+            WHEN crl.SUB_REG = 3 THEN
+              'Oregon'
+            WHEN crl.SUB_REG = 4 THEN
+              'Washington'
+          END AS SUB_REG_NAME,
           crl.DIST,
           crl.MODE_FX,
           /* MODE_FX_NAME, */
@@ -570,10 +586,26 @@ sql_bds <- function(species_name, type, apex) {
           crl.TIME,  
           crl.DATE1,	    
           crl.ST,             
-          /* ST_NAME, */  	
+          CASE  /* Manually adding ST_NAME into script */
+            WHEN crl.ST = 6 THEN
+              'California'
+            WHEN crl.ST = 41 THEN 
+              'Oregon'
+            WHEN crl.ST = 53 THEN
+              'Washington'
+          END AS ST_NAME,	
           crl.CNTY, 
           crl.SUB_REG,        
-          /* SUB_REG_NAME, */	  	
+          CASE  /* Manually adding ST_NAME into script */
+            WHEN crl.SUB_REG = 1 THEN
+              'Southern California'
+            WHEN crl.SUB_REG = 2 THEN 
+              'Northern California'
+            WHEN crl.SUB_REG = 3 THEN
+              'Oregon'
+            WHEN crl.SUB_REG = 4 THEN
+              'Washington'
+          END AS SUB_REG_NAME,  	
           crl.DIST,           
           crl.MODE_FX,		
           /* MODE_FX_NAME, */	
