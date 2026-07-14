@@ -66,6 +66,11 @@ clean_catch <- function(data) {
                      source = c("AGENCY", "STATE_NAME"), #AGENCY is in CTE001, STATE_NAME in CTE501
                      verbose = TRUE)
     
+    #Filter out non-federal records
+    data <- getArea(data = data,
+                     source = c("RECFIN_WATER_AREA_NAME"),
+                     verbose = TRUE)
+    
     
     
   }
