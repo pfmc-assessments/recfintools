@@ -18,20 +18,25 @@
 
 getState <- function(
     data,
-    source = c("AGENCY"),
+    source = c("AGENCY", "STATE_NAME"),
     verbose = TRUE
 ) {
   
-  if (!source %in% colnames(data)) {
+  if (!any(source %in% colnames(data))) { #
     cli::cli_inform("The column {source} was not found in the data.
                     State information has not been standardized")
   }
+  
+  source <- source[which(source %in% colnames(data))[1]]
  
   data <- data |>
     dplyr::mutate(state = dplyr::case_when(
-      .data[[source]] == "C" ~ "CA",
-      .data[[source]] == "O" ~ "OR",
-      .data[[source]] == "W" ~ "WA",
+      .data[[source]] == "C" ~ "CA", #AGENCY
+      .data[[source]] == "O" ~ "OR", #AGENCY
+      .data[[source]] == "W" ~ "WA", #AGENCY
+      .data[[source]] == "CALIFORNIA" ~ "CA", #STATE_NAME
+      .data[[source]] == "OREGON" ~ "OR",     #STATE_NAME
+      .data[[source]] == "WASHINGTON" ~ "WA", #STATE_NAME
       TRUE ~ NA_character_
     ))
   

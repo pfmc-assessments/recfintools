@@ -63,7 +63,7 @@ clean_catch <- function(data) {
     
     #Rename state
     data <- getState(data = data,
-                     source = "AGENCY",
+                     source = c("AGENCY", "STATE_NAME"), #AGENCY is in CTE001, STATE_NAME in CTE501
                      verbose = TRUE)
     
     
