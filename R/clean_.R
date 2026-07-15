@@ -93,6 +93,19 @@ clean_catch <- function(data) {
     type = "recfin"
     #colnames(data) <- gsub("RECFIN_", "", colnames(data)) #Probably dont keep this in
     
+    ##
+    #For just catches
+    ##
+    
+    #Check whether catch in numbers have non-zero catches in weight
+    data <- check_catch(data = data,
+                        source = c("RETAINED", "RELEASED_ALIVE", "RELEASED_DEAD"),
+                        verbose = TRUE)
+    
+    ##
+    #For catches and biological data
+    ##
+    
     #Rename state
     data <- getState(data = data,
                      source = c("AGENCY", "STATE_NAME"), #AGENCY is in CTE001, STATE_NAME in CTE501
@@ -107,6 +120,8 @@ clean_catch <- function(data) {
     data <- getMode(data = data,
                     source = c("RECFIN_MODE_NAME"),
                     verbose = TRUE)
+    
+
     
     
   }
