@@ -5,7 +5,7 @@
 #' @details
 #' This function is used for catch data. It lets the user know when records have
 #' catch in numbers (for retained, released alive, and released dead) but not
-#' corresponding weight, andn therefore when the total catch in weight may be off.
+#' corresponding weight, and therefore when the total catch in weight may be off.
 #' It is up to the user to decide how to use this information. 
 #' This function also confirms that the total mortality is the sum of retained 
 #' and released dead.
@@ -17,10 +17,10 @@
 #' @inheritParams clean_
 #' 
 #' @param data Catch data from pull_bds_recfin or pull_catch_recfin
-#' @param source Column name where the information is located. Depends on the 
+#' @param source Column keywords where the information is located. Depends on the 
 #' type of data (catch or bds) and era (recent, mrfss, or historical). Default
-#' value is for recent catch data (i.e. SUM_RETAINED_, SUM_RELEASED_ALIVE_,
-#' SUM_RELEASED_DEAD_)
+#' value is for recent catch data (i.e. RETAINED_, RELEASED_ALIVE_,
+#' RELEASED_DEAD_). The functions searches for teh columns that contain these words. 
 #' @param verbose Whether to output detailed information about variable.
 #' Default is TRUE.
 #' 
@@ -31,26 +31,37 @@ check_catch <- function(
     verbose = TRUE
 ) {
   
-  if (!any(source %in% colnames(data))) { #
+  cols <- colnames(data)[
+    intersect(
+      grep(paste(source, collapse = "|"), colnames(data)),
+      grep("MT|NUM", colnames(data)))
+  ]
+
+  if (length(cols) == 0) { #
     cli::cli_inform("The column {source} was not found in the data.
                     Enter different column names")
   }
   
-  fullSource <- paste0("SUM_", source, rep(c("_MT", "_NUM"), length(source)))
+  fullcols <- data[, colnames(data) %in% cols]
   
-  cols <- data[, colnames(data) %in% fullSource]
+  deadcols <- grep(c("RETAINED_MT|RELEASED_DEAD_MT"), colnames(fullcols))
   
-  cols$dead_mt <- rowSums(data[, c("SUM_RETAINED_MT", "SUM_RELEASED_DEAD_MT")], na.rm = TRUE)
+  fullcols$dead_mt <- rowSums(fullcols[, deadcols], na.rm = TRUE)
   
-  if (!all.equal(cols$dead_mt, data$SUM_TOTAL_MORTALITY_MT, tolerance = 1e-5)) {
+  if (!all.equal(fullcols$dead_mt, data[,grep("TOTAL_MORTALITY_MT", colnames(data))], tolerance = 1e-5)) {
     cli::cli_inform("The sum of total mortality does not equal the sum of retained 
                     and released dead mortality.")
   }
       
-  retainOff <- length(which(cols$SUM_RETAINED_MT == 0 & cols$SUM_RETAINED_NUM > 0))
-  releaseOff <- length(which(cols$SUM_RELEASED_ALIVE_MT == 0 & cols$SUM_RELEASED_ALIVE_NUM > 0))
-  deadOff <- length(which(cols$SUM_RELEASED_DEAD_MT == 0 & cols$SUM_RELEASED_DEAD_NUM > 0))
-  
+  retainOff <- length(
+    which(fullcols[, grep("RETAINED_MT", colnames(fullcols))] == 0 & 
+            fullcols[, grep("RETAINED_NUM", colnames(fullcols))] > 0))
+  releaseOff <- length(
+    which(fullcols[, grep("RELEASED_ALIVE_MT", colnames(fullcols))] == 0 & 
+            fullcols[, grep("RELEASED_ALIVE_NUM", colnames(fullcols))] > 0))
+  deadOff <- length(
+    which(fullcols[, grep("RELEASED_DEAD_MT", colnames(fullcols))] == 0 & 
+            fullcols[, grep("RELEASED_DEAD_NUM", colnames(fullcols))] > 0))
   
   if (verbose) {
     cli::cli_bullets(c(
