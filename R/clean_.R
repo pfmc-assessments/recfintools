@@ -5,7 +5,8 @@
 #' state abbreviations rather than single letters or full names and are
 #' available in the column called `state`.
 #' 
-#' @param data A loaded Rdata object from pull_catch_recfin_.  
+#' @param data A loaded Rdata object from pull_catch_recfin_ or
+#' pull_bds_recfin_.  
 #'
 #' @section Missing years:
 #' MRFSS data is incomplete and will not contain information for the years
@@ -15,23 +16,54 @@
 #'
 #' todo: create a function to estimate catches for 1990-1922
 #'
-#' @section AGENCY_CODE:
+#'CAN DELETE THIS LATER. I DONT THINK I NEED IT
+#' @section getState:
 #' * 6: California
 #' * 41: Oregon
 #' * 53: Washington
 #'
+#'CAN DELETE THIS LATER. I DONT THINK I NEED IT
 #' @section RECFIN_SUB_REGION_NAME:
 #' * Washington: Canada-US border to Washington-Oregon border
 #' * Oregon: Washington-Oregon border to Oregon-California border
 #' * Northern California: North of Point Conception and south of Oregon-California border
 #' * Southern California: South of Point Conception
+#' 
+#' IS THERE A WAY TO HAVE THESE BE PULLED FROM THE ACTUAL R SCRIPTS FOR THESE FUNCTIONS?
+#' @section getState
+#'  Convert information on state to consistent values in field `state`. 
+#'  Outputs whether any records lack information about state. 
+#'  * WA: Washington or W
+#'  * OR: Oregon or O
+#'  * CA: California or C
+#'  * UNK: All others
+#'
+#' IS THERE A WAY TO HAVE THESE BE PULLED FROM THE ACTUAL R SCRIPTS FOR THESE FUNCTIONS?  
+#' @section getArea
+#'  Remove records from non-federal areas. Based on values in the field 
+#'  "RECFIN_WATER_AREA_NAME" as listed below. These are NOT case specific. 
+#'  Outputs the number of records removed .
+#'  * Canada
+#'  * Mexico
+#'  * Puget Sound
+#'  * Not Known
+#'  
+#'  #' IS THERE A WAY TO HAVE THESE BE PULLED FROM THE ACTUAL R SCRIPTS FOR THESE FUNCTIONS?
+#' @section getMode
+#'  Convert information on mode to consistent values in field `mode`. 
+#'  Outputs whether any records lack information about mode. 
+#'  * PR: Private/Rental Boats
+#'  * PC: Party/Charter Boats
+#'  * Other: Man-Made/Jetty
+#'  * UNK: All others
+#'  
 #'
 #' @template data
 #' @import dplyr
 #'
 #' @export
 #' @author Brian Langseth and Kelli Faye Johnson
-#' @return A data frame with standardized columns.
+#' @return A data frame with standardized columns along with original fields
 #' @seealso See the data object `recfin_coldefs` for more complete descriptions of
 #' column names and their contents.
 #'
@@ -71,6 +103,10 @@ clean_catch <- function(data) {
                      source = c("RECFIN_WATER_AREA_NAME"),
                      verbose = TRUE)
     
+    #Rename modes
+    data <- getMode(data = data,
+                    source = c("RECFIN_MODE_NAME"),
+                    verbose = TRUE)
     
     
   }
