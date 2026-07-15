@@ -5,7 +5,8 @@
 #' @details
 #' This function is used for both catch and composition data. Because the case
 #' for values are sometimes different across data sets, character strings are 
-#' converted to lowercase when filtering
+#' converted to lowercase when filtering.
+#' Based on similar function from pacfintools, but modified for recreational data
 #' 
 #' @export
 #' @seealso [clean_] calls 'getArea'
@@ -16,7 +17,8 @@
 #' @param source Column name where area information is located. Depends on the 
 #' type of data (catch or bds) and era (recent, mrfss, or historical). Default
 #' value is for recent catch data (i.e. RECFIN_WATER_AREA_NAME)
-#' @param verbose Whether to output detailed information about variable
+#' @param verbose Whether to output detailed information about variable.
+#' Default is TRUE.
 #' 
 
 getArea <- function(

@@ -13,7 +13,8 @@
 #' @param source Column name where state information is located. Depends on the 
 #' type of data (catch or bds) and era (recent, mrfss, or historical). Default
 #' value is for recent catch data (i.e. AGENCY for CTE001 or STATE_NAME for CTE501)
-#' @param verbose Whether to output detailed information about variable
+#' @param verbose Whether to output detailed information about variable. 
+#' Default is TRUE.
 #' 
 
 getState <- function(
@@ -37,7 +38,7 @@ getState <- function(
       .data[[source]] == "CALIFORNIA" ~ "CA", #STATE_NAME
       .data[[source]] == "OREGON" ~ "OR",     #STATE_NAME
       .data[[source]] == "WASHINGTON" ~ "WA", #STATE_NAME
-      TRUE ~ NA_character_
+      TRUE ~ "UNK"
     ))
   
   states <- c("WA", "OR", "CA")
