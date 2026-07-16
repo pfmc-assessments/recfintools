@@ -131,12 +131,15 @@ sql_catch <- function(species_name, type, apex = FALSE) {
   }
   
   #Catches from years during MRFSS sampling
+  #As there is no official apex report for this, build own. 
+  #Cut off data to 2004 and before for CA, 2003 and before for OR and WA
   if(type == "mrfss"){
     sqlcall <- glue::glue(
       "
       SELECT *
       FROM RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_ESTIMATES
       WHERE COMMON = {toupper(species)}
+        AND ((ST = 6 AND YEAR <= 2004) OR (ST != 6 AND YEAR < 2004))
       "
       )
     sqlcall <- gsub("\\n", " ", sqlcall)

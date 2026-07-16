@@ -19,8 +19,15 @@
 #' in 1996. Some type of interpolation can be done to update PC estimates
 #' during these years. These years will show up with some catch, but only when
 #' broken down by mode will it be obvious that PC is lower than in neighbor years.  
+#' 
+#' @section Washington data:
+#' Washington does not use MRFSS data. Rather, catches come from apex report for
+#' recent data (CTE001 or CTE501), which extend back to 1993, and from historical
+#' reconstructions (CTE503). When running this function, Washington catch data
+#' are removed from the MRFSS dataset. 
 #'
-#' todo: create a function to estimate catches for 1990-1992, possibly 1993-1995
+#' todo: create a function to estimate catches for 1990-1992, possibly 1993-1995?
+#' todo: create a function to estimate Washington weights for recent and historical?
 #'
 #'CAN DELETE THIS LATER. I DONT THINK I NEED IT
 #' @section getState:
@@ -91,6 +98,8 @@ clean_catch <- function(data) {
   #MRFSS data
   if("SERVER_PATH" %in% colnames(data)) {
     type = "mrfss"
+    
+    #to do: Remove WA data from MRFSS catches between they dont use
     
   }
   
