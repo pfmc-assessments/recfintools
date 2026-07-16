@@ -143,27 +143,72 @@ sql_catch <- function(species_name, type, apex = FALSE) {
   }
   
   #Catches from historical reconstructions of each state
+  #A few fields (RECFIN_LOG_ID for WA and CA, and SURVEY_PROGRAM_ID for CA)
+  #are not selected in apex report, so write out each rather for those states
+  #but for Oregon select all
   if(type == "hist"){
     sqlcall_W <- glue::glue(
       "
-    SELECT *
-    FROM RECFIN_MARTS.COMPREHENSIVE_WDFW_HISTORIC_REC_CATCH_EST
-    WHERE SPECIES_NAME = {species}
-    "
+      SELECT
+        agency_code,
+        agency,
+        state_name,
+        recfin_year,
+        area,
+        recfin_species_code,
+        agency_species_name,
+        species_name,
+        scientific_name,
+        pfmc_fishery_management_plan,
+        species_group_name,
+        stock_complex_name,
+        pacfin_species_code,
+        retained_num,
+        recfin_vdate
+      FROM RECFIN_MARTS.COMPREHENSIVE_WDFW_HISTORIC_REC_CATCH_EST
+      WHERE SPECIES_NAME = {species}
+      "
     )
     sqlcall_O <- glue::glue(
       "
-    SELECT *
-    FROM RECFIN_MARTS.COMPREHENSIVE_ODFW_HISTORIC_REC_CATCH_EST
-    WHERE SPECIES_NAME = {stringr::str_to_title(species)}
-    "
+      SELECT *
+      FROM RECFIN_MARTS.COMPREHENSIVE_ODFW_HISTORIC_REC_CATCH_EST
+      WHERE SPECIES_NAME = {stringr::str_to_title(species)}
+      "
     )
     sqlcall_C <- glue::glue(
       "
-    SELECT *
-    FROM RECFIN_MARTS.COMPREHENSIVE_NOAA_CA_CATCH_RECON_REC
-    WHERE SPECIES_NAME = {stringr::str_to_title(species)}
-    "
+      SELECT
+        CA_CATCH_RECON_ID,
+        YEAR,
+        SURVEY_PROGRAM_CODE,
+        SURVEY_PROGRAM_NAME,
+        AGENCY_CODE,
+        AGENCY,
+        STATE_NAME,
+        SURVEY_PROGRAM_MODE_CODE,
+        SURVEY_PROGRAM_MODE_NAME,
+        RECFIN_MODE_CODE,
+        RECFIN_MODE_NAME,
+        SURVEY_PROGRAM_AREA_NAME,
+        SURVEY_PROGRAM_AREA_DESCRIPTION,
+        SURVEY_PROGRAM_SPECIES_CODE,
+        SURVEY_PROGRAM_SPECIES_NAME,
+        RECFIN_SPECIES_CODE,
+        SPECIES_NAME,
+        SCIENTIFIC_NAME,
+        PFMC_FISHERY_MANAGEMENT_PLAN,
+        SPECIES_GROUP_NAME,
+        STOCK_COMPLEX_NAME,
+        PACFIN_SPECIES_CODE,
+        RETAINED_NUM AS RETAINED_NUMBER,
+        RETAINED_LBS,
+        RETAINED_KG,
+        RETAINED_MT,
+        RECFIN_VDATE
+      FROM RECFIN_MARTS.COMPREHENSIVE_NOAA_CA_CATCH_RECON_REC
+      WHERE SPECIES_NAME = {stringr::str_to_title(species)}
+      "
     )
     sqlcall_W <- gsub("\\n", " ", sqlcall_W)
     sqlcall_O <- gsub("\\n", " ", sqlcall_O)
