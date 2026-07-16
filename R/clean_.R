@@ -13,8 +13,14 @@
 #' 1990 to 1992. Most often, linear interpolation is performed to estimate
 #' catches during these years because it can be assumed that they were not
 #' zero if the surrounding years were also non-zero.
+#' 
+#' MRFSS sampling for PC modes in 1993-1995 were limited. PC sampling restarted
+#' in 1993 only in Southern districts; north of San Luis Obispo it restarted 
+#' in 1996. Some type of interpolation can be done to update PC estimates
+#' during these years. These years will show up with some catch, but only when
+#' broken down by mode will it be obvious that PC is lower than in neighbor years.  
 #'
-#' todo: create a function to estimate catches for 1990-1922
+#' todo: create a function to estimate catches for 1990-1992, possibly 1993-1995
 #'
 #'CAN DELETE THIS LATER. I DONT THINK I NEED IT
 #' @section getState:
@@ -106,14 +112,11 @@ clean_catch <- function(data) {
     #For catches and biological data
     ##
     
+    ## Standardize fields
+    
     #Rename state
     data <- getState(data = data,
                      source = c("AGENCY", "STATE_NAME"), #AGENCY is in CTE001, STATE_NAME in CTE501
-                     verbose = TRUE)
-    
-    #Filter out non-federal records
-    data <- getArea(data = data,
-                     source = c("RECFIN_WATER_AREA_NAME"),
                      verbose = TRUE)
     
     #Rename modes
@@ -121,7 +124,13 @@ clean_catch <- function(data) {
                     source = c("RECFIN_MODE_NAME"),
                     verbose = TRUE)
     
-
+    
+    ## Actually removing data
+    
+    #Filter out non-federal records
+    data <- getArea(data = data,
+                    source = c("RECFIN_WATER_AREA_NAME"),
+                    verbose = TRUE)
     
     
   }

@@ -24,6 +24,7 @@
 #' @param verbose Whether to output detailed information about variable.
 #' Default is TRUE.
 #' 
+#' #Not really useing source as fully user defined. Consider removing
 
 check_catch <- function(
     data,
@@ -44,6 +45,9 @@ check_catch <- function(
   
   fullcols <- data[, colnames(data) %in% cols]
   
+  
+  #Determine whether retained + released dead = total (only for MT)
+  
   deadcols <- grep(c("RETAINED_MT|RELEASED_DEAD_MT"), colnames(fullcols))
   
   fullcols$dead_mt <- rowSums(fullcols[, deadcols], na.rm = TRUE)
@@ -52,7 +56,9 @@ check_catch <- function(
     cli::cli_inform("The sum of total mortality does not equal the sum of retained 
                     and released dead mortality.")
   }
-      
+  
+  #Deteremine the number of records were numbers exist but weigts are zero
+  
   retainOff <- length(
     which(fullcols[, grep("RETAINED_MT", colnames(fullcols))] == 0 & 
             fullcols[, grep("RETAINED_NUM", colnames(fullcols))] > 0))
