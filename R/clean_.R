@@ -21,13 +21,24 @@
 #' broken down by mode will it be obvious that PC is lower than in neighbor years.  
 #' 
 #' @section Washington data:
-#' Washington does not use MRFSS data. Rather, catches come from apex report for
-#' recent data (CTE001 or CTE501), which extend back to 1993, and from historical
-#' reconstructions (CTE503). When running this function, Washington catch data
-#' are removed from the MRFSS dataset. 
+#' Washington does not use MRFSS catch data. Rather, catches come from apex 
+#' report for recent data (CTE001 or CTE501), which extend back to 1990, and 
+#' from historical reconstructions (CTE503), which although extend through 2002, 
+#' have values for coastal areas 1-4 (i.e. non-puget sound areas) only through 
+#' 1989. When running this function, Washington catch data are removed from the 
+#' MRFSS dataset, and puget sounds areas 5+ are removed from the historical 
+#' dataset. 
 #'
 #' todo: create a function to estimate catches for 1990-1992, possibly 1993-1995?
 #' todo: create a function to estimate Washington weights for recent and historical?
+#' 
+#' @section Oregon data:
+#' Oregon does not use MRFSS catch data. Rather, catches come from apex report 
+#' for recent data (CTE001 or CTE501), which extend back to 1990, and from 
+#' historical reconstructions (CTE505), which extend through 2002. When running this 
+#' function, Washington catch data are removed from the MRFSS dataset. Data from
+#' the historical report after 1989 are not removed however. Users will have to 
+#' decide how to use overlapping years. 
 #'
 #'CAN DELETE THIS LATER. I DONT THINK I NEED IT
 #' @section getState:
@@ -46,9 +57,9 @@
 #' @section getState
 #'  Convert information on state to consistent values in field `state`. 
 #'  Outputs whether any records lack information about state. 
-#'  * WA: Washington or W
-#'  * OR: Oregon or O
-#'  * CA: California or C
+#'  * WA: Washington or W or 53
+#'  * OR: Oregon or O or 41
+#'  * CA: California or C or 6
 #'  * UNK: All others
 #'
 #' IS THERE A WAY TO HAVE THESE BE PULLED FROM THE ACTUAL R SCRIPTS FOR THESE FUNCTIONS?  
@@ -91,6 +102,29 @@ clean_catch <- function(data) {
     #Repeat for each state
     for(i in 1:length(data)){
       #colnames(data[[i]]) <- gsub("RECFIN_", "", colnames(data[[i]])) #Probably dont keep this in
+      
+      ##
+      #For just catches
+      ##
+      
+      ##
+      #For catches and biological data
+      ##
+      
+      ## Standardize fields
+      
+      #Rename state
+      data[[i]] <- getState(data = data[[i]],
+                       source = c("AGENCY"),
+                       verbose = TRUE)
+      
+      
+      ## Actually removing data
+      
+      data[[i]] <- getArea(data = data[[i]], 
+                      source = c("AREA"),
+                      verbose = TRUE)
+      
     }
 
   }
@@ -99,7 +133,29 @@ clean_catch <- function(data) {
   if("SERVER_PATH" %in% colnames(data)) {
     type = "mrfss"
     
-    #to do: Remove WA data from MRFSS catches between they dont use
+    #to do: Remove WA data from MRFSS catches because they dont use
+    #to do: Remove OR data from MRFSS catches because they dont use
+    
+    ##
+    #For just catches
+    ##
+    
+    ##
+    #For catches and biological data
+    ##
+    
+    ## Standardize fields
+    
+    #Rename state
+    data <- getState(data = data,
+                     source = c("ST"),
+                     verbose = TRUE)
+    
+    ## Actually removing data
+    
+    
+    
+    
     
   }
   

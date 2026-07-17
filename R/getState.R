@@ -38,6 +38,10 @@ getState <- function(
       .data[[source]] == "CALIFORNIA" ~ "CA", #STATE_NAME
       .data[[source]] == "OREGON" ~ "OR",     #STATE_NAME
       .data[[source]] == "WASHINGTON" ~ "WA", #STATE_NAME
+      .data[[source]] == "53" ~ "WA", #ST
+      .data[[source]] == "41" ~ "OR", #ST
+      .data[[source]] == "6" ~ "CA", #ST
+      
       TRUE ~ "UNK"
     ))
   
