@@ -18,7 +18,9 @@
 #' in 1993 only in Southern districts; north of San Luis Obispo it restarted 
 #' in 1996. Some type of interpolation can be done to update PC estimates
 #' during these years. These years will show up with some catch, but only when
-#' broken down by mode will it be obvious that PC is lower than in neighbor years.  
+#' broken down by mode will it be obvious that PC is lower than in neighbor years.
+#' 
+#' #' todo: create a function to estimate catches for 1990-1992, possibly 1993-1995?  
 #' 
 #' @section Washington data:
 #' Washington does not use MRFSS catch data. Rather, catches come from apex 
@@ -26,19 +28,16 @@
 #' from historical reconstructions (CTE503), which although extend through 2002, 
 #' have values for coastal areas 1-4 (i.e. non-puget sound areas) only through 
 #' 1989. When running this function, Washington catch data are removed from the 
-#' MRFSS dataset, and puget sounds areas 5+ are removed from the historical 
+#' MRFSS dataset, and puget sounds areas (5+) are removed from the historical 
 #' dataset. 
 #'
-#' todo: create a function to estimate catches for 1990-1992, possibly 1993-1995?
 #' todo: create a function to estimate Washington weights for recent and historical?
 #' 
 #' @section Oregon data:
 #' Oregon does not use MRFSS catch data. Rather, catches come from apex report 
-#' for recent data (CTE001 or CTE501), which extend back to 1990, and from 
-#' historical reconstructions (CTE505), which extend through 2002. When running this 
-#' function, Washington catch data are removed from the MRFSS dataset. Data from
-#' the historical report after 1989 are not removed however. Users will have to 
-#' decide how to use overlapping years. 
+#' for recent data (CTE001 or CTE501), which extend back to 2001, and from 
+#' historical reconstructions (CTE505), which extend through 2000. When running this 
+#' function, Oregon catch data are removed from the MRFSS dataset. 
 #'
 #'CAN DELETE THIS LATER. I DONT THINK I NEED IT
 #' @section getState:
@@ -152,6 +151,10 @@ clean_catch <- function(data) {
                      verbose = TRUE)
     
     ## Actually removing data
+    
+    #Filter out Oregon and Washington records because they dont use MRFSS data
+    data <- data |>
+      dplyr::filter(!ST %in% c(41,53))
     
     
     
