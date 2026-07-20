@@ -67,7 +67,7 @@ getArea <- function(
     }
   }
   
-  if(source == "AREA"){ #Washington historical catch data
+  if(source == "AREA" & all(data$AGENCY == "W")){ #Washington historical catch data
 
     removed <- data |>
       dplyr::filter(.data[[source]] >= 5)

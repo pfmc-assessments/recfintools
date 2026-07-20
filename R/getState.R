@@ -12,7 +12,10 @@
 #' @param data Either catch or bds data from pull_bds_recfin or pull_catch_recfin
 #' @param source Column name where state information is located. Depends on the 
 #' type of data (catch or bds) and era (recent, mrfss, or historical). Default
-#' value is for recent catch data (i.e. AGENCY for CTE001 or STATE_NAME for CTE501)
+#' value is for recent catch data (i.e. AGENCY for CTE001 or STATE_NAME for CTE501).
+#' Coded to accept a vector of names where the same type or era of data has 
+#' multiple different names. When multiple names within the vector are in the 
+#' dataset, picks the first.
 #' @param verbose Whether to output detailed information about variable. 
 #' Default is TRUE.
 #' 

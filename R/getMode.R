@@ -11,7 +11,10 @@
 #' @param data Either catch or bds data from pull_bds_recfin or pull_catch_recfin
 #' @param source Column name where mode information is located. Depends on the 
 #' type of data (catch or bds) and era (recent, mrfss, or historical). Default
-#' value is for recent catch data (i.e. RECFIN_MODE_NAME for CTE001 or XXXXX for CTE501)
+#' value is for recent catch data (RECFIN_MODE_NAME).
+#' Coded to accept a vector of names where the same type or era of data has 
+#' multiple different names. When multiple names within the vector are in the 
+#' dataset, picks the first.
 #' @param verbose Whether to output detailed information about variable. 
 #' Default is TRUE.
 #' 
