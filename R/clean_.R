@@ -31,6 +31,9 @@
 #' MRFSS dataset, and puget sounds areas (5+) are removed from the historical 
 #' dataset. 
 #'
+#' Washington does not differentiate by mode in its historical reconstruction.
+#' Therefore, when running getMode() all records are assigned as 'UNK'. 
+#' 
 #' todo: create a function to estimate Washington weights for recent and historical?
 #' 
 #' @section Oregon data:
@@ -117,6 +120,20 @@ clean_catch <- function(data) {
                        source = c("AGENCY"),
                        verbose = TRUE)
       
+      #Rename modes
+      #Washington doesn't include any mode type in their historical reconstruction.
+      #To avoid an error when calling this for OR and CA, which do, use any 
+      #field name in the WA historical data and 'mode' will be assigned as UNK
+      data[[i]] <- getMode(data = data[[i]],
+                      source = c("RECFIN_MODE_NAME", "AGENCY"),
+                      verbose = TRUE)
+      
+      
+      #Set up year column
+      data[[i]] <- getYear(data = data[[i]],
+                      source = c("YEAR", "RECFIN_YEAR"), #YEAR is for OR and CA, RECFIN_YEAR is for WA
+                      verbose = TRUE)
+      
       
       ## Actually removing data
       
@@ -131,9 +148,6 @@ clean_catch <- function(data) {
   #MRFSS data
   if("SERVER_PATH" %in% colnames(data)) {
     type = "mrfss"
-    
-    #to do: Remove WA data from MRFSS catches because they dont use
-    #to do: Remove OR data from MRFSS catches because they dont use
     
     ##
     #For just catches
@@ -154,7 +168,7 @@ clean_catch <- function(data) {
     
     #Filter out Oregon and Washington records because they dont use MRFSS data
     data <- data |>
-      dplyr::filter(!ST %in% c(41,53))
+      dplyr::filter(!state %in% c("OR","WA"))
     
     
     
@@ -190,6 +204,11 @@ clean_catch <- function(data) {
     #Rename modes
     data <- getMode(data = data,
                     source = c("RECFIN_MODE_NAME"),
+                    verbose = TRUE)
+    
+    #Set up year column
+    data <- getYear(data = data,
+                    source = c("RECFIN_YEAR"),
                     verbose = TRUE)
     
     
