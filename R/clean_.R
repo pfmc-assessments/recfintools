@@ -73,6 +73,7 @@
 #'  * Mexico
 #'  * Puget Sound
 #'  * Not Known
+#'  Also, if using historical data from Washington, removes "AREA" codes 5 and above
 #'  
 #'  #' IS THERE A WAY TO HAVE THESE BE PULLED FROM THE ACTUAL R SCRIPTS FOR THESE FUNCTIONS?
 #' @section getMode
@@ -140,6 +141,8 @@ clean_catch <- function(data) {
       data[[i]] <- getArea(data = data[[i]], 
                       source = c("AREA"),
                       verbose = TRUE)
+      
+      ## Calculating catches
       
     }
 
@@ -274,7 +277,6 @@ clean_catch <- function(data) {
 }
 
 #' @export
-#' @rdname clean_cte501
 clean_mrfss <- function(data) {
   #### YEAR
   colnames(data)[grep("^year", colnames(data), ignore.case = TRUE)] <- "Year"
