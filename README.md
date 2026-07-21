@@ -1,4 +1,6 @@
-# RecFIN
+# recfintools
+**NOTE: this package is in active development and not yet intended for production use**
+
 Working with recreational data for the US West Coast from
 Recreational Fisheries Information Network
 ([RecFIN][]).
@@ -37,7 +39,7 @@ Install the most recent, stable version of the package from
 github using
 
 ```
-remotes::install_github("pfmc-assessments/RecFIN")
+remotes::install_github("pfmc-assessments/recfintools")
 ```
 
 ## Usage
