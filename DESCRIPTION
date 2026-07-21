@@ -4,6 +4,8 @@ Version: 0.1.0
 Authors@R: c(
     person(c("Brian", "J."), "Langseth", , "brian.langseth@noaa.gov", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-9901-6146")),
+    person(c("Ian", "G."), "Taylor", , "ian.taylor@noaa.gov", role = "aut",
+           comment = c(ORCID = "0000-0002-4232-5669")),
     person(c("Kelli", "F."), "Johnson", , "kelli.johnson@noaa.gov", role = "aut",
            comment = c(ORCID = "0000-0002-5149-451X")),
     person(c("Chantel", "R."), "Wetzel", , "chantel.wetzel@noaa.gov", role = "aut",
@@ -17,7 +19,6 @@ Description: Recreational Fisheries Information Network
 License: GPL (>= 3)
 Depends:
     dplyr (>= 1.0.0),
-    magrittr (>= 2.0.0),
     R (>= 3.5)
 Suggests:
     xlsx

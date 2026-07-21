@@ -245,7 +245,7 @@ clean_mrfss <- function(data) {
 
   #### AGENCY_CODE
   # https://www.fisheries.noaa.gov/inport/item/55989
-  data <- data %>%
+  data <- data |>
     mutate(state = case_when(
       AGENCY_CODE == 6 ~ "CA",
       AGENCY_CODE == 41 ~ "OR",
