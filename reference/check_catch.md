@@ -24,7 +24,7 @@ check_catch(
   Column keywords where the information is located. Depends on the type
   of data (catch or bds) and era (recent, mrfss, or historical). Default
   value is for recent catch data (i.e. RETAINED\_, RELEASED_ALIVE\_,
-  RELEASED_DEAD\_). The functions searches for teh columns that contain
+  RELEASED_DEAD\_). The functions searches for the columns that contain
   these words.
 
   \#Not really useing source as fully user defined. Consider removing

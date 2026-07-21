@@ -48,7 +48,7 @@ pull_bds_recfin_recent(
 - savedir:
 
   A file path to the directory where the results will be saved. The
-  default is the current working directory. If dont want to save use
+  default is the current working directory. If don't want to save use
   NULL.
 
 - verbose:

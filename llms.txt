@@ -74,9 +74,9 @@ commercial product or activity by DOC or the United States Government.”
 
 RecFIN was developed by US federal government employees as part of their
 official duties. As such, it is not subject to copyright protection and
-is considered public domain (see 17 USC § 105). Public domain software
-can be used by anyone for any purpose, and cannot be released under a
-copyright license.
+is considered public domain (see 17 USC Section 105). Public domain
+software can be used by anyone for any purpose, and cannot be released
+under a copyright license.
 
 # Package index
 

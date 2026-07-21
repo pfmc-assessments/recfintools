@@ -35,7 +35,7 @@ MRFSS data is incomplete and will not contain information for the years
 catches during these years because it can be assumed that they were not
 zero if the surrounding years were also non-zero.
 
-MRFSS sampling for PC modes in 1993-1995 were limited. PC sampling
+MRFSS sampling for PC modes in 1993-1995 was limited. PC sampling in CA
 restarted in 1993 only in Southern districts; north of San Luis Obispo
 it restarted in 1996. Some type of interpolation can be done to update
 PC estimates during these years. These years will show up with some
