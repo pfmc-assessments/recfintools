@@ -134,12 +134,27 @@ clean_catch <- function(data) {
                      source = c("ST"),
                      verbose = TRUE)
     
+    #Rename modes
+    data <- getMode(data = data,
+                    source = c("MODE"),
+                    verbose = TRUE)
+    
+    #Set up year column
+    data <- getYear(data = data,
+                    source = c("YEAR"), 
+                    verbose = TRUE)
+    
+    
     ## Actually removing data
     
     #Filter out Oregon and Washington records because they don't use MRFSS data
     data <- data |>
       dplyr::filter(!state %in% c("OR","WA"))
     
+    #Filter out non-federal records
+    data <- getArea(data = data,
+                    source = c("AREA"),
+                    verbose = TRUE)
     
     
     

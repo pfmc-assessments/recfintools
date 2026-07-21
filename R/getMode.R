@@ -5,13 +5,14 @@
 #'
 #' @section Mode mapping rules:
 #' `source` can be a vector of candidate column names. The first matching
-#' column in `data` is used.
+#' column in `data` is used. 
 #'
-#' Values are standardized into `mode` as:
-#' * `PR`: `Private/Rental Boats`
-#' * `PC`: `Party/Charter Boats`
-#' * `Other`: `Man-Made/Jetty`
-#' * `UNK`: all unmatched values
+#' Values in `source` are evaluated using case-insensitive matching. Values are 
+#' standardized into `mode` as:
+#' * `PR`: anything with `Private`
+#' * `PC`: anything with `Party` or `Charter`
+#' * `Other`: `Man-Made/Jetty`, `Man-Made`, `Beach/Bank`, `Shore`
+#' * `UNK`: all unmatched values 
 #'
 #' If `verbose = TRUE`, the function reports how many records were assigned
 #' `UNK`.
@@ -44,9 +45,9 @@ getMode <- function(
   
   data <- data |>
     dplyr::mutate(mode = dplyr::case_when(
-      .data[[source]] == "Private/Rental Boats" ~ "PR", #RECFIN_MODE_NAME
-      .data[[source]] == "Party/Charter Boats" ~ "PC", #RECFIN_MODE_NAME
-      .data[[source]] == "Man-Made/Jetty" ~ "Other", #RECFIN_MODE_NAME
+      grepl("private", .data[[source]], ignore.case = TRUE) ~ "PR",
+      grepl("charter|party", .data[[source]], ignore.case = TRUE) ~ "PC",
+      tolower(.data[[source]]) %in% tolower(c("Man-Made/Jetty", "Man-Made", "Beach/Bank", "Shore")) ~ "Other",
       TRUE ~ "UNK"
     ))
   
