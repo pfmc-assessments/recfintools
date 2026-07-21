@@ -19,7 +19,7 @@
 #' @param source Column keywords where the information is located. Depends on the 
 #' type of data (catch or bds) and era (recent, mrfss, or historical). Default
 #' value is for recent catch data (i.e. RETAINED_, RELEASED_ALIVE_,
-#' RELEASED_DEAD_). The functions searches for teh columns that contain these words. 
+#' RELEASED_DEAD_). The functions searches for the columns that contain these words. 
 
 #' 
 #' #Not really useing source as fully user defined. Consider removing

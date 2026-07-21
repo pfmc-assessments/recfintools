@@ -30,11 +30,12 @@ MRFSS data is incomplete and will not contain information for the years
 catches during these years because it can be assumed that they were not
 zero if the surrounding years were also non-zero.
 
-MRFSS sampling for PC modes in 1993-1995 were limited. PC sampling restarted
-in 1993 only in Southern districts; north of San Luis Obispo it restarted
-in 1996. Some type of interpolation can be done to update PC estimates
-during these years. These years will show up with some catch, but only when
-broken down by mode will it be obvious that PC is lower than in neighbor years.
+MRFSS sampling for PC modes in 1993-1995 was limited. PC sampling in CA
+restarted in 1993 only in Southern districts; north of San Luis Obispo it
+restarted in 1996. Some type of interpolation can be done to update PC
+estimates during these years. These years will show up with some catch,
+but only when broken down by mode will it be obvious that PC is lower than
+in neighbor years.
 
 #' todo: create a function to estimate catches for 1990-1992, possibly 1993-1995?
 }
@@ -59,8 +60,8 @@ todo: create a function to estimate Washington weights for recent and historical
 
 Oregon does not use MRFSS catch data. Rather, catches come from apex report
 for recent data (CTE001 or CTE501), which extend back to 2001, and from
-historical reconstructions (CTE505), which extend through 2000. When running this
-function, Oregon catch data are removed from the MRFSS dataset.
+historical reconstructions (CTE505), which extend through 2000. When running
+this function, Oregon catch data are removed from the MRFSS dataset.
 }
 
 \section{State mapping rules}{

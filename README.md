@@ -54,8 +54,8 @@ themselves using the `RecFIN::clean_*()` functions.
 
 ## Disclaimer
 
-“The United States Department of Commerce (DOC) GitHub project code is
-provided on an ‘as is’ basis and the user assumes responsibility for its
+"The United States Department of Commerce (DOC) GitHub project code is
+provided on an 'as is' basis and the user assumes responsibility for its
 use. DOC has relinquished control of the information and no longer has
 responsibility to protect the integrity, confidentiality, or
 availability of the information. Any claims against the Department of
@@ -66,10 +66,10 @@ manufacturer, or otherwise, does not constitute or imply their
 endorsement, recommendation or favoring by the Department of Commerce.
 The Department of Commerce seal and logo, or the seal and logo of a DOC
 bureau, shall not be used in any manner to imply endorsement of any
-commercial product or activity by DOC or the United States Government.”
+commercial product or activity by DOC or the United States Government."
 
 RecFIN was developed by US federal government employees as part of their official duties.
-As such, it is not subject to copyright protection and is considered public domain (see 17 USC § 105).
+As such, it is not subject to copyright protection and is considered public domain (see 17 USC Section 105).
 Public domain software can be used by anyone for any purpose, and cannot be released under a copyright license.
 
 [PSMFC]: https://www.psmfc.org/

@@ -67,7 +67,7 @@ clean_catch <- function(data) {
     
     #Repeat for each state
     for(i in 1:length(data)){
-      #colnames(data[[i]]) <- gsub("RECFIN_", "", colnames(data[[i]])) #Probably dont keep this in
+      #colnames(data[[i]]) <- gsub("RECFIN_", "", colnames(data[[i]])) #Probably don't keep this in
       
       ##
       #For just catches
@@ -136,7 +136,7 @@ clean_catch <- function(data) {
     
     ## Actually removing data
     
-    #Filter out Oregon and Washington records because they dont use MRFSS data
+    #Filter out Oregon and Washington records because they don't use MRFSS data
     data <- data |>
       dplyr::filter(!state %in% c("OR","WA"))
     
@@ -149,7 +149,7 @@ clean_catch <- function(data) {
   #Recent data
   if("RECFIN_YEAR" %in% colnames(data)) {
     type = "recfin"
-    #colnames(data) <- gsub("RECFIN_", "", colnames(data)) #Probably dont keep this in
+    #colnames(data) <- gsub("RECFIN_", "", colnames(data)) #Probably don't keep this in
     
     ##
     #For just catches

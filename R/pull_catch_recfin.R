@@ -14,7 +14,7 @@
 #' name desired. Must be a valid name though case is automatically corrected.
 #' For list of species codes see sql_species.
 #' @param savedir A file path to the directory where the results will be saved.
-#' The default is the current working directory. If dont want to save use NULL.
+#' The default is the current working directory. If don't want to save use NULL.
 #' @param verbose Currently a holdover from pacfin nominal species. Can delete.
 #'
 #' @export

@@ -34,7 +34,7 @@ password with anyone or push code to a repository that has your password
 saved in it.}
 
 \item{savedir}{A file path to the directory where the results will be saved.
-The default is the current working directory. If dont want to save use NULL.}
+The default is the current working directory. If don't want to save use NULL.}
 
 \item{verbose}{Currently a holdover from pacfin nominal species. Can delete.}
 
