@@ -50,6 +50,8 @@ getArea <- function(
                     Records outside federal waters have not been removed")
   }
   
+  flag <- FALSE
+  
   if(source == "RECFIN_WATER_AREA_NAME"){ #Recent catch data
   
     nonfed <- c("CANADA",
@@ -78,9 +80,14 @@ getArea <- function(
         "i" = "These include {nunk} records designated as Not Known"
       ))
     }
+    
+    flag <- TRUE
+    
   }
   
-  if(source == "AREA" & all(data$AGENCY == "W")){ #Washington historical catch data
+  if(source == "AREA" & all(data$AGENCY == "W") & 
+     all(data$AGENCY == "W") & #Washington historical catch data
+     length(data$AGENCY > 0)){ #Ensure AGENCY exists (if not 'all' returns TRUE)
 
     removed <- data |>
       dplyr::filter(.data[[source]] >= 5)
@@ -90,6 +97,7 @@ getArea <- function(
     noarea <- nrow(removed)
     nsound <- noarea
     ncan <- nmex <- 0
+    nna <- sum(is.na(data[,source]))
 
     
     if (verbose) {
@@ -102,6 +110,13 @@ getArea <- function(
         "i" = "These include {nna} records without {source}"
       ))
     }
+    
+    flag <- TRUE
+  }
+  
+  if(!flag){
+    cli::cli_inform("No adjustments to {source} were made. No records outside 
+                    of federal waters were identified")
   }
   
   return(data)
