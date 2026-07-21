@@ -230,7 +230,7 @@ sql_catch <- function(species_name, type, apex = FALSE) {
 
 
 #'
-#' @rdname sql_
+#' @rdname sql
 #' @details `sql_species()` A data frame of species names
 sql_species <- function() {
   sqlcall <- glue::glue(
@@ -246,8 +246,7 @@ sql_species <- function() {
 
 
 #'
-#' @inheritParams sql_catch
-#' @rdname sql_
+#' @rdname sql
 #' @details `sql_bds`
 #' 
 #' @param type A vector specifying the type of the data. Available options

@@ -2,27 +2,36 @@
 % Please edit documentation in R/sql_.R
 \name{sql}
 \alias{sql}
-\alias{sql_catch_recent}
-\alias{sql_catch_hist}
-\alias{sql_catch_mrfss}
+\alias{sql_catch}
 \alias{sql_species}
+\alias{sql_bds}
 \title{Write SQL text}
 \usage{
-sql_catch_recent(species_name)
-
-sql_catch_hist(species_name)
-
-sql_catch_mrfss(species_name)
+sql_catch(species_name, type, apex = FALSE)
 
 sql_species()
+
+sql_bds(species_name, type, apex)
 }
 \arguments{
 \item{species_name}{A vector of strings specifying the RecFIN species name
 desired. Must be a valid name though case is automatically corrected.
 For list of species codes see sql_species.}
+
+\item{type}{A vector specifying the type of the data. Available options
+include "recent" for estimates from recent state sponsored surveys; and
+"mrfss" for estimates from the MRFSS survey. There is no default so the user
+must specify a valid option.}
+
+\item{apex}{The specific recfin apex report that you want to reproduce.
+Available options include "SD001" and "SD501" (which are for lengths) and
+"SD506" (which is for ages) when type equals "recent", and "SD508" and "SD509"
+when type equals "mrfss". There is no default so the user must specify a
+valid option. Currently, there is no option to keep just the raw sql data.}
 }
 \value{
-A single character string formatted as an sql call.
+A character string formatted as an sql call. For type = "hist", the
+character string is returned as a list
 }
 \description{
 Write SQL text as a single character string that will result in getting the
@@ -31,13 +40,9 @@ relevant data from the RecFIN database.
 \details{
 Basing on the similar file in pacfintools
 
-\code{sql_catch_recent()} Results in recent catch data
+\code{sql_species()} A data frame of species names
 
-\code{sql_catch_hist()} Results in historical catch data
-
-\code{sql_catch_mrfss()} Results in MRFSS catch data
-
-\code{sql_species()} results in data frame of species names
+\code{sql_bds}
 }
 \author{
 Brian J Langseth

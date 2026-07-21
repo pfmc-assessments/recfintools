@@ -2,21 +2,31 @@
 #' 
 #' @details
 #' This function is used for both catch and composition data
+#'
+#' @section Mode mapping rules:
+#' `source` can be a vector of candidate column names. The first matching
+#' column in `data` is used.
+#'
+#' Values are standardized into `mode` as:
+#' * `PR`: `Private/Rental Boats`
+#' * `PC`: `Party/Charter Boats`
+#' * `Other`: `Man-Made/Jetty`
+#' * `UNK`: all unmatched values
+#'
+#' If `verbose = TRUE`, the function reports how many records were assigned
+#' `UNK`.
 #' 
 #' @export
-#' @seealso [clean_] calls 'getMode'
+#' @seealso [clean_catch()] calls 'getMode'
 #' 
-#' @inheritParams clean_
+#' @inheritParams clean_catch
 #' 
-#' @param data Either catch or bds data from pull_bds_recfin or pull_catch_recfin
 #' @param source Column name where mode information is located. Depends on the 
 #' type of data (catch or bds) and era (recent, mrfss, or historical). Default
 #' value is for recent catch data (RECFIN_MODE_NAME).
 #' Coded to accept a vector of names where the same type or era of data has 
 #' multiple different names. When multiple names within the vector are in the 
 #' dataset, picks the first.
-#' @param verbose Whether to output detailed information about variable. 
-#' Default is TRUE.
 #' 
 
 getMode <- function(

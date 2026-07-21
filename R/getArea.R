@@ -7,13 +7,28 @@
 #' for values are sometimes different across data sets, fields with values as 
 #' character strings are converted to lowercase when filtering.
 #' Based on similar function from pacfintools, but modified for recreational data
+#'
+#' @section Area filtering rules:
+#' Values in `source` are evaluated using case-insensitive matching.
+#'
+#' For recent RecFIN data (`source = "RECFIN_WATER_AREA_NAME"`), records are
+#' removed when area is:
+#' * `CANADA`
+#' * `MEXICO`
+#' * `PUGET SOUND`
+#' * `NOT KNOWN`
+#'
+#' For Washington historical data (`source = "AREA"` and `AGENCY == "W"`),
+#' records with `AREA >= 5` are removed.
+#'
+#' If `verbose = TRUE`, the function reports the number of records removed by
+#' category.
 #' 
 #' @export
-#' @seealso [clean_] calls 'getArea'
+#' @seealso [clean_catch()] calls 'getArea'
 #' 
-#' @inheritParams clean_
+#' @inheritParams clean_catch
 #' 
-#' @param data Either catch or bds data from pull_bds_recfin or pull_catch_recfin
 #' @param source Column name where area information is located. Depends on the 
 #' type of data (catch or bds) and era (recent, mrfss, or historical). 
 #' For recent catch data, use `RECFIN_WATER_AREA_NAME`, which filters out values
@@ -22,8 +37,6 @@
 #' of 5 and greater (i.e. Puget Sound)
 #' For Oregon historical catch data
 #' For California historical catch data  
-#' @param verbose Whether to output detailed information about variable.
-#' Default is TRUE.
 #' 
 
 getArea <- function(

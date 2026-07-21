@@ -12,17 +12,15 @@
 #' 
 #' 
 #' @export
-#' @seealso [clean_] calls 'check_catch'
+#' @seealso [clean_catch()] calls 'check_catch'
 #' 
-#' @inheritParams clean_
+#' @inheritParams clean_catch
 #' 
-#' @param data Catch data from pull_bds_recfin or pull_catch_recfin
 #' @param source Column keywords where the information is located. Depends on the 
 #' type of data (catch or bds) and era (recent, mrfss, or historical). Default
 #' value is for recent catch data (i.e. RETAINED_, RELEASED_ALIVE_,
 #' RELEASED_DEAD_). The functions searches for teh columns that contain these words. 
-#' @param verbose Whether to output detailed information about variable.
-#' Default is TRUE.
+
 #' 
 #' #Not really useing source as fully user defined. Consider removing
 

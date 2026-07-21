@@ -7,6 +7,7 @@
 #' 
 #' @param data A loaded Rdata object from pull_catch_recfin_ or
 #' pull_bds_recfin_.  
+#' @param verbose Whether to output detailed information about the cleaning process. Default is TRUE.
 #'
 #' @section Missing years:
 #' MRFSS data is incomplete and will not contain information for the years
@@ -42,56 +43,17 @@
 #' historical reconstructions (CTE505), which extend through 2000. When running this 
 #' function, Oregon catch data are removed from the MRFSS dataset. 
 #'
-#'CAN DELETE THIS LATER. I DONT THINK I NEED IT
-#' @section getState:
-#' * 6: California
-#' * 41: Oregon
-#' * 53: Washington
+#' @inheritSection getState State mapping rules
+#' @inheritSection getMode Mode mapping rules
+#' @inheritSection getArea Area filtering rules
+#' @inheritSection getYear Year extraction rules
 #'
-#'CAN DELETE THIS LATER. I DONT THINK I NEED IT
-#' @section RECFIN_SUB_REGION_NAME:
-#' * Washington: Canada-US border to Washington-Oregon border
-#' * Oregon: Washington-Oregon border to Oregon-California border
-#' * Northern California: North of Point Conception and south of Oregon-California border
-#' * Southern California: South of Point Conception
-#' 
-#' IS THERE A WAY TO HAVE THESE BE PULLED FROM THE ACTUAL R SCRIPTS FOR THESE FUNCTIONS?
-#' @section getState
-#'  Convert information on state to consistent values in field `state`. 
-#'  Outputs whether any records lack information about state. 
-#'  * WA: Washington or W or 53
-#'  * OR: Oregon or O or 41
-#'  * CA: California or C or 6
-#'  * UNK: All others
-#'
-#' IS THERE A WAY TO HAVE THESE BE PULLED FROM THE ACTUAL R SCRIPTS FOR THESE FUNCTIONS?  
-#' @section getArea
-#'  Remove records from non-federal areas. Based on values in the field 
-#'  "RECFIN_WATER_AREA_NAME" as listed below. These are NOT case specific. 
-#'  Outputs the number of records removed .
-#'  * Canada
-#'  * Mexico
-#'  * Puget Sound
-#'  * Not Known
-#'  Also, if using historical data from Washington, removes "AREA" codes 5 and above
-#'  
-#'  #' IS THERE A WAY TO HAVE THESE BE PULLED FROM THE ACTUAL R SCRIPTS FOR THESE FUNCTIONS?
-#' @section getMode
-#'  Convert information on mode to consistent values in field `mode`. 
-#'  Outputs whether any records lack information about mode. 
-#'  * PR: Private/Rental Boats
-#'  * PC: Party/Charter Boats
-#'  * Other: Man-Made/Jetty
-#'  * UNK: All others
-#'  
-#'
-#' @template data
 #' @import dplyr
 #'
 #' @export
 #' @author Brian Langseth and Kelli Faye Johnson
-#' @return A data frame with standardized columns along with original fields
-#' @seealso See the data object `recfin_coldefs` for more complete descriptions of
+#' @return A data frame with standardized columns along with original fields. 
+#' See the data object `recfin_coldefs` for more complete descriptions of
 #' column names and their contents.
 #'
 clean_catch <- function(data) {
