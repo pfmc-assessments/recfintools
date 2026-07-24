@@ -42,12 +42,14 @@
 #' Oregon does not use MRFSS catch data. Rather, catches come from apex report 
 #' for recent data (CTE001 or CTE501), which extend back to 2001, and from 
 #' historical reconstructions (CTE505), which extend through 2000. When running 
-#' this function, Oregon catch data are removed from the MRFSS dataset. 
+#' this function, Oregon catch data are removed from the MRFSS dataset.
+#' 
 #'
 #' @inheritSection getState State mapping rules
 #' @inheritSection getMode Mode mapping rules
 #' @inheritSection getArea Area filtering rules
 #' @inheritSection getYear Year extraction rules
+#' @inheritSection getWeightHist Oregon Historical weights
 #'
 #' @import dplyr
 #'
@@ -92,11 +94,11 @@ clean_catch <- function(data) {
                       source = c("RECFIN_MODE_NAME", "AGENCY"),
                       verbose = TRUE)
       
-      
       #Set up year column
       data[[i]] <- getYear(data = data[[i]],
                       source = c("YEAR", "RECFIN_YEAR"), #YEAR is for OR and CA, RECFIN_YEAR is for WA
                       verbose = TRUE)
+      
       
       
       ## Actually removing data
@@ -110,6 +112,12 @@ clean_catch <- function(data) {
       
       
       ## Calculating catches
+      
+      #Add calculated weight column
+      data[[i]] <- getWeightHist(catch_data = data[[i]],
+                                 bds_data = sd509_data,
+                                 state = unique(data[[i]]$state),
+                                 figure = TRUE)
       
     }
 

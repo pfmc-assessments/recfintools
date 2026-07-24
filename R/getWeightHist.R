@@ -30,7 +30,8 @@
 #' 
 #' MRFSS samples are missing for some years where catch in numbers exist (e.g. 
 #' 1979, 1990-1992). Weights are applied for these years based on an overall 
-#' average from all years and modes. 
+#' average from all years and modes. Sample sizes for these interpolated years
+#' are NA. 
 #' 
 #' @section Washington Historical weights:
 #' 
@@ -157,7 +158,8 @@ getWeightHist <- function(
           values = c("6" = "#F8766D", "7" = "#00BA38", "9" = "#619CFF", "Interp" = "black"),
           labels = c("6" = "PC", "7" = "PR", "9" = "Not mode specific", "Interp" = "Interpolated")
         ) + 
-        labs(color = "") +
+        labs(color = "",
+             y = "Calculated average weight (kg)") +
         theme(
           legend.position = "inside",
           legend.position.inside = c(0.5, 1.0),
@@ -169,10 +171,8 @@ getWeightHist <- function(
         geom_line(data = interp_values, 
                   aes(x = YEAR, y=interp_wgt, color = "Interp")) +
         geom_point(data = interp_values, 
-                  aes(x = YEAR, y=interp_wgt, color = "Interp"), 
-                  color = "black")
+                  aes(x = YEAR, y=interp_wgt, color = "Interp"))
 
-      
       plot_n <- 
         ggplot(catch_data, aes(x = YEAR, y = calc_wgt_n, 
                              group = RECFIN_MODE_CODE,
@@ -183,7 +183,8 @@ getWeightHist <- function(
                      "7" = "PR", 
                      "9" = "Not mode specific")) +
         scale_x_continuous(limits = c(1979, 2001)) + 
-        labs(fill = "") +
+        labs(fill = "",
+             y = "Sample size to calculate weight") +
         theme(
           legend.position = "inside",
           legend.position.inside = c(0.5, 1.0),
