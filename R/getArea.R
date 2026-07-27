@@ -16,7 +16,6 @@
 #' * `CANADA`
 #' * `MEXICO`
 #' * `PUGET SOUND`
-#' * `NOT KNOWN`
 #'
 #' For Washington historical data (`source = "AREA"` and `AGENCY == "W"`),
 #' records with `AREA >= 5` are removed.
@@ -32,11 +31,11 @@
 #' @param source Column name where area information is located. Depends on the 
 #' type of data (catch or bds) and era (recent, mrfss, or historical). 
 #' For recent catch data, use `RECFIN_WATER_AREA_NAME`, which filters out values
-#' of Canada, Mexico, Puget Sound, and Not Known. 
+#' of Canada, Mexico, and Puget Sound. Areas with `Not Known` are kept. 
 #' For Washington historical catch data, use `AREA`, which filters out values
 #' of 5 and greater (i.e. Puget Sound)
-#' For Oregon historical catch data
-#' For California historical catch data  
+#' For Oregon historical catch data ....
+#' For California historical catch data .... 
 #' 
 
 getArea <- function(
@@ -56,8 +55,7 @@ getArea <- function(
   
     nonfed <- c("CANADA",
                 "MEXICO",
-                "PUGET SOUND",
-                "NOT KNOWN")
+                "PUGET SOUND")
     
     removed <- data |>
       dplyr::filter(tolower(.data[[source]]) %in% tolower(nonfed))
@@ -77,7 +75,7 @@ getArea <- function(
         "i" = "These include {ncan} records from Canada",
         "i" = "These include {nmex} records from Mexico",
         "i" = "These include {nsound} records from Puget Sound",
-        "i" = "These include {nunk} records designated as Not Known"
+        "i" = "There are {nunk} records designated as Not Known that were kept."
       ))
     }
     
@@ -85,14 +83,14 @@ getArea <- function(
     
   }
   
-  if(source == "AREA" & all(data$AGENCY == "W") & 
+  if(source == "AREA" & 
      all(data$AGENCY == "W") & #Washington historical catch data
      length(data$AGENCY > 0)){ #Ensure AGENCY exists (if not 'all' returns TRUE)
 
     removed <- data |>
       dplyr::filter(.data[[source]] >= 5)
     data <- data |> 
-      dplyr::filter(.data[[source]] %in% c(1:4))
+      dplyr::filter(!.data[[source]] >= 5)
     
     noarea <- nrow(removed)
     nsound <- noarea
@@ -107,7 +105,7 @@ getArea <- function(
         "i" = "These include {ncan} records from Canada",
         "i" = "These include {nmex} records from Mexico",
         "i" = "These include {nsound} records from Puget Sound",
-        "i" = "These include {nna} records without {source}"
+        "i" = "There are {nna} records without {source} that were kept."
       ))
     }
     
