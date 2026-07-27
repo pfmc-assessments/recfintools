@@ -73,7 +73,6 @@ clean_catch <- function(data) {
     
     #Repeat for each state
     for(i in 1:length(data)){
-      #colnames(data[[i]]) <- gsub("RECFIN_", "", colnames(data[[i]])) #Probably don't keep this in
       
       ##
       #For just catches
@@ -112,7 +111,7 @@ clean_catch <- function(data) {
                       verbose = TRUE)
       
       
-      ## Calculating catches
+      ## Adding columns
       
       #Add calculated weight column
       data[[i]] <- getWeightHist(catch_data = data[[i]],

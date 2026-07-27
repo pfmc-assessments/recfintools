@@ -9,9 +9,9 @@
 #'
 #' Values in `source` are evaluated using case-insensitive matching. Values are 
 #' standardized into `mode` as:
-#' * `PR`: anything with `Private`
-#' * `PC`: anything with `Party` or `Charter`
-#' * `Other`: `Man-Made/Jetty`, `Man-Made`, `Beach/Bank`, `Shore`
+#' * `PR`: anything with `Private` (associated with number 7)
+#' * `PC`: anything with `Party` or `Charter` (associated with number 6)
+#' * `Other`: `Man-Made/Jetty`, `Man-Made`, `Beach/Bank`, `Shore` (all other numbers)
 #' * `UNK`: all unmatched values 
 #'
 #' If `verbose = TRUE`, the function reports how many records were assigned
