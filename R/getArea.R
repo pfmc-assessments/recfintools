@@ -30,12 +30,15 @@
 #' 
 #' @param source Column name where area information is located. Depends on the 
 #' type of data (catch or bds) and era (recent, mrfss, or historical). 
+#' Coded to accept a vector of names where the same type or era of data has 
+#' multiple different names. When multiple names within the vector are in the 
+#' dataset, picks the first.
 #' For recent catch data, use `RECFIN_WATER_AREA_NAME`, which filters out values
 #' of Canada, Mexico, and Puget Sound. Areas with `Not Known` are kept. 
-#' For Washington historical catch data, use `AREA`, which filters out values
+#' For Washington historical catch data, uses `AREA`, which filters out values
 #' of 5 and greater (i.e. Puget Sound)
-#' For Oregon historical catch data ....
-#' For California historical catch data .... 
+#' For all other data sets, use any valid column, since for these areas no 
+#' specific records outside federal waters are identifiable. 
 #' 
 
 getArea <- function(
@@ -44,10 +47,12 @@ getArea <- function(
     verbose = TRUE
 ) {
   
-  if (!source %in% colnames(data)) { #
+  if (!any(source %in% colnames(data))) { #
     cli::cli_inform("The column {source} was not found in the data.
                     Records outside federal waters have not been removed")
   }
+  
+  source <- source[which(source %in% colnames(data))[1]]
   
   flag <- FALSE
   

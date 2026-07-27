@@ -1,13 +1,15 @@
 #' Clean RecFIN data
 #'
 #' Clean RecFIN data to provide data in a similar format with consistent
-#' column names and values. For example, states are standardized to be
-#' state abbreviations rather than single letters or full names and are
-#' available in the column called `state`.
+#' column names and values, and data prepared and ready for analysis. 
+#' For example, states are standardized to be state abbreviations rather than 
+#' single letters or full names and are available in the column called `state`,
+#' or Canada, Mexico, and Puget Sound records are removed
 #' 
 #' @param data A loaded Rdata object from pull_catch_recfin_ or
 #' pull_bds_recfin_.  
-#' @param verbose Whether to output detailed information about the cleaning process. Default is TRUE.
+#' @param verbose Whether to output detailed information about the cleaning 
+#' process. Default is TRUE.
 #'
 #' @section Missing years:
 #' MRFSS data is incomplete and will not contain information for the years
@@ -44,6 +46,8 @@
 #' historical reconstructions (CTE505), which extend through 2000. When running 
 #' this function, Oregon catch data are removed from the MRFSS dataset.
 #' 
+#' @section California data:
+#' 
 #'
 #' @inheritSection getState State mapping rules
 #' @inheritSection getMode Mode mapping rules
@@ -75,10 +79,6 @@ clean_catch <- function(data) {
       #For just catches
       ##
       
-      ##
-      #For catches and biological data
-      ##
-      
       ## Standardize fields
       
       #Rename state
@@ -99,15 +99,16 @@ clean_catch <- function(data) {
                       source = c("YEAR", "RECFIN_YEAR"), #YEAR is for OR and CA, RECFIN_YEAR is for WA
                       verbose = TRUE)
       
-      
-      
+
       ## Actually removing data
       
       #to do: Add function to clean up confusing columns
       
-      #Remove records in non-federal areas
+      #Remove records in non-federal areas. Only applicable for Washington
+      #Note that for Oregon or California, there are no records outside federal waters.
+      #Still call this (because need for WA) but this does nothing for OR or CA
       data[[i]] <- getArea(data = data[[i]], 
-                      source = c("AREA"),
+                      source = c("AREA", "RECFIN_DISTRICT_NAME", "SURVEY_PROGRAM_AREA_NAME"), #AREA for WA, Recfin_district_name for OR, SURVEY_PROGRAM_AREA_NAME for CA
                       verbose = TRUE)
       
       
@@ -131,10 +132,6 @@ clean_catch <- function(data) {
     #For just catches
     ##
     
-    ##
-    #For catches and biological data
-    ##
-    
     ## Standardize fields
     
     #Rename state
@@ -154,10 +151,11 @@ clean_catch <- function(data) {
     
     
     ## Actually removing data
-    
+
     #Filter out Oregon and Washington records because they don't use MRFSS data
     data <- data |>
       dplyr::filter(!state %in% c("OR","WA"))
+    
     
     #Filter out non-federal records
     data <- getArea(data = data,
@@ -182,10 +180,6 @@ clean_catch <- function(data) {
     data <- check_catch(data = data,
                         source = c("RETAINED", "RELEASED_ALIVE", "RELEASED_DEAD"),
                         verbose = TRUE)
-    
-    ##
-    #For catches and biological data
-    ##
     
     ## Standardize fields
     
