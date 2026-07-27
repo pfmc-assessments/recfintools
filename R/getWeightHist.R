@@ -58,13 +58,16 @@
 #' @param state The state for which average weights are calculated. Can be
 #' "WA" or "OR" for Washington or Oregon historical data, respectively. Currently,
 #' only "OR" is available.
+#' @param verbose  Whether to output detailed information about material added 
+#' by this function. Default is TRUE.
 #' 
 
 getWeightHist <- function(
     catch_data,
     bds_data,
     figure = TRUE,
-    state = NULL
+    state = NULL,
+    verbose = TRUE
 ) {
   
   if(state == "OR"){
@@ -104,7 +107,8 @@ getWeightHist <- function(
                     wgt_flag == "measured",
                     WGT > 0) |>
       dplyr::summarise(calc_wgt_kg = mean(WGT), 
-                       calc_wgt_n = dplyr::n()) |>
+                       calc_wgt_n = dplyr::n(),
+                       .groups = "drop") |>
       as.data.frame()
     
     avg_wgt_year <- or_bds |>
@@ -177,7 +181,7 @@ getWeightHist <- function(
         ggplot(catch_data, aes(x = YEAR, y = calc_wgt_n, 
                              group = RECFIN_MODE_CODE,
                              fill = factor(RECFIN_MODE_CODE))) +
-        stat_summary(fun = "mean", geom = "bar") + 
+        stat_summary(fun = "mean", geom = "bar", na.rm = TRUE) + 
         scale_fill_discrete(
           labels = c("6" = "PC", 
                      "7" = "PR", 
@@ -195,6 +199,25 @@ getWeightHist <- function(
       combined_plot <- plot_wgt / plot_n
       
       print(combined_plot)
+    }
+    
+    if (verbose) {
+      cli::cli_bullets(c(
+        " " = "{.fn getWeightHist} summary information -",
+        "i" = "Average weight from MRFSS type 3 data added to Oregon historical 
+        as 'calc_wgt_kg' column"
+      ))
+    }
+  }
+  
+  if(state %in% c("WA", "CA")){
+  
+    if (verbose) {
+      cli::cli_bullets(c(
+        " " = "{.fn getWeightHist} summary information -",
+        "i" = "Average weight calculations not needed at this time for 
+        Washington or California historical catches"
+      ))
     }
   }
   
