@@ -49,7 +49,7 @@ getYear <- function(
   if (verbose) {
     cli::cli_bullets(c(
       " " = "{.fn getState} summary information -",
-      "i" = "There are {noyear} records for which the year in NA"
+      "i" = "There are {noyear} records for which the year is NA"
     ))
   }
   
