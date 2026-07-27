@@ -32,7 +32,7 @@ sql_catch <- function(species_name, type, apex = FALSE) {
       "
       SELECT *
       FROM RECFIN_MARTS.COMPREHENSIVE_REC_CATCH_EST
-      WHERE SPECIES_NAME = {toupper(species)}
+      WHERE SPECIES_NAME = ANY ({toupper(species)})
       "
     )
     
@@ -61,7 +61,7 @@ sql_catch <- function(species_name, type, apex = FALSE) {
           sum(total_mortality_kg) * 0.001 as sum_total_mortality_mt
         FROM
           RECFIN_MARTS.COMPREHENSIVE_REC_CATCH_EST
-        WHERE SPECIES_NAME = {toupper(species)}
+        WHERE SPECIES_NAME = ANY ({toupper(species)})
           AND (agency != 'W' OR SURVEY_PROGRAM_CATCH_AREA_CODE NOT IN ('5','84'))
         GROUP BY
           recfin_year,
@@ -123,7 +123,7 @@ sql_catch <- function(species_name, type, apex = FALSE) {
           c.total_mortality_kg * 0.001 as total_mortality_mt
         FROM 
           RECFIN_MARTS.COMPREHENSIVE_REC_CATCH_EST c
-        WHERE SPECIES_NAME = {toupper(species)}
+        WHERE SPECIES_NAME = ANY ({toupper(species)})
         "
       )
     }
@@ -138,7 +138,7 @@ sql_catch <- function(species_name, type, apex = FALSE) {
       "
       SELECT *
       FROM RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_ESTIMATES
-      WHERE COMMON = {toupper(species)}
+      WHERE COMMON = ANY ({toupper(species)})
         AND ((ST = 6 AND YEAR <= 2004) OR (ST != 6 AND YEAR < 2004))
       "
       )
@@ -169,14 +169,14 @@ sql_catch <- function(species_name, type, apex = FALSE) {
         retained_num,
         recfin_vdate
       FROM RECFIN_MARTS.COMPREHENSIVE_WDFW_HISTORIC_REC_CATCH_EST
-      WHERE SPECIES_NAME = {species}
+      WHERE SPECIES_NAME = ANY ({species})
       "
     )
     sqlcall_O <- glue::glue(
       "
       SELECT *
       FROM RECFIN_MARTS.COMPREHENSIVE_ODFW_HISTORIC_REC_CATCH_EST
-      WHERE SPECIES_NAME = {stringr::str_to_title(species)}
+      WHERE SPECIES_NAME = ANY ({stringr::str_to_title(species)})
       "
     )
     sqlcall_C <- glue::glue(
@@ -210,7 +210,7 @@ sql_catch <- function(species_name, type, apex = FALSE) {
         RETAINED_MT,
         RECFIN_VDATE
       FROM RECFIN_MARTS.COMPREHENSIVE_NOAA_CA_CATCH_RECON_REC
-      WHERE SPECIES_NAME = {stringr::str_to_title(species)}
+      WHERE SPECIES_NAME = ANY ({stringr::str_to_title(species)})
       "
     )
     sqlcall_W <- gsub("\\n", " ", sqlcall_W)
@@ -320,7 +320,7 @@ sql_bds <- function(species_name, type, apex) {
         LEFT JOIN recfin_foundation.agency_fished_area afa
           ON cbd.agency_code = afa.agency_code
           AND cbd.agency_fished_area_code = afa.agency_fished_area_code
-        WHERE SPECIES_NAME = {toupper(species)}
+        WHERE SPECIES_NAME = ANY ({toupper(species)})
           AND (agency_length is not null 
           OR agency_weight is not null)
         "
@@ -386,7 +386,7 @@ sql_bds <- function(species_name, type, apex) {
         LEFT JOIN recfin_foundation.agency_fished_area afa
           ON cbd.agency_code = afa.agency_code
           AND cbd.agency_fished_area_code = afa.agency_fished_area_code
-        WHERE SPECIES_NAME = {toupper(species)}
+        WHERE SPECIES_NAME = ANY ({toupper(species)})
           AND (agency_length is not null 
           OR agency_weight is not null)
         "
@@ -499,7 +499,7 @@ sql_bds <- function(species_name, type, apex) {
           RETURN_TIME
         FROM 
           base t
-        WHERE RECFIN_SPECIES_NAME = {toupper(species)}
+        WHERE RECFIN_SPECIES_NAME = ANY ({toupper(species)})
         "
       )
     }
@@ -615,7 +615,7 @@ sql_bds <- function(species_name, type, apex) {
           RECFIN_FOUNDATION.RECFIN_SPECIES rs 
           ON crl.SP_CODE = TO_CHAR(rs.RECFIN_SPECIES_CODE)
         WHERE
-          rs.SPECIES_NAME = {stringr::str_to_title(species)} /* Renamed as SP_NAME above but need to use original name here */
+          rs.SPECIES_NAME = ANY ({stringr::str_to_title(species)}) /* Renamed as SP_NAME above but need to use original name here */
         "
       )
     }
@@ -760,7 +760,7 @@ sql_bds <- function(species_name, type, apex) {
           RECFIN_FOUNDATION.RECFIN_SPECIES rs 
           ON crl.SP_CODE = TO_CHAR(rs.RECFIN_SPECIES_CODE)
         WHERE
-          rs.SPECIES_NAME = {stringr::str_to_title(species)} /* Renamed as SP_NAME above but need to use original name here */
+          rs.SPECIES_NAME = ANY ({stringr::str_to_title(species)}) /* Renamed as SP_NAME above but need to use original name here */
         "
       )
     }
