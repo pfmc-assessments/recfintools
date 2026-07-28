@@ -18,21 +18,6 @@ pull_bds_recfin_recent(
 name desired. Must be a valid name though case is automatically corrected.
 For list of species codes see sql_species.}
 
-\item{username}{Most often, this is a string containing your username for the
-database of interest. You can use \code{\link[pacfintools:getUserName]{getUserName()}} if you prefer to not
-enter this argument and assume the default search and/or rules for finding
-your username will work. This is the default behavior if you leave
-\code{username} as a missing argument, i.e., \code{username <- getUserName(database = database)}. Sometimes this search will fail because of legacy rules, which
-are unknown to the development team, that were used to create your
-username. Please email the maintainer of this package if you need more
-functionality here.}
-
-\item{password}{Most often, this is a string containing your password for
-the database of interest. You can use the function \code{\link[pacfintools:ask_password]{ask_password()}} if you
-would prefer to be prompted for your password. Please do not share this
-password with anyone or push code to a repository that has your password
-saved in it.}
-
 \item{savedir}{A file path to the directory where the results will be saved.
 The default is the current working directory. If don't want to save use NULL.}
 

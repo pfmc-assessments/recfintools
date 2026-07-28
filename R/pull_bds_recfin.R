@@ -32,27 +32,27 @@
 #' }
 #'
 pull_bds_recfin_recent <- function(
-    recfin_species_name,
-    username = pacfintools::getUserName("PacFIN"),
-    password = pacfintools:::ask_password(),
-    savedir = getwd(),
-    verbose = TRUE,
-    apex = FALSE
+  recfin_species_name,
+  username = pacfintools::getUserName("PacFIN"),
+  password = pacfintools:::ask_password(),
+  savedir = getwd(),
+  verbose = TRUE,
+  apex = FALSE
 ) {
   # Input checks
   stopifnot(
     "`verbose` must be a logical." = is.logical(verbose) &&
       length(verbose) == 1
   )
-  
+
   file_species_name <- paste(sub(" .*", "", recfin_species_name), collapse = "--")
-    
+
   bio_recfin <- pacfintools::getDB(
     sql = sql_bds(recfin_species_name, type = "recent", apex = apex),
     username = username,
     password = password
   )
-  
+
   # # message calls
   # if (verbose) {
   #   n_species <- dplyr::count(catch.pacfin, PACFIN_SPECIES_CODE)
@@ -66,7 +66,7 @@ pull_bds_recfin_recent <- function(
   #     "The following PACFIN_SPECIES_CODE(s) were found: {message}"
   #   )
   # }
-  
+
   # Save pulled data if provided
   if (!is.null(savedir)) {
     savefn <- file.path(
@@ -74,7 +74,7 @@ pull_bds_recfin_recent <- function(
       paste(
         "RecFIN",
         file_species_name,
-        "BDS", paste0("Recent", if(apex != FALSE) paste0("_", apex)),
+        "BDS", paste0("Recent", if (apex != FALSE) paste0("_", apex)),
         format(Sys.Date(), "%d.%b.%Y"),
         "RData",
         sep = "."
@@ -82,7 +82,7 @@ pull_bds_recfin_recent <- function(
     )
     save(bio_recfin, file = savefn)
   }
-  
+
   return(invisible(bio_recfin))
 }
 #'
@@ -90,27 +90,27 @@ pull_bds_recfin_recent <- function(
 #' @inheritParams pull_bds_recfin_recent
 #'
 pull_bds_recfin_mrfss <- function(
-    recfin_species_name,
-    username = pacfintools::getUserName("PacFIN"),
-    password = pacfintools:::ask_password(),
-    savedir = getwd(),
-    verbose = TRUE,
-    apex = FALSE
+  recfin_species_name,
+  username = pacfintools::getUserName("PacFIN"),
+  password = pacfintools:::ask_password(),
+  savedir = getwd(),
+  verbose = TRUE,
+  apex = FALSE
 ) {
   # Input checks
   stopifnot(
     "`verbose` must be a logical." = is.logical(verbose) &&
       length(verbose) == 1
   )
-  
+
   file_species_name <- paste(sub(" .*", "", recfin_species_name), collapse = "--")
-  
+
   bio_recfin <- pacfintools::getDB(
     sql = sql_bds(recfin_species_name, type = "mrfss", apex = apex),
     username = username,
     password = password
   )
-  
+
   # # message calls
   # if (verbose) {
   #   n_species <- dplyr::count(catch.pacfin, PACFIN_SPECIES_CODE)
@@ -124,7 +124,7 @@ pull_bds_recfin_mrfss <- function(
   #     "The following PACFIN_SPECIES_CODE(s) were found: {message}"
   #   )
   # }
-  
+
   # Save pulled data if provided
   if (!is.null(savedir)) {
     savefn <- file.path(
@@ -132,7 +132,7 @@ pull_bds_recfin_mrfss <- function(
       paste(
         "RecFIN",
         file_species_name,
-        "BDS", paste0("MRFSS", if(apex != FALSE) paste0("_", apex)),
+        "BDS", paste0("MRFSS", if (apex != FALSE) paste0("_", apex)),
         format(Sys.Date(), "%d.%b.%Y"),
         "RData",
         sep = "."
@@ -140,6 +140,6 @@ pull_bds_recfin_mrfss <- function(
     )
     save(bio_recfin, file = savefn)
   }
-  
+
   return(invisible(bio_recfin))
 }

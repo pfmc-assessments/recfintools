@@ -17,7 +17,8 @@ Coded to accept a vector of names where the same type or era of data has
 multiple different names. When multiple names within the vector are in the
 dataset, picks the first.}
 
-\item{verbose}{Whether to output detailed information about the cleaning process. Default is TRUE.}
+\item{verbose}{Whether to output detailed information about the cleaning
+process. Default is TRUE.}
 }
 \description{
 Create a mode column based on input column specified in \code{source}
@@ -30,11 +31,12 @@ This function is used for both catch and composition data
 \code{source} can be a vector of candidate column names. The first matching
 column in \code{data} is used.
 
-Values are standardized into \code{mode} as:
+Values in \code{source} are evaluated using case-insensitive matching. Values are
+standardized into \code{mode} as:
 \itemize{
-\item \code{PR}: \verb{Private/Rental Boats}
-\item \code{PC}: \verb{Party/Charter Boats}
-\item \code{Other}: \code{Man-Made/Jetty}
+\item \code{PR}: anything with \code{Private} (associated with code 7)
+\item \code{PC}: anything with \code{Party} or \code{Charter} (associated with code 6)
+\item \code{Other}: \code{Man-Made/Jetty}, \code{Man-Made}, \code{Beach/Bank}, \code{Shore} (all other codes)
 \item \code{UNK}: all unmatched values
 }
 

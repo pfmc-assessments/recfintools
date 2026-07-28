@@ -13,14 +13,18 @@ pull_bds_recfin_.}
 
 \item{source}{Column name where area information is located. Depends on the
 type of data (catch or bds) and era (recent, mrfss, or historical).
+Coded to accept a vector of names where the same type or era of data has
+multiple different names. When multiple names within the vector are in the
+dataset, picks the first.
 For recent catch data, use \code{RECFIN_WATER_AREA_NAME}, which filters out values
-of Canada, Mexico, Puget Sound, and Not Known.
-For Washington historical catch data, use \code{AREA}, which filters out values
+of Canada, Mexico, and Puget Sound. Areas with \verb{Not Known} are kept.
+For Washington historical catch data, uses \code{AREA}, which filters out values
 of 5 and greater (i.e. Puget Sound)
-For Oregon historical catch data
-For California historical catch data}
+For all other data sets, use any valid column, since for these areas no
+specific records outside federal waters are identifiable.}
 
-\item{verbose}{Whether to output detailed information about the cleaning process. Default is TRUE.}
+\item{verbose}{Whether to output detailed information about the cleaning
+process. Default is TRUE.}
 }
 \description{
 Filter out records from Puget Sound, Canada, Mexico, or unknown areas based
@@ -42,7 +46,6 @@ removed when area is:
 \item \code{CANADA}
 \item \code{MEXICO}
 \item \verb{PUGET SOUND}
-\item \verb{NOT KNOWN}
 }
 
 For Washington historical data (\code{source = "AREA"} and \code{AGENCY == "W"}),

@@ -22,7 +22,8 @@ RELEASED_DEAD_). The functions searches for the columns that contain these words
 
 #Not really useing source as fully user defined. Consider removing}
 
-\item{verbose}{Whether to output detailed information about the cleaning process. Default is TRUE.}
+\item{verbose}{Whether to output detailed information about the cleaning
+process. Default is TRUE.}
 }
 \description{
 Alert user of whether catches records for weight are missing but catches in
