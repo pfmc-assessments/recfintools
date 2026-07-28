@@ -25,6 +25,10 @@
 
   Create a state column based on input column specified in `source`
 
+- [`getWeightHist()`](https://pfmc-assessments.github.io/recfintools/reference/getWeightHist.md)
+  : Calculate and add weight data to historical catches so that catch in
+  weight can be produced.
+
 - [`getYear()`](https://pfmc-assessments.github.io/recfintools/reference/getYear.md)
   :
 

@@ -72,25 +72,6 @@ name desired. Must be a valid name though case is automatically corrected.
 For list of species codes see sql_species.</p></dd>
 
 
-<dt id="arg-username">username<a class="anchor" aria-label="anchor" href="#arg-username"></a></dt>
-<dd><p>Most often, this is a string containing your username for the
-database of interest. You can use <code>getUserName()</code> if you prefer to not
-enter this argument and assume the default search and/or rules for finding
-your username will work. This is the default behavior if you leave
-<code>username</code> as a missing argument, i.e., <code>username &lt;- getUserName(database = database)</code>. Sometimes this search will fail because of legacy rules, which
-are unknown to the development team, that were used to create your
-username. Please email the maintainer of this package if you need more
-functionality here.</p></dd>
-
-
-<dt id="arg-password">password<a class="anchor" aria-label="anchor" href="#arg-password"></a></dt>
-<dd><p>Most often, this is a string containing your password for
-the database of interest. You can use the function <code>ask_password()</code> if you
-would prefer to be prompted for your password. Please do not share this
-password with anyone or push code to a repository that has your password
-saved in it.</p></dd>
-
-
 <dt id="arg-savedir">savedir<a class="anchor" aria-label="anchor" href="#arg-savedir"></a></dt>
 <dd><p>A file path to the directory where the results will be saved.
 The default is the current working directory. If don't want to save use NULL.</p></dd>

@@ -59,7 +59,8 @@ dataset, picks the first.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
-<dd><p>Whether to output detailed information about the cleaning process. Default is TRUE.</p></dd>
+<dd><p>Whether to output detailed information about the cleaning
+process. Default is TRUE.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -72,9 +73,10 @@ dataset, picks the first.</p></dd>
 
 <p><code>source</code> can be a vector of candidate column names. The first matching
 column in <code>data</code> is used.</p>
-<p>Values are standardized into <code>mode</code> as:</p><ul><li><p><code>PR</code>: <code>Private/Rental Boats</code></p></li>
-<li><p><code>PC</code>: <code>Party/Charter Boats</code></p></li>
-<li><p><code>Other</code>: <code>Man-Made/Jetty</code></p></li>
+<p>Values in <code>source</code> are evaluated using case-insensitive matching. Values are
+standardized into <code>mode</code> as:</p><ul><li><p><code>PR</code>: anything with <code>Private</code> (associated with code 7)</p></li>
+<li><p><code>PC</code>: anything with <code>Party</code> or <code>Charter</code> (associated with code 6)</p></li>
+<li><p><code>Other</code>: <code>Man-Made/Jetty</code>, <code>Man-Made</code>, <code>Beach/Bank</code>, <code>Shore</code> (all other codes)</p></li>
 <li><p><code>UNK</code>: all unmatched values</p></li>
 </ul><p>If <code>verbose = TRUE</code>, the function reports how many records were assigned
 <code>UNK</code>.</p>

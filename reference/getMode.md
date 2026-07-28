@@ -37,13 +37,15 @@ This function is used for both catch and composition data
 `source` can be a vector of candidate column names. The first matching
 column in `data` is used.
 
-Values are standardized into `mode` as:
+Values in `source` are evaluated using case-insensitive matching. Values
+are standardized into `mode` as:
 
-- `PR`: `Private/Rental Boats`
+- `PR`: anything with `Private` (associated with code 7)
 
-- `PC`: `Party/Charter Boats`
+- `PC`: anything with `Party` or `Charter` (associated with code 6)
 
-- `Other`: `Man-Made/Jetty`
+- `Other`: `Man-Made/Jetty`, `Man-Made`, `Beach/Bank`, `Shore` (all
+  other codes)
 
 - `UNK`: all unmatched values
 
