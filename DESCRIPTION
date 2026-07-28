@@ -17,6 +17,7 @@ Description: Recreational Fisheries Information Network
     fishing.  This R package, RecFIN, is meant to work with the sampled
     data.
 License: GPL (>= 3)
+URL: https://pfmc-assessments.github.io/recfintools/
 Depends:
     dplyr (>= 1.0.0),
     R (>= 3.5)
@@ -26,4 +27,3 @@ Config/roxygen2/version: 8.0.0
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-URL: https://pfmc-assessments.github.io/recfintools/

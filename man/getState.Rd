@@ -17,7 +17,8 @@ Coded to accept a vector of names where the same type or era of data has
 multiple different names. When multiple names within the vector are in the
 dataset, picks the first.}
 
-\item{verbose}{Whether to output detailed information about the cleaning process. Default is TRUE.}
+\item{verbose}{Whether to output detailed information about the cleaning
+process. Default is TRUE.}
 }
 \description{
 Create a state column based on input column specified in \code{source}

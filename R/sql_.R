@@ -9,13 +9,13 @@
 #' desired. Must be a valid name though case is automatically corrected.
 #' For list of species codes see sql_species.
 #' @param type A vector specifying the type of the data. Available options
-#' include "recent" for estimates from recent state sponsored surveys; "mrfss" 
+#' include "recent" for estimates from recent state sponsored surveys; "mrfss"
 #' for estimates from the MRFSS survey; or "hist" for estimates from the
-#' historical reconstructions by state. There is no default so the user must 
+#' historical reconstructions by state. There is no default so the user must
 #' specify a valid option.
-#' @param apex The specific recfin apex report that you want to reproduce. 
+#' @param apex The specific recfin apex report that you want to reproduce.
 #' This only works when type equals "recent". Available options include
-#' "CTE001" and "CTE501". Defaults to FALSE, which gives the full raw sql data.    
+#' "CTE001" and "CTE501". Defaults to FALSE, which gives the full raw sql data.
 #'
 #' @return A character string formatted as an sql call. For type = "hist", the
 #' character string is returned as a list
@@ -25,9 +25,9 @@
 sql_catch <- function(species_name, type, apex = FALSE) {
   species <- paste(sQuote(species_name, q = FALSE), collapse = ", ")
   stopifnot(length(species) == 1)
-  
-  #Recent years surveys corresponding to CRFS, ORBS, or OSP samples
-  if(type == "recent"){
+
+  # Recent years surveys corresponding to CRFS, ORBS, or OSP samples
+  if (type == "recent") {
     sqlcall <- glue::glue(
       "
       SELECT *
@@ -35,11 +35,11 @@ sql_catch <- function(species_name, type, apex = FALSE) {
       WHERE SPECIES_NAME = ANY ({toupper(species)})
       "
     )
-    
-    if(apex == "CTE001"){
-      #Based on CTE001
+
+    if (apex == "CTE001") {
+      # Based on CTE001
       sqlcall <- glue::glue(
-          "
+        "
         SELECT
           recfin_year,
           recfin_month,
@@ -85,12 +85,12 @@ sql_catch <- function(species_name, type, apex = FALSE) {
         "
       )
     }
-    
-    if(apex == "CTE501"){
-      #Based on CTE501
+
+    if (apex == "CTE501") {
+      # Based on CTE501
       sqlcall <- glue::glue(
         "
-        SELECT 
+        SELECT
           c.state_name,
           c.recfin_year,
           c.recfin_month,
@@ -121,7 +121,7 @@ sql_catch <- function(species_name, type, apex = FALSE) {
           c.released_alive_kg * 0.001 as released_alive_mt,
           c.retained_kg * 0.001 as retained_mt,
           c.total_mortality_kg * 0.001 as total_mortality_mt
-        FROM 
+        FROM
           RECFIN_MARTS.COMPREHENSIVE_REC_CATCH_EST c
         WHERE SPECIES_NAME = ANY ({toupper(species)})
         "
@@ -129,11 +129,11 @@ sql_catch <- function(species_name, type, apex = FALSE) {
     }
     sqlcall <- gsub("\\n", " ", sqlcall)
   }
-  
-  #Catches from years during MRFSS sampling
-  #As there is no official apex report for this, build own. 
-  #Cut off data to 2004 and before for CA, 2003 and before for OR and WA
-  if(type == "mrfss"){
+
+  # Catches from years during MRFSS sampling
+  # As there is no official apex report for this, build own.
+  # Cut off data to 2004 and before for CA, 2003 and before for OR and WA
+  if (type == "mrfss") {
     sqlcall <- glue::glue(
       "
       SELECT *
@@ -141,15 +141,15 @@ sql_catch <- function(species_name, type, apex = FALSE) {
       WHERE COMMON = ANY ({toupper(species)})
         AND ((ST = 6 AND YEAR <= 2004) OR (ST != 6 AND YEAR < 2004))
       "
-      )
+    )
     sqlcall <- gsub("\\n", " ", sqlcall)
   }
-  
-  #Catches from historical reconstructions of each state
-  #A few fields (RECFIN_LOG_ID for WA and CA, and SURVEY_PROGRAM_ID for CA)
-  #are not selected in apex report, so write out each rather for those states
-  #but for Oregon select all
-  if(type == "hist"){
+
+  # Catches from historical reconstructions of each state
+  # A few fields (RECFIN_LOG_ID for WA and CA, and SURVEY_PROGRAM_ID for CA)
+  # are not selected in apex report, so write out each rather for those states
+  # but for Oregon select all
+  if (type == "hist") {
     sqlcall_W <- glue::glue(
       "
       SELECT
@@ -216,17 +216,16 @@ sql_catch <- function(species_name, type, apex = FALSE) {
     sqlcall_W <- gsub("\\n", " ", sqlcall_W)
     sqlcall_O <- gsub("\\n", " ", sqlcall_O)
     sqlcall_C <- gsub("\\n", " ", sqlcall_C)
-    
+
     sqlcall <- list(
       "WA" = sqlcall_W,
       "OR" = sqlcall_O,
       "CA" = sqlcall_C
     )
   }
-  
+
   return(sqlcall)
 }
-
 
 
 #'
@@ -248,26 +247,25 @@ sql_species <- function() {
 #'
 #' @rdname sql
 #' @details `sql_bds`
-#' 
+#'
 #' @param type A vector specifying the type of the data. Available options
-#' include "recent" for estimates from recent state sponsored surveys; and 
-#' "mrfss" for estimates from the MRFSS survey. There is no default so the user 
+#' include "recent" for estimates from recent state sponsored surveys; and
+#' "mrfss" for estimates from the MRFSS survey. There is no default so the user
 #' must specify a valid option.
-#' @param apex The specific recfin apex report that you want to reproduce. 
-#' Available options include "SD001" and "SD501" (which are for lengths) and 
-#' "SD506" (which is for ages) when type equals "recent", and "SD508" and "SD509" 
-#' when type equals "mrfss". There is no default so the user must specify a 
-#' valid option. Currently, there is no option to keep just the raw sql data.    
-#' 
+#' @param apex The specific recfin apex report that you want to reproduce.
+#' Available options include "SD001" and "SD501" (which are for lengths) and
+#' "SD506" (which is for ages) when type equals "recent", and "SD508" and "SD509"
+#' when type equals "mrfss". There is no default so the user must specify a
+#' valid option. Currently, there is no option to keep just the raw sql data.
+#'
 sql_bds <- function(species_name, type, apex) {
   species <- paste(sQuote(species_name, q = FALSE), collapse = ", ")
   stopifnot(length(species) == 1)
-  
-  #Recent years surveys corresponding to CRFS, ORBS, or OSP samples
-  if(type == "recent"){
-    
-    if(apex == "SD001"){
-      #Based on SD001
+
+  # Recent years surveys corresponding to CRFS, ORBS, or OSP samples
+  if (type == "recent") {
+    if (apex == "SD001") {
+      # Based on SD001
       sqlcall <- glue::glue(
         "
         SELECT
@@ -282,7 +280,7 @@ sql_bds <- function(species_name, type, apex) {
             WHEN cbd.recfin_trip_type_code is null then 'NOT KNOWN'
             ELSE cbd.recfin_trip_type_name
           END as recfin_trip_type_name,
-          cbd.agency_water_area_name, 
+          cbd.agency_water_area_name,
           cbd.agency_fished_area_name ,
           CASE
               WHEN cbd.recfin_mode_code is null then 'NOT KNOWN'
@@ -307,7 +305,7 @@ sql_bds <- function(species_name, type, apex) {
           CASE
               WHEN cbd.is_retained = 'T' THEN 'RETAINED'
               WHEN cbd.is_retained = 'F' THEN 'RELEASED'
-              ELSE 'UNKNOWN' 
+              ELSE 'UNKNOWN'
           END is_retained,
           CASE
               WHEN cbd.caught_by_observed_angler = 'T' THEN 'YES'
@@ -321,14 +319,14 @@ sql_bds <- function(species_name, type, apex) {
           ON cbd.agency_code = afa.agency_code
           AND cbd.agency_fished_area_code = afa.agency_fished_area_code
         WHERE SPECIES_NAME = ANY ({toupper(species)})
-          AND (agency_length is not null 
+          AND (agency_length is not null
           OR agency_weight is not null)
         "
       )
     }
-    
-    if(apex == "SD501"){
-      #Based on SD501
+
+    if (apex == "SD501") {
+      # Based on SD501
       sqlcall <- glue::glue(
         "
         SELECT
@@ -346,14 +344,14 @@ sql_bds <- function(species_name, type, apex) {
             WHEN cbd.recfin_trip_type_code is null then 'NOT KNOWN'
             ELSE cbd.recfin_trip_type_name
           END as recfin_trip_type_name,
-          cbd.agency_water_area_name, 
+          cbd.agency_water_area_name,
           cbd.agency_fished_area_name ,
           CASE
             WHEN cbd.recfin_mode_code is null then 'NOT KNOWN'
             ELSE cbd.recfin_mode_name
           END as recfin_mode_name,
           cbd.fishery_management_plan ,
-          cbd.stock_complex_name, 
+          cbd.stock_complex_name,
           cbd.species_group_name,
           cbd.species_name,
           cbd.scientific_name,
@@ -369,7 +367,7 @@ sql_bds <- function(species_name, type, apex) {
           CASE
             WHEN cbd.is_retained = 'T' THEN 'RETAINED'
             WHEN cbd.is_retained = 'F' THEN 'RELEASED'
-            ELSE 'UNKNOWN' 
+            ELSE 'UNKNOWN'
           END is_retained,
           CASE
             WHEN cbd.caught_by_observed_angler = 'T' THEN 'YES'
@@ -378,7 +376,7 @@ sql_bds <- function(species_name, type, apex) {
           END caught_by_observed_angler,
           cbd.source_code,
           cbd.recfin_sex_code,
-          cbd.recfin_sex_name, 
+          cbd.recfin_sex_name,
           cbd.interview_time,
           cbd.cpfv_location_id
         FROM
@@ -387,18 +385,18 @@ sql_bds <- function(species_name, type, apex) {
           ON cbd.agency_code = afa.agency_code
           AND cbd.agency_fished_area_code = afa.agency_fished_area_code
         WHERE SPECIES_NAME = ANY ({toupper(species)})
-          AND (agency_length is not null 
+          AND (agency_length is not null
           OR agency_weight is not null)
         "
       )
     }
-    
-    if(apex == "SD506"){
-      #Based on SD506 for ages
+
+    if (apex == "SD506") {
+      # Based on SD506 for ages
       sqlcall <- glue::glue(
         "
         WITH base AS (
-          SELECT 
+          SELECT
             SAMPLE_ID,
             AGEING_ID,
             CASE
@@ -450,10 +448,10 @@ sql_bds <- function(species_name, type, apex) {
             LENGTH_TYPE,
             RECFIN_LENGTH_MM,
             RETURN_TIME
-          FROM 
+          FROM
             RECFIN_MARTS.COMPREHENSIVE_REC_AGEING b
           )
-        SELECT 
+        SELECT
           SAMPLE_ID,
           AGEING_ID,
           SAMPLING_AGENCY_NAME,
@@ -497,7 +495,7 @@ sql_bds <- function(species_name, type, apex) {
           LENGTH_TYPE,
           RECFIN_LENGTH_MM,
           RETURN_TIME
-        FROM 
+        FROM
           base t
         WHERE RECFIN_SPECIES_NAME = ANY ({toupper(species)})
         "
@@ -505,12 +503,11 @@ sql_bds <- function(species_name, type, apex) {
     }
     sqlcall <- gsub("\\n", " ", sqlcall)
   }
-  
-  #Biological data from years during MRFSS sampling
-  if(type == "mrfss"){
-    
-    if(apex == "SD508"){
-      #Based on SD508 bio data for unavailable catch (Type 2 - B1 and B2)
+
+  # Biological data from years during MRFSS sampling
+  if (type == "mrfss") {
+    if (apex == "SD508") {
+      # Based on SD508 bio data for unavailable catch (Type 2 - B1 and B2)
       sqlcall <- glue::glue(
         "
         SELECT
@@ -525,7 +522,7 @@ sql_bds <- function(species_name, type, apex) {
           CASE  /* Manually adding ST_NAME into script */
             WHEN crl.ST = 6 THEN
               'California'
-            WHEN crl.ST = 41 THEN 
+            WHEN crl.ST = 41 THEN
               'Oregon'
             WHEN crl.ST = 53 THEN
               'Washington'
@@ -535,7 +532,7 @@ sql_bds <- function(species_name, type, apex) {
           CASE  /* Manually adding ST_NAME into script */
             WHEN crl.SUB_REG = 1 THEN
               'Southern California'
-            WHEN crl.SUB_REG = 2 THEN 
+            WHEN crl.SUB_REG = 2 THEN
               'Northern California'
             WHEN crl.SUB_REG = 3 THEN
               'Oregon'
@@ -556,7 +553,7 @@ sql_bds <- function(species_name, type, apex) {
           rs.SPECIES_NAME AS SP_NAME,
           crl.PRIM1,
           crl.PRIM2,
-          crl.INTSITE,  
+          crl.INTSITE,
           crl.GEAR,
           crl.HRSF,
           crl.CNTRBTRS,
@@ -612,152 +609,152 @@ sql_bds <- function(species_name, type, apex) {
         FROM
           RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_TYPE_2 crl
         LEFT JOIN
-          RECFIN_FOUNDATION.RECFIN_SPECIES rs 
+          RECFIN_FOUNDATION.RECFIN_SPECIES rs
           ON crl.SP_CODE = TO_CHAR(rs.RECFIN_SPECIES_CODE)
         WHERE
           rs.SPECIES_NAME = ANY ({stringr::str_to_title(species)}) /* Renamed as SP_NAME above but need to use original name here */
         "
       )
     }
-    
-    if(apex == "SD509"){
-      #Based on SD509 bio data for available catch (Type 3 - A)
+
+    if (apex == "SD509") {
+      # Based on SD509 bio data for available catch (Type 3 - A)
       sqlcall <- glue::glue(
         "
-        SELECT 
-          crl.ID_CODE,	       
-          crl.YEAR,           
-          crl.WAVE,         
-          crl.MONTH,          
-          crl.WEEK,            
-          crl.TIME,  
-          crl.DATE1,	    
-          crl.ST,             
+        SELECT
+          crl.ID_CODE,
+          crl.YEAR,
+          crl.WAVE,
+          crl.MONTH,
+          crl.WEEK,
+          crl.TIME,
+          crl.DATE1,
+          crl.ST,
           CASE  /* Manually adding ST_NAME into script */
             WHEN crl.ST = 6 THEN
               'California'
-            WHEN crl.ST = 41 THEN 
+            WHEN crl.ST = 41 THEN
               'Oregon'
             WHEN crl.ST = 53 THEN
               'Washington'
-          END AS ST_NAME,	
-          crl.CNTY, 
-          crl.SUB_REG,        
+          END AS ST_NAME,
+          crl.CNTY,
+          crl.SUB_REG,
           CASE  /* Manually adding ST_NAME into script */
             WHEN crl.SUB_REG = 1 THEN
               'Southern California'
-            WHEN crl.SUB_REG = 2 THEN 
+            WHEN crl.SUB_REG = 2 THEN
               'Northern California'
             WHEN crl.SUB_REG = 3 THEN
               'Oregon'
             WHEN crl.SUB_REG = 4 THEN
               'Washington'
-          END AS SUB_REG_NAME,  	
-          crl.DIST,           
-          crl.MODE_FX,		
-          /* MODE_FX_NAME, */	
-          crl.MODE_F,		
+          END AS SUB_REG_NAME,
+          crl.DIST,
+          crl.MODE_FX,
+          /* MODE_FX_NAME, */
+          crl.MODE_F,
           /* MODE_F_NAME,	*/
-          crl.AREA_X,		
+          crl.AREA_X,
           /* AREA_X_NAME,	*/
-          crl.AREA,			
-          /* AREA_NAME, */	        
-          crl.PORT,   
-          crl.SP_CODE,		
+          crl.AREA,
+          /* AREA_NAME, */
+          crl.PORT,
+          crl.SP_CODE,
           rs.SPECIES_NAME AS SP_NAME,
-          crl.PRIM1,		
-          crl.PRIM2,        
-          crl.INTSITE,        
-          crl.GEAR,         
-          crl.HRSF,           
-          crl.CNTRBTRS,       
-          crl.NUM_TYP3,       
-          crl.NUM3,       
-          crl.NUM_FISH,          
-          crl.PUNCH,          
-          crl.ADD_HRS,       
-          crl.ID_CODE3,	       
-          crl.DISPO,           
-          crl.\"NUMBER\", /* Syntax needed because NUMBER is a special keyword in oracle */            
-          crl.C,         
-          crl.FSHINSP,        
-          crl.AREA_NC,         
-          crl.LNGTH,          
-          crl.WGT,            
-          crl.X1,                 
-          crl.T_LEN,          
-          crl.OLD_WGT,        
-          crl.WGT_FLAG,         
-          crl.OLD_LEN,           
-          crl.RIG,           
-          crl.DISP3,           
-          crl.LEADER,         
-          crl.OLDWGT,         
-          crl.FISHINSP,       
-          crl.NUM_TYP4,       
-          crl.CATCH,          
-          crl.A_FT,           
-          crl.B_FT,           
-          crl.R,              
-          crl.Z,              
-          crl.STATUS,         
-          crl.INVALID,        
-          crl.TEMP,           
-          crl.SALMON,         
-          crl.SHORT,          
-          crl.F_SEX,          
-          crl.SP_CPDE,        
-          crl.LENGTH,         
-          crl.FFDAYS2,       
-          crl.FFDAYS12,       
-          crl.TRIPSAMP,       
-          crl.FSEX,           
-          crl.LEN,        
-          crl.SFCODE,         
-          crl.HLOC,          
-          crl.TAG,            
-          crl.DISTRICT,       
-          crl.ASSNID,         
-          crl.CRFS,           
-          crl.RECN,           
-          crl.SPN,            
-          crl.LOCN,           
-          crl.DEPTHN,         
-          crl.SURVEY,         
-          crl.NRS,            
-          crl.MEASN,          
-          crl.LENFLAG,        
-          crl.REC,             
-          crl.TRIPTYPE,       
-          crl.DEPTH,          
-          crl.SPECIES,        
-          crl.CWTFISH,        
-          crl.ADFISH,         
-          crl.OTOFISH,        
-          crl.HLOC3,          
-          crl.SCAN_RSLT,      
-          crl.MAXLEN,         
-          crl.HEART,          
-          crl.TBENC_DATE,     
-          crl.DD,             
-          crl.P,            
-          crl.PC,            
-          crl.SP,             
-          crl.BT,             
-          crl.TRIPSPECIES,    
-          crl.TT,        
+          crl.PRIM1,
+          crl.PRIM2,
+          crl.INTSITE,
+          crl.GEAR,
+          crl.HRSF,
+          crl.CNTRBTRS,
+          crl.NUM_TYP3,
+          crl.NUM3,
+          crl.NUM_FISH,
+          crl.PUNCH,
+          crl.ADD_HRS,
+          crl.ID_CODE3,
+          crl.DISPO,
+          crl.\"NUMBER\", /* Syntax needed because NUMBER is a special keyword in oracle */
+          crl.C,
+          crl.FSHINSP,
+          crl.AREA_NC,
+          crl.LNGTH,
+          crl.WGT,
+          crl.X1,
+          crl.T_LEN,
+          crl.OLD_WGT,
+          crl.WGT_FLAG,
+          crl.OLD_LEN,
+          crl.RIG,
+          crl.DISP3,
+          crl.LEADER,
+          crl.OLDWGT,
+          crl.FISHINSP,
+          crl.NUM_TYP4,
+          crl.CATCH,
+          crl.A_FT,
+          crl.B_FT,
+          crl.R,
+          crl.Z,
+          crl.STATUS,
+          crl.INVALID,
+          crl.TEMP,
+          crl.SALMON,
+          crl.SHORT,
+          crl.F_SEX,
+          crl.SP_CPDE,
+          crl.LENGTH,
+          crl.FFDAYS2,
+          crl.FFDAYS12,
+          crl.TRIPSAMP,
+          crl.FSEX,
+          crl.LEN,
+          crl.SFCODE,
+          crl.HLOC,
+          crl.TAG,
+          crl.DISTRICT,
+          crl.ASSNID,
+          crl.CRFS,
+          crl.RECN,
+          crl.SPN,
+          crl.LOCN,
+          crl.DEPTHN,
+          crl.SURVEY,
+          crl.NRS,
+          crl.MEASN,
+          crl.LENFLAG,
+          crl.REC,
+          crl.TRIPTYPE,
+          crl.DEPTH,
+          crl.SPECIES,
+          crl.CWTFISH,
+          crl.ADFISH,
+          crl.OTOFISH,
+          crl.HLOC3,
+          crl.SCAN_RSLT,
+          crl.MAXLEN,
+          crl.HEART,
+          crl.TBENC_DATE,
+          crl.DD,
+          crl.P,
+          crl.PC,
+          crl.SP,
+          crl.BT,
+          crl.TRIPSPECIES,
+          crl.TT,
           crl.ALPHA5,
-          crl.TINY,         
-          crl.MICRO,         
-          crl.REF_NUM,        
-          crl.RELDEVNUM,      
-          crl.DEPTHFT,        
-          crl.DEPTHNR,        
+          crl.TINY,
+          crl.MICRO,
+          crl.REF_NUM,
+          crl.RELDEVNUM,
+          crl.DEPTHFT,
+          crl.DEPTHNR,
           crl.RECFIN_VDATE
-        FROM 
+        FROM
           RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_TYPE_3 crl
         LEFT JOIN
-          RECFIN_FOUNDATION.RECFIN_SPECIES rs 
+          RECFIN_FOUNDATION.RECFIN_SPECIES rs
           ON crl.SP_CODE = TO_CHAR(rs.RECFIN_SPECIES_CODE)
         WHERE
           rs.SPECIES_NAME = ANY ({stringr::str_to_title(species)}) /* Renamed as SP_NAME above but need to use original name here */

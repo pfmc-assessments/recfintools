@@ -10,7 +10,8 @@ clean_catch(data)
 \item{data}{A loaded Rdata object from pull_catch_recfin_ or
 pull_bds_recfin_.}
 
-\item{verbose}{Whether to output detailed information about the cleaning process. Default is TRUE.}
+\item{verbose}{Whether to output detailed information about the cleaning
+process. Default is TRUE.}
 }
 \value{
 A data frame with standardized columns along with original fields.
@@ -19,9 +20,10 @@ column names and their contents.
 }
 \description{
 Clean RecFIN data to provide data in a similar format with consistent
-column names and values. For example, states are standardized to be
-state abbreviations rather than single letters or full names and are
-available in the column called \code{state}.
+column names and values, and data prepared and ready for analysis.
+For example, states are standardized to be state abbreviations rather than
+single letters or full names and are available in the column called \code{state},
+or Canada, Mexico, and Puget Sound records are removed
 }
 \section{Missing years}{
 
@@ -37,17 +39,20 @@ estimates during these years. These years will show up with some catch,
 but only when broken down by mode will it be obvious that PC is lower than
 in neighbor years.
 
+Currently, these years are not filled in and it is up to the user to
+decide how best to fill.
+
 #' todo: create a function to estimate catches for 1990-1992, possibly 1993-1995?
 }
 
 \section{Washington data}{
 
 Washington does not use MRFSS catch data. Rather, catches come from apex
-report for recent data (CTE001 or CTE501), which extend back to 1990, and
+reports for recent data (CTE001 or CTE501), which extend back to 1990, and
 from historical reconstructions (CTE503), which although extend through 2002,
 have values for coastal areas 1-4 (i.e. non-puget sound areas) only through
 1989. When running this function, Washington catch data are removed from the
-MRFSS dataset, and puget sounds areas (5+) are removed from the historical
+MRFSS dataset, and Puget Sound areas (5+) are removed from the historical
 dataset.
 
 Washington does not differentiate by mode in its historical reconstruction.
@@ -58,10 +63,17 @@ todo: create a function to estimate Washington weights for recent and historical
 
 \section{Oregon data}{
 
-Oregon does not use MRFSS catch data. Rather, catches come from apex report
+Oregon does not use MRFSS catch data. Rather, catches come from apex reports
 for recent data (CTE001 or CTE501), which extend back to 2001, and from
 historical reconstructions (CTE505), which extend through 2000. When running
 this function, Oregon catch data are removed from the MRFSS dataset.
+
+Oregon historical catches are provided in numbers. When running this function,
+average weights are calcualted that can be used to determine catch in weight.
+}
+
+\section{California data}{
+
 }
 
 \section{State mapping rules}{
@@ -86,11 +98,12 @@ If \code{verbose = TRUE}, the function reports how many records were assigned
 \code{source} can be a vector of candidate column names. The first matching
 column in \code{data} is used.
 
-Values are standardized into \code{mode} as:
+Values in \code{source} are evaluated using case-insensitive matching. Values are
+standardized into \code{mode} as:
 \itemize{
-\item \code{PR}: \verb{Private/Rental Boats}
-\item \code{PC}: \verb{Party/Charter Boats}
-\item \code{Other}: \code{Man-Made/Jetty}
+\item \code{PR}: anything with \code{Private} (associated with code 7)
+\item \code{PC}: anything with \code{Party} or \code{Charter} (associated with code 6)
+\item \code{Other}: \code{Man-Made/Jetty}, \code{Man-Made}, \code{Beach/Bank}, \code{Shore} (all other codes)
 \item \code{UNK}: all unmatched values
 }
 
@@ -108,7 +121,6 @@ removed when area is:
 \item \code{CANADA}
 \item \code{MEXICO}
 \item \verb{PUGET SOUND}
-\item \verb{NOT KNOWN}
 }
 
 For Washington historical data (\code{source = "AREA"} and \code{AGENCY == "W"}),
@@ -128,6 +140,19 @@ column. No recoding is applied.
 
 If \code{verbose = TRUE}, the function reports how many records have \code{NA} in
 \code{year} after extraction.
+}
+
+\section{Oregon Historical weights}{
+
+Weight data is obtained from type 3 MRFSS data (SD509). Only measured weights
+are used (based on the assumption that measured weights contain two or fewer
+decimal places and are not zero), from PR/PC modes (MODE_FX = 6 or 7), and
+ocean areas (AREA_X = 1 - 4).
+
+MRFSS samples are missing for some years where catch in numbers exist (e.g.
+1979, 1990-1992). Weights are applied for these years based on an overall
+average from all years and modes. Sample sizes for these interpolated years
+are NA.
 }
 
 \author{
