@@ -119,6 +119,8 @@ clean_catch <- function(data) {
                                  state = unique(data[[i]]$state),
                                  figure = TRUE)
       
+      
+      cli::cli_inform("Done cleaning historical catches")
     }
 
   }
@@ -154,8 +156,7 @@ clean_catch <- function(data) {
     #Filter out Oregon and Washington records because they don't use MRFSS data
     data <- data |>
       dplyr::filter(!state %in% c("OR","WA"))
-    
-    
+
     #Filter out non-federal records
     data <- getArea(data = data,
                     source = c("AREA"),
@@ -163,14 +164,13 @@ clean_catch <- function(data) {
     
     
     
-    
+    cli::cli_inform("Done cleaning MRFSS catches")
   }
   
   #Recent data
   if("RECFIN_YEAR" %in% colnames(data)) {
     type = "recfin"
-    #colnames(data) <- gsub("RECFIN_", "", colnames(data)) #Probably don't keep this in
-    
+
     ##
     #For just catches
     ##
@@ -256,23 +256,5 @@ clean_catch <- function(data) {
   #   data <- data[clean_vector, ]
   # }
   
-  return(data)
-}
-
-#' @export
-clean_mrfss <- function(data) {
-  #### YEAR
-  colnames(data)[grep("^year", colnames(data), ignore.case = TRUE)] <- "Year"
-
-  #### AGENCY_CODE
-  # https://www.fisheries.noaa.gov/inport/item/55989
-  data <- data |>
-    mutate(state = case_when(
-      AGENCY_CODE == 6 ~ "CA",
-      AGENCY_CODE == 41 ~ "OR",
-      AGENCY_CODE == 53 ~ "WA",
-      TRUE ~ NA_character_
-    ))
-
   return(data)
 }
