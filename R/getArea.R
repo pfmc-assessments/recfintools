@@ -71,7 +71,7 @@ getArea <- function(
     nsound <- sum(tolower(removed[,source]) == tolower(nonfed[3]))
     ncan <- sum(tolower(removed[,source]) == tolower(nonfed[1]))
     nmex <- sum(tolower(removed[,source]) == tolower(nonfed[2]))
-    nunk <- sum(tolower(removed[,source]) == tolower(nonfed[4]))
+    nunk <- sum(is.na(data[,source]))
     
     if (verbose) {
       cli::cli_bullets(c(
