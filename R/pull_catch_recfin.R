@@ -48,7 +48,7 @@ pull_catch_recfin_recent <- function(
       length(verbose) == 1
   )
 
-  file_species_name <- if(length(recfin_species_name <=3), 
+  file_species_name <- ifelse(length(recfin_species_name <= 3), 
                           paste(sub(" .*", "", recfin_species_name), collapse = "--"),
                           "MANY")
 
@@ -107,7 +107,7 @@ pull_catch_recfin_hist <- function(
       length(verbose) == 1
   )
 
-  file_species_name <- if(length(recfin_species_name <=3), 
+  file_species_name <- ifelse(length(recfin_species_name <=3), 
                           paste(sub(" .*", "", recfin_species_name), collapse = "--"),
                           "MANY")
 
@@ -165,7 +165,7 @@ pull_catch_recfin_mrfss <- function(
       length(verbose) == 1
   )
 
-  file_species_name <- if(length(recfin_species_name <= 3), 
+  file_species_name <- ifelse(length(recfin_species_name <= 3), 
                           paste(sub(" .*", "", recfin_species_name), collapse = "--"),
                           "MANY")
 
