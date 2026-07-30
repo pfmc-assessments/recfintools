@@ -1,0 +1,82 @@
+#' Create a length_cm column based on input column specified in `source`. 
+#'
+#' @details
+#' This function is used for only composition data. It creates a new column
+#' in units of cm, and also flags lengths beyond max, as well as total length 
+#' measurements (as opposed to fork length). Removes lengths with NA or 0
+#'
+#' @section Length extraction rules:
+#' `source` can be a vector of candidate column names. The first matching
+#' column in `data` is used.
+#'
+#' The selected source column is copied directly into a standardized `length_cm`
+#' column. The units are cm and adjusted based on whether the input source
+#' column includes mm or cm. Extreme length values are flagged but not removed,
+#' as are measurements in Total length. Lengths that are NA or 0 are removed.  
+#'
+#' If `verbose = TRUE`, the function reports how many records with unknown or 0
+#' length were removed, alongwith a message conveying the number of extreme
+#' lengths that were kept, and number of total length measurements.
+#'
+#' @export
+#' @seealso [clean_catch()] calls 'getLength'
+#'
+#' @inheritParams clean_bds
+#'
+#' @param source Column name where length information is located. Depends on the
+#' era (recent, mrfss, or historical). Default value is for recent catch data 
+#' (RECFIN_LENGTH_MM). Coded to accept a vector of names where the same type or 
+#' era of data has multiple different names. When multiple names within the 
+#' vector are in the dataset, picks the first.
+#'
+
+getYear <- function(
+  data,
+  source = c("RECFIN_LENGTH_MM"),
+  verbose = TRUE
+) {
+  if (!any(source %in% colnames(data))) { #
+    cli::cli_inform("The column {source} was not found in the data.
+                    Length information has not been standardized")
+  }
+
+  source <- source[which(source %in% colnames(data))[1]]
+  
+  removed <- data |>
+    dplyr::filter(is.na(.data[[source]]) | .data[[source]] == 0)
+  
+  data <- data |>
+    dplyr::filter(!is.na(.data[[source]]))
+
+  
+  #Add new column 'length_cm' based on units in source
+  
+  if(grepl("mm", tolower(source))) {
+    
+    data$length_cm <- data[, source]/10
+    
+  }else if(grepl("cm", tolower(source))) {
+    
+    data$length_cm <- data[, source]
+    
+  }
+  
+  #Count number of lengths with NA removed, number outside Max, and number of 
+  #lengths with total length
+  nolen <- nrow(removed)
+  outmax <- sum(!data[, "IS_AGENCY_LENGTH_WITHIN_MAX"])
+  lentype <- sum(data[, "RECFIN_LENGTH_TYPE"] == "TOTAL")
+  
+  if (verbose) {
+    cli::cli_bullets(c(
+      " " = "{.fn getLength} summary information -",
+      "i" = "There are {nolen} records where length was NA or 0 and was removed",
+      "i" = "NOTE: there are {outmax} records flagged as being outside the
+      maximum length for the species. The user should decide how to handle these",
+      "i" = "NOTE: there are {lentype} records flagged as being total length as
+      opposed to fork length. The user should decide how to handle these"
+    ))
+  }
+
+  return(data)
+}

@@ -65,7 +65,8 @@
 #'
 #' @export
 #' @author Brian Langseth and Kelli Faye Johnson
-#' @return A data frame with standardized columns along with original fields.
+#' @return A data frame with standardized columns along with original and
+#' added fields. 
 #' See the data object `recfin_coldefs` for more complete descriptions of
 #' column names and their contents.
 #'
@@ -234,6 +235,8 @@ clean_catch <- function(data) {
       source = c("RECFIN_WATER_AREA_NAME"),
       verbose = TRUE
     )
+    
+    cli::cli_inform("Done cleaning recent catches")
   }
 
   # # Report removals
@@ -284,5 +287,96 @@ clean_catch <- function(data) {
   #   data <- data[clean_vector, ]
   # }
 
+  return(data)
+}
+
+
+clean_bds <- function(data) {
+  
+  type = NULL
+  
+  #Dont have historical bds data
+  
+  #MRFSS bds data
+  if("SERVER_PATH" %in% colnames(data)) {
+    type = "mrfss"
+    
+    ## Standardize fields
+    
+    #Rename state
+    data <- getState(data = data,
+                     source = c("ST"),
+                     verbose = TRUE)
+    
+    #Rename modes
+    data <- getMode(data = data,
+                    source = c("MODE"),
+                    verbose = TRUE)
+    
+    #Set up year column
+    data <- getYear(data = data,
+                    source = c("YEAR"), 
+                    verbose = TRUE)
+    
+    
+    ## Actually removing data
+    
+    #Filter out Oregon and Washington records because they don't use MRFSS data
+    data <- data |>
+      dplyr::filter(!state %in% c("OR","WA"))
+    
+    #Filter out non-federal records
+    data <- getArea(data = data,
+                    source = c("AREA"),
+                    verbose = TRUE)
+    
+    
+    
+    cli::cli_inform("Done cleaning MRFSS bds")
+  }
+  
+  #Recent bds data
+  if("RECFIN_YEAR" %in% colnames(data)) {
+    type = "recfin"
+    
+    ## Combine length and age data
+    
+    
+    
+    ## Standardize fields
+    
+    #Rename state
+    data <- getState(data = data,
+                     source = c("STATE_NAME"),
+                     verbose = TRUE)
+    
+    #Rename modes
+    data <- getMode(data = data,
+                    source = c("RECFIN_MODE_NAME"),
+                    verbose = TRUE)
+    
+    #Set up year column
+    data <- getYear(data = data,
+                    source = c("RECFIN_YEAR"),
+                    verbose = TRUE)
+    
+    
+    ## Actually removing data
+    
+    #Filter out non-federal records
+    data <- getArea(data = data,
+                    source = c("AGENCY_FISHED_AREA_NAME"),
+                    verbose = TRUE)
+    
+    #Remove any records without lengths and add length_cm colum
+    #Flags records beyond max length, and also flags different 'total' length
+    data <- getLength(data = data,
+                      source = c("AGENCY_FISHED_AREA_NAME"),
+                      verbose = TRUE)
+    
+    
+    cli::cli_inform("Done cleaning recent bds")
+  }
+  
   return(data)
 }
