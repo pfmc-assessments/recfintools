@@ -20,6 +20,11 @@ For recent catch data, use \code{RECFIN_WATER_AREA_NAME}, which filters out valu
 of Canada, Mexico, and Puget Sound. Areas with \verb{Not Known} are kept.
 For Washington historical catch data, uses \code{AREA}, which filters out values
 of 5 and greater (i.e. Puget Sound)
+For recent bds data, use \code{AGENCY_FISHED_AREA_NAME}, which filters out values
+of Canada, Mexico, and Puget Sound. Areas with "Not known" or "Unknown"
+are kept if they also have coastal port names. Because California data are
+empty for \code{AGENCY_FISH_AREA_NAME}, the code instead filters California data
+using "AGENCY_WATER_AREA_NAME" when \code{AGENCY_FISHED_AREA_NAME} is used.
 For all other data sets, use any valid column, since for these areas no
 specific records outside federal waters are identifiable.}
 
@@ -40,12 +45,21 @@ Based on similar function from pacfintools, but modified for recreational data
 
 Values in \code{source} are evaluated using case-insensitive matching.
 
-For recent RecFIN data (\code{source = "RECFIN_WATER_AREA_NAME"}), records are
-removed when area is:
+For recent RecFIN catch data (\code{source = "RECFIN_WATER_AREA_NAME"}), records
+are removed when area is:
 \itemize{
 \item \code{CANADA}
 \item \code{MEXICO}
 \item \verb{PUGET SOUND}
+}
+
+For recent RecFIN bds data (\code{source = "AGENCY_FISHED_AREA_NAME"}), records
+are kept when area is
+\itemize{
+\item For Washington: PUNCH CARD AREAs 1 through 4, and PUNCH CARD AREAs 0 and
+'Not Known' when RECFIN_PORT_NAME also equals coastal ports.
+\item For California: Because AGENCY_FISHED_AREA_NAME is empty for California,
+the script automatically uses "AGENCY_WATER_AREA_NAME" for california data.
 }
 
 For Washington historical data (\code{source = "AREA"} and \code{AGENCY == "W"}),
