@@ -2,7 +2,8 @@
 
 Read catch data from the various total mortality reports in recfin:
 'CTE501' or 'CTE001' Historical times series for each state: 'CTE503' or
-'CTE507' MRFSS catch data: 'CTE510'
+'CTE507' MRFSS catch data: Does not have a formal apex report (though
+CTE510 was a temporary report)
 
 ## Usage
 

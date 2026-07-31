@@ -68,7 +68,8 @@ process. Default is TRUE.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data frame with standardized columns along with original fields.
+    <p>A data frame with standardized columns along with original and
+added fields.
 See the data object <code>recfin_coldefs</code> for more complete descriptions of
 column names and their contents.</p>
     </div>
@@ -154,10 +155,15 @@ standardized into <code>mode</code> as:</p><ul><li><p><code>PR</code>: anything 
 
 
 <p>Values in <code>source</code> are evaluated using case-insensitive matching.</p>
-<p>For recent RecFIN data (<code>source = "RECFIN_WATER_AREA_NAME"</code>), records are
-removed when area is:</p><ul><li><p><code>CANADA</code></p></li>
+<p>For recent RecFIN catch data (<code>source = "RECFIN_WATER_AREA_NAME"</code>), records
+are removed when area is:</p><ul><li><p><code>CANADA</code></p></li>
 <li><p><code>MEXICO</code></p></li>
 <li><p><code>PUGET SOUND</code></p></li>
+</ul><p>For recent RecFIN bds data (<code>source = "AGENCY_FISHED_AREA_NAME"</code>), records
+are kept when area is</p><ul><li><p>For Washington: PUNCH CARD AREAs 1 through 4, and PUNCH CARD AREAs 0 and
+'Not Known' when RECFIN_PORT_NAME also equals coastal ports.</p></li>
+<li><p>For California: Because AGENCY_FISHED_AREA_NAME is empty for California,
+the script automatically uses "AGENCY_WATER_AREA_NAME" for california data.</p></li>
 </ul><p>For Washington historical data (<code>source = "AREA"</code> and <code>AGENCY == "W"</code>),
 records with <code>AREA &gt;= 5</code> are removed.</p>
 <p>If <code>verbose = TRUE</code>, the function reports the number of records removed by

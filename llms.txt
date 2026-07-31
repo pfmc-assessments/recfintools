@@ -112,7 +112,7 @@ under a copyright license.
 - [`getYear()`](https://pfmc-assessments.github.io/recfintools/reference/getYear.md)
   :
 
-  Create a year column based on input column specified in `source`
+  Create a length_cm column based on input column specified in `source`.
 
 - [`pull_bds_recfin_recent()`](https://pfmc-assessments.github.io/recfintools/reference/pull_bds_recfin_recent.md)
   : Functions to pull bio data from recfin, which includes lengths and

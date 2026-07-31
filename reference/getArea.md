@@ -25,9 +25,14 @@ getArea(data, source = c("RECFIN_WATER_AREA_NAME"), verbose = TRUE)
   `RECFIN_WATER_AREA_NAME`, which filters out values of Canada, Mexico,
   and Puget Sound. Areas with `Not Known` are kept. For Washington
   historical catch data, uses `AREA`, which filters out values of 5 and
-  greater (i.e. Puget Sound) For all other data sets, use any valid
-  column, since for these areas no specific records outside federal
-  waters are identifiable.
+  greater (i.e. Puget Sound) For recent bds data, use
+  `AGENCY_FISHED_AREA_NAME`, which filters out values of Canada, Mexico,
+  and Puget Sound. Areas with "Not known" or "Unknown" are kept if they
+  also have coastal port names. Because California data are empty for
+  `AGENCY_FISH_AREA_NAME`, the code instead filters California data
+  using "AGENCY_WATER_AREA_NAME" when `AGENCY_FISHED_AREA_NAME` is used.
+  For all other data sets, use any valid column, since for these areas
+  no specific records outside federal waters are identifiable.
 
 - verbose:
 
@@ -46,14 +51,24 @@ recreational data
 
 Values in `source` are evaluated using case-insensitive matching.
 
-For recent RecFIN data (`source = "RECFIN_WATER_AREA_NAME"`), records
-are removed when area is:
+For recent RecFIN catch data (`source = "RECFIN_WATER_AREA_NAME"`),
+records are removed when area is:
 
 - `CANADA`
 
 - `MEXICO`
 
 - `PUGET SOUND`
+
+For recent RecFIN bds data (`source = "AGENCY_FISHED_AREA_NAME"`),
+records are kept when area is
+
+- For Washington: PUNCH CARD AREAs 1 through 4, and PUNCH CARD AREAs 0
+  and 'Not Known' when RECFIN_PORT_NAME also equals coastal ports.
+
+- For California: Because AGENCY_FISHED_AREA_NAME is empty for
+  California, the script automatically uses "AGENCY_WATER_AREA_NAME" for
+  california data.
 
 For Washington historical data (`source = "AREA"` and `AGENCY == "W"`),
 records with `AREA >= 5` are removed.

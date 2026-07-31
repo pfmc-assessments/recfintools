@@ -64,6 +64,7 @@ Brian J Langseth
 if (FALSE) { # \dontrun{
 bio.recfin.001 <- pull_bds_recfin_recent("QUILLBACK ROCKFISH", apex = "SD001")
 bio.recfin.501 <- pull_bds_recfin_recent("QUILLBACK ROCKFISH", apex = "SD501")
+bio.recfin.506 <- pull_bds_recfin_recent("QUILLBACK ROCKFISH", apex = "SD506")
 bio.mrfss.508 <- pull_bds_recfin_mrfss("QUILLBACK ROCKFISH", apex = "SD508")
 bio.mrfss.509 <- pull_bds_recfin_mrfss("QUILLBACK ROCKFISH", apex = "SD509")
 } # }

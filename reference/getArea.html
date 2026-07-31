@@ -62,6 +62,11 @@ For recent catch data, use <code>RECFIN_WATER_AREA_NAME</code>, which filters ou
 of Canada, Mexico, and Puget Sound. Areas with <code>Not Known</code> are kept.
 For Washington historical catch data, uses <code>AREA</code>, which filters out values
 of 5 and greater (i.e. Puget Sound)
+For recent bds data, use <code>AGENCY_FISHED_AREA_NAME</code>, which filters out values
+of Canada, Mexico, and Puget Sound. Areas with "Not known" or "Unknown"
+are kept if they also have coastal port names. Because California data are
+empty for <code>AGENCY_FISH_AREA_NAME</code>, the code instead filters California data
+using "AGENCY_WATER_AREA_NAME" when <code>AGENCY_FISHED_AREA_NAME</code> is used.
 For all other data sets, use any valid column, since for these areas no
 specific records outside federal waters are identifiable.</p></dd>
 
@@ -83,10 +88,15 @@ Based on similar function from pacfintools, but modified for recreational data</
 
 
 <p>Values in <code>source</code> are evaluated using case-insensitive matching.</p>
-<p>For recent RecFIN data (<code>source = "RECFIN_WATER_AREA_NAME"</code>), records are
-removed when area is:</p><ul><li><p><code>CANADA</code></p></li>
+<p>For recent RecFIN catch data (<code>source = "RECFIN_WATER_AREA_NAME"</code>), records
+are removed when area is:</p><ul><li><p><code>CANADA</code></p></li>
 <li><p><code>MEXICO</code></p></li>
 <li><p><code>PUGET SOUND</code></p></li>
+</ul><p>For recent RecFIN bds data (<code>source = "AGENCY_FISHED_AREA_NAME"</code>), records
+are kept when area is</p><ul><li><p>For Washington: PUNCH CARD AREAs 1 through 4, and PUNCH CARD AREAs 0 and
+'Not Known' when RECFIN_PORT_NAME also equals coastal ports.</p></li>
+<li><p>For California: Because AGENCY_FISHED_AREA_NAME is empty for California,
+the script automatically uses "AGENCY_WATER_AREA_NAME" for california data.</p></li>
 </ul><p>For Washington historical data (<code>source = "AREA"</code> and <code>AGENCY == "W"</code>),
 records with <code>AREA &gt;= 5</code> are removed.</p>
 <p>If <code>verbose = TRUE</code>, the function reports the number of records removed by
