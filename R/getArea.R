@@ -1,4 +1,4 @@
-#' Filter out records from Puget Sound, Canada, Mexico, or unknown areas based
+#' Filter out records from Puget Sound, Canada, Mexico areas based
 #' on input column specified in `source`.
 #'
 #'
@@ -17,10 +17,11 @@
 #' * `MEXICO`
 #' * `PUGET SOUND`
 #'
-#' For recent RecFIN bds data (`source = "AGENCY_FISHED_AREA_NAME"`), records
-#' are kept when area is
+#' For recent RecFIN bds data (`source = "AGENCY_FISHED_AREA_NAME"`):
 #' * For Washington: PUNCH CARD AREAs 1 through 4, and PUNCH CARD AREAs 0 and
-#' 'Not Known' when RECFIN_PORT_NAME also equals coastal ports.
+#' 'Not Known' when RECFIN_PORT_NAME also equals coastal ports are kept. All other
+#' records are removed. 
+#' * For Oregon: All records are kept, 
 #' * For California: Because AGENCY_FISHED_AREA_NAME is empty for California,
 #' the script automatically uses "AGENCY_WATER_AREA_NAME" for california data.
 #'
@@ -45,10 +46,13 @@
 #' For Washington historical catch data, uses `AREA`, which filters out values
 #' of 5 and greater (i.e. Puget Sound)
 #' For recent bds data, use `AGENCY_FISHED_AREA_NAME`, which filters out values
-#' of Canada, Mexico, and Puget Sound. Areas with "Not known" or "Unknown"
-#' are kept if they also have coastal port names. Because California data are
-#' empty for `AGENCY_FISH_AREA_NAME`, the code instead filters California data
-#' using "AGENCY_WATER_AREA_NAME" when `AGENCY_FISHED_AREA_NAME` is used.
+#' of Canada, Mexico, and Puget Sound. Areas with "Not known" or "Unknown" for
+#' Washington are kept if they also have coastal port names, but in Oregon
+#' and California these are kept. Because California data are for 
+#' `AGENCY_FISH_AREA_NAME`, the code instead filters California data using 
+#' "AGENCY_WATER_AREA_NAME" to remove `Mexico` records. Records with Estuary or
+#' Not Known AGENCY_WATER_AREA_NAME in Oregon, and Inland or San Francisco Bay
+#' AGENCY_WATER_AREA_NAME in California are flagged for the user but not removed.
 #' For all other data sets, use any valid column, since for these areas no
 #' specific records outside federal waters are identifiable.
 #'
@@ -147,7 +151,7 @@ getArea <- function(
     removed <- data |>
       dplyr::filter(dplyr::case_when(
         STATE_NAME == "WASHINGTON" & .data[[source]] %in% "NOT KNOWN" ~
-          !RECFIN_PORT_NAME %in% c("LA PUSH", "NEAH BAY", "SEKIU", "WESTPORT"),
+          !RECFIN_PORT_NAME %in% c("CHINOOK", "ILWACO", "LA PUSH", "NEAH BAY", "SEKIU", "WESTPORT", "OCEAN SHORES"),
         STATE_NAME == "WASHINGTON" ~ !tolower(.data[[source]]) %in% tolower(wa_fed),
         STATE_NAME == "CALIFORNIA" ~ grepl("MEXICO", .data$AGENCY_WATER_AREA_NAME)
       ))
@@ -155,9 +159,10 @@ getArea <- function(
     data <- data |>
       dplyr::filter(dplyr::case_when(
         STATE_NAME == "WASHINGTON" & .data[[source]] %in% "NOT KNOWN" ~
-          RECFIN_PORT_NAME %in% c("LA PUSH", "NEAH BAY", "SEKIU", "WESTPORT"),
-        STATE_NAME == "WASHINGTON" ~ tolower(.data[[source]]) %in% tolower(fed),
-        STATE_NAME == "CALIFORNIA" ~ !grepl("MEXICO", .data$AGENCY_WATER_AREA_NAME)
+          RECFIN_PORT_NAME %in% c("CHINOOK", "ILWACO", "LA PUSH", "NEAH BAY", "SEKIU", "WESTPORT", "OCEAN SHORES"),
+        STATE_NAME == "WASHINGTON" ~ tolower(.data[[source]]) %in% tolower(wa_fed),
+        STATE_NAME == "CALIFORNIA" ~ !grepl("MEXICO", .data$AGENCY_WATER_AREA_NAME),
+        STATE_NAME == "OREGON" ~ TRUE
       ))
 
     noarea <- nrow(removed)
@@ -166,6 +171,22 @@ getArea <- function(
     nmex <- sum(grepl("MEXICO", removed[, "AGENCY_WATER_AREA_NAME"]), na.rm = TRUE)
     nunk <- sum(removed[, source] %in% c("NOT KNOWN", "UNKNOWN"), na.rm = TRUE) +
       sum(is.na(removed[, source]), na.rm = TRUE)
+    
+    #Flag records that were not removed but which the user should decide what 
+    #to do with. These include records with AGENCY_WATER_AREA_NAME = "ESTUARY",
+    #and "NOT KNOWN" in Oregon, and contain "Inland" or "Bay" (San Franciso Bay)
+    #in California, as well as records for Oregon with AGENCY_FISHED_AREA_NAME 
+    #that come from Washington or California waters. 
+    flag <- data |>
+      dplyr::filter(dplyr::case_when(
+        STATE_NAME == "OREGON" ~ grepl("california|washington", tolower(.data[[source]])) | 
+          .data$AGENCY_WATER_AREA_NAME %in% c("NOT KNOWN", "ESTUARY"),
+        STATE_NAME == "CALIFORNIA" ~ grepl("inland|bay", tolower(.data$AGENCY_WATER_AREA_NAME))
+      ))
+    
+    flag_EstUnkOr <- sum(flag[, "AGENCY_WATER_AREA_NAME"] %in% c("NOT KNOWN", "ESTUARY"))
+    flag_InBay <- sum(grepl("inland|bay", tolower(flag$AGENCY_WATER_AREA_NAME)))
+    flag_WaCa <- sum(grepl("california|washington", tolower(flag[, source])))
 
     if (verbose) {
       cli::cli_bullets(c(
@@ -174,9 +195,19 @@ getArea <- function(
         "i" = "These include {ncan} records from Canada",
         "i" = "These include {nsound} records from Puget Sound",
         "i" = "These include {nmex} records from Mexico",
-        "i" = "There are {nunk} records designated as Not Known or Unknown that
-        could also not be associated with federal areas in other fields and so
-        were removed."
+        "i" = "There are {nunk} records designated as Not Known or Unknown in 
+        Washington that could not be associated with federal areas in other 
+        fields and so were removed.",
+        "i" = "Of the records that were kept, {flag_EstUnk} records in Oregon
+        have Not Known or Estuary water area names, and {flag_InBay} records in
+        California are from Inland or San Francisco Bay water area names. 
+        The user should decide how to handle these records, which are not 
+        typically included in composition data.",
+        "i" = "There are also {flag_WaCa} records from Oregon of fish caught in
+        Washington or California. The user should decide how to handle these
+        records. It is recommended to exclude them if fish caught in Washington 
+        or Califoria waters but landed in Oregon ports are also excluded from 
+        catches."
       ))
     }
 

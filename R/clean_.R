@@ -375,6 +375,8 @@ clean_bds <- function(data) {
     ## Actually removing data
 
     # Filter out non-federal records
+    # Flags records with certain qualities that warrant further decisions but
+    # not removed by this function. 
     data <- getArea(
       data = data,
       source = c("AGENCY_FISHED_AREA_NAME"),
