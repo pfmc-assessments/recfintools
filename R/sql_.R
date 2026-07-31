@@ -362,8 +362,7 @@ sql_bds <- function(species_name, type, apex) {
           cbd.agency_weight_units,
           cbd.recfin_length_mm,
           null as recfin_imputed_length,
-          cbd.recfin_length_type,
-          CASE /* This is added by me because Fork and Total read out as True/FASE */
+          CASE /* This is added by me because Total and Fork length types read out as True/False */
             WHEN cbd.recfin_length_type = 'T' THEN 'TOTAL'
             WHEN cbd.recfin_length_type = 'F' THEN 'FORK'
             ELSE 'UNKNOWN'
