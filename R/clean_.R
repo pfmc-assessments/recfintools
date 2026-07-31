@@ -387,7 +387,7 @@ clean_bds <- function(data) {
     # Flags records beyond max length, and also flags different 'total' length
     data <- getLength(
       data = data,
-      source = c("AGENCY_FISHED_AREA_NAME"),
+      source = c("RECFIN_LENGTH_MM"),
       verbose = TRUE
     )
 
