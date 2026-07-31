@@ -198,14 +198,14 @@ getArea <- function(
         "i" = "There are {nunk} records designated as Not Known or Unknown in 
         Washington that could not be associated with federal areas in other 
         fields and so were removed.",
-        "i" = "Of the records that were kept, {flag_EstUnk} records in Oregon
+        "i" = "NOTE: Of the records that were kept, {flag_EstUnk} records in Oregon
         have Not Known or Estuary water area names, and {flag_InBay} records in
         California are from Inland or San Francisco Bay water area names. 
-        The user should decide how to handle these records, which are not 
-        typically included in composition data.",
-        "i" = "There are also {flag_WaCa} records from Oregon of fish caught in
-        Washington or California. The user should decide how to handle these
-        records. It is recommended to exclude them if fish caught in Washington 
+        The user should decide how to handle these, which are not 
+        typically included in compositions.",
+        "i" = "NOTE: There are also {flag_WaCa} records from Oregon of fish caught in
+        Washington or California. The user should decide how to handle these. 
+        It is recommended to exclude them if fish caught in Washington 
         or Califoria waters but landed in Oregon ports are also excluded from 
         catches."
       ))

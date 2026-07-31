@@ -70,7 +70,8 @@ getLength <- function(
       "i" = "NOTE: there are {outmax} records flagged as being outside the
       maximum length for the species. The user should decide how to handle these",
       "i" = "NOTE: there are {lentype} records flagged as being total length as
-      opposed to fork length. The user should decide how to handle these"
+      opposed to fork length, which only is specified for Washington. The user 
+      should decide how to handle these"
     ))
   }
 
