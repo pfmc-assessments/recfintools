@@ -30,7 +30,7 @@
 #' vector are in the dataset, picks the first.
 #'
 
-getYear <- function(
+getLength <- function(
   data,
   source = c("RECFIN_LENGTH_MM"),
   verbose = TRUE
