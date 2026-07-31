@@ -48,9 +48,10 @@ pull_catch_recfin_recent <- function(
       length(verbose) == 1
   )
 
-  file_species_name <- ifelse(length(recfin_species_name) <= 3, 
-                          paste(sub(" .*", "", recfin_species_name), collapse = "--"),
-                          "MANY")
+  file_species_name <- ifelse(length(recfin_species_name) <= 3,
+    paste(sub(" .*", "", recfin_species_name), collapse = "--"),
+    "MANY"
+  )
 
   catch_recfin <- pacfintools::getDB(
     sql = sql_catch(recfin_species_name, type = "recent", apex = apex),
@@ -107,9 +108,10 @@ pull_catch_recfin_hist <- function(
       length(verbose) == 1
   )
 
-  file_species_name <- ifelse(length(recfin_species_name) <=3, 
-                          paste(sub(" .*", "", recfin_species_name), collapse = "--"),
-                          "MANY")
+  file_species_name <- ifelse(length(recfin_species_name) <= 3,
+    paste(sub(" .*", "", recfin_species_name), collapse = "--"),
+    "MANY"
+  )
 
   catch_recfin <- lapply(sql_catch(recfin_species_name, type = "hist"),
     pacfintools::getDB,
@@ -165,9 +167,10 @@ pull_catch_recfin_mrfss <- function(
       length(verbose) == 1
   )
 
-  file_species_name <- ifelse(length(recfin_species_name) <= 3, 
-                          paste(sub(" .*", "", recfin_species_name), collapse = "--"),
-                          "MANY")
+  file_species_name <- ifelse(length(recfin_species_name) <= 3,
+    paste(sub(" .*", "", recfin_species_name), collapse = "--"),
+    "MANY"
+  )
 
   catch_recfin <- pacfintools::getDB(
     sql = sql_catch(recfin_species_name, type = "mrfss"),

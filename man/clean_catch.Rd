@@ -14,7 +14,8 @@ pull_bds_recfin_.}
 process. Default is TRUE.}
 }
 \value{
-A data frame with standardized columns along with original fields.
+A data frame with standardized columns along with original and
+added fields.
 See the data object \code{recfin_coldefs} for more complete descriptions of
 column names and their contents.
 }
@@ -115,12 +116,21 @@ If \code{verbose = TRUE}, the function reports how many records were assigned
 
 Values in \code{source} are evaluated using case-insensitive matching.
 
-For recent RecFIN data (\code{source = "RECFIN_WATER_AREA_NAME"}), records are
-removed when area is:
+For recent RecFIN catch data (\code{source = "RECFIN_WATER_AREA_NAME"}), records
+are removed when area is:
 \itemize{
 \item \code{CANADA}
 \item \code{MEXICO}
 \item \verb{PUGET SOUND}
+}
+
+For recent RecFIN bds data (\code{source = "AGENCY_FISHED_AREA_NAME"}), records
+are kept when area is
+\itemize{
+\item For Washington: PUNCH CARD AREAs 1 through 4, and PUNCH CARD AREAs 0 and
+'Not Known' when RECFIN_PORT_NAME also equals coastal ports.
+\item For California: Because AGENCY_FISHED_AREA_NAME is empty for California,
+the script automatically uses "AGENCY_WATER_AREA_NAME" for california data.
 }
 
 For Washington historical data (\code{source = "AREA"} and \code{AGENCY == "W"}),

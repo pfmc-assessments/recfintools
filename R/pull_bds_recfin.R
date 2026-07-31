@@ -46,9 +46,10 @@ pull_bds_recfin_recent <- function(
       length(verbose) == 1
   )
 
-  file_species_name <- ifelse(length(recfin_species_name) <= 3, 
-                              paste(sub(" .*", "", recfin_species_name), collapse = "--"),
-                              "MANY")
+  file_species_name <- ifelse(length(recfin_species_name) <= 3,
+    paste(sub(" .*", "", recfin_species_name), collapse = "--"),
+    "MANY"
+  )
 
   bio_recfin <- pacfintools::getDB(
     sql = sql_bds(recfin_species_name, type = "recent", apex = apex),
@@ -106,9 +107,10 @@ pull_bds_recfin_mrfss <- function(
       length(verbose) == 1
   )
 
-  file_species_name <- ifelse(length(recfin_species_name) <= 3, 
-                              paste(sub(" .*", "", recfin_species_name), collapse = "--"),
-                              "MANY")
+  file_species_name <- ifelse(length(recfin_species_name) <= 3,
+    paste(sub(" .*", "", recfin_species_name), collapse = "--"),
+    "MANY"
+  )
 
   bio_recfin <- pacfintools::getDB(
     sql = sql_bds(recfin_species_name, type = "mrfss", apex = apex),

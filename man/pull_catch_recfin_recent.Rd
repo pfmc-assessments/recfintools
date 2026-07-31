@@ -39,7 +39,7 @@ Read catch data from the various total mortality reports in recfin:
 Historical times series for each state:
 'CTE503' or 'CTE507'
 MRFSS catch data:
-'CTE510'
+Does not have a formal apex report (though CTE510 was a temporary report)
 }
 \examples{
 \dontrun{
