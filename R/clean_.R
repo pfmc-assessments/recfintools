@@ -326,9 +326,9 @@ clean_bds <- function(data) {
 
     ## Actually removing data
 
-    # Filter out Oregon and Washington records because they don't use MRFSS data
+    # Filter out Washington records because they don't use MRFSS data
     data <- data |>
-      dplyr::filter(!state %in% c("OR", "WA"))
+      dplyr::filter(!state %in% c("WA"))
 
     # Filter out non-federal records
     data <- getArea(
@@ -346,7 +346,8 @@ clean_bds <- function(data) {
     type <- "recfin"
 
     ## Combine length and age data
-
+    
+    #TO DO: add code for this
 
     ## Standardize fields
 
@@ -383,7 +384,7 @@ clean_bds <- function(data) {
       verbose = TRUE
     )
 
-    # Remove any records without lengths and add length_cm colum
+    # Remove any records without lengths and add length_cm column
     # Flags records beyond max length, and also flags different 'total' length
     data <- getLength(
       data = data,
