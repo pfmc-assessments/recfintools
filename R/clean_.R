@@ -345,10 +345,6 @@ clean_bds <- function(data) {
   if ("RECFIN_YEAR" %in% colnames(data)) {
     type <- "recfin"
 
-    ## Combine length and age data
-    
-    #TO DO: add code for this
-
     ## Standardize fields
 
     # Rename state
@@ -391,7 +387,15 @@ clean_bds <- function(data) {
       source = c("RECFIN_LENGTH_MM"),
       verbose = TRUE
     )
-
+    
+    # Combine length and age data and remove multiple reads from ages
+    data <- getAges(
+      len_data = data,
+      age_data = age_data,
+      verbose = TRUE
+    )
+    #to do: Still need to figure out why some age data aren't in length data
+    #Move this to outside the clean function. 
 
     cli::cli_inform("Done cleaning recent bds")
   }
