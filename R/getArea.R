@@ -27,6 +27,11 @@
 #'
 #' For Washington historical data (`source = "AREA"` and `AGENCY == "W"`),
 #' records with `AREA >= 5` are removed.
+#' 
+#' For MRFSS bds data (`source = "AREA_X"`):
+#' *For Washington: Removes Washington bds data
+#' *For Oregon: All records are kept
+#' *For California: All records are kept
 #'
 #' If `verbose = TRUE`, the function reports the number of records removed by
 #' category.
@@ -48,11 +53,13 @@
 #' For recent bds data, use `AGENCY_FISHED_AREA_NAME`, which filters out values
 #' of Canada, Mexico, and Puget Sound. Areas with "Not known" or "Unknown" for
 #' Washington are kept if they also have coastal port names, but in Oregon
-#' and California these are kept. Because California data are for 
-#' `AGENCY_FISH_AREA_NAME`, the code instead filters California data using 
+#' and California these are kept. Because California data are NA for 
+#' `AGENCY_FISHED_AREA_NAME`, the code instead filters California data using 
 #' "AGENCY_WATER_AREA_NAME" to remove `Mexico` records. Records with Estuary or
-#' Not Known AGENCY_WATER_AREA_NAME in Oregon, and Inland or San Francisco Bay
+#' Not Known "AGENCY_WATER_AREA_NAME" in Oregon, and Inland or San Francisco Bay
 #' AGENCY_WATER_AREA_NAME in California are flagged for the user but not removed.
+#' For MRFSS bds data, use `AREA_X`, which flags for the user `AREA_X` values
+#' that are "5" (inland) or "6" (unknown") but does not remove them. 
 #' For all other data sets, use any valid column, since for these areas no
 #' specific records outside federal waters are identifiable.
 #'
@@ -213,6 +220,50 @@ getArea <- function(
 
     flag <- TRUE
   }
+  
+  ## MRFSS bds data
+  if (source %in% c("AREA_X")) {
+    
+    #Remove Washington bds data if not already done
+    removed <- data |>
+      dplyr::filter(ST_NAME == 53)
+    data <- data |>
+      dplyr::filter(ST_NAME != 53)
+    
+    noWA <- nrow(removed)
+  
+    
+    #Flag records that were not removed but which the user should decide what 
+    #to do with. These include records with AREA_X = 5 (inland) or 6 (not known). 
+    flag <- data |>
+      dplyr::filter(.data[[source]] %in% c(5,6))
+    
+    nflag <- nrow(flag)
+    
+    if (verbose) {
+      if(noWA > 0) {
+        cli::cli_bullets(c(
+          " " = "{.fn getArea} summary information -",
+          "i" = "There are {noWA} records from Washington that were removed.
+          Washington does not use MRFSS bds data for compositions",
+          "i" = "NOTE: Of the records that were kept, {nflag} records are from inland
+        or Unknown areas. The user should decide how to handle these, which are not 
+        typically included in compositions."
+        ))
+      }else{
+        cli::cli_bullets(c(
+          " " = "{.fn getArea} summary information -",
+          "i" = "NOTE: There are {nflag} records from inland or Unknown areas
+          that were not removed. The user should decide how to handle these, 
+          which are not typically included in compositions."
+        ))
+      }
+    }
+    
+    flag <- TRUE
+    
+  }
+  
 
   if (!flag) {
     cli::cli_inform("No adjustments to {source} were made. No records outside

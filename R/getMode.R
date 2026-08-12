@@ -44,9 +44,10 @@ getMode <- function(
 
   data <- data |>
     dplyr::mutate(mode = dplyr::case_when(
-      grepl("private", .data[[source]], ignore.case = TRUE) ~ "PR",
-      grepl("charter|party", .data[[source]], ignore.case = TRUE) ~ "PC",
-      tolower(.data[[source]]) %in% tolower(c("Man-Made/Jetty", "Man-Made", "Beach/Bank", "Shore")) ~ "Other",
+      grepl("private|7", .data[[source]], ignore.case = TRUE) ~ "PR",
+      grepl("charter|party|6", .data[[source]], ignore.case = TRUE) ~ "PC",
+      tolower(.data[[source]]) %in% tolower(c("Man-Made/Jetty", "Man-Made", "Beach/Bank", "Shore",
+                                              "1", "2", "3")) ~ "Other",
       TRUE ~ "UNK"
     ))
 

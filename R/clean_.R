@@ -312,7 +312,7 @@ clean_bds <- function(data) {
     # Rename modes
     data <- getMode(
       data = data,
-      source = c("MODE"),
+      source = c("MODE_FX"),
       verbose = TRUE
     )
 
@@ -333,7 +333,7 @@ clean_bds <- function(data) {
     # Filter out non-federal records
     data <- getArea(
       data = data,
-      source = c("AREA"),
+      source = c("AREA_X"),
       verbose = TRUE
     )
 
