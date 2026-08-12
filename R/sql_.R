@@ -509,6 +509,7 @@ sql_bds <- function(species_name, type, apex) {
   }
 
   # Biological data from years during MRFSS sampling
+  # Cut off data to 2004 and before for CA, 2003 and before for OR and WA
   if (type == "mrfss") {
     if (apex == "SD508") {
       # Based on SD508 bio data for unavailable catch (Type 2 - B1 and B2)
@@ -617,12 +618,14 @@ sql_bds <- function(species_name, type, apex) {
           ON crl.SP_CODE = TO_CHAR(rs.RECFIN_SPECIES_CODE)
         WHERE
           rs.SPECIES_NAME = ANY ({stringr::str_to_title(species)}) /* Renamed as SP_NAME above but need to use original name here */
+          AND ((ST = 6 AND YEAR <= 2004) OR (ST != 6 AND YEAR < 2004)) /* I added this in to keep years as used */
         "
       )
     }
 
     if (apex == "SD509") {
       # Based on SD509 bio data for available catch (Type 3 - A)
+      # Cut off data to 2004 and before for CA, 2003 and before for OR and WA
       sqlcall <- glue::glue(
         "
         SELECT
@@ -762,6 +765,7 @@ sql_bds <- function(species_name, type, apex) {
           ON crl.SP_CODE = TO_CHAR(rs.RECFIN_SPECIES_CODE)
         WHERE
           rs.SPECIES_NAME = ANY ({stringr::str_to_title(species)}) /* Renamed as SP_NAME above but need to use original name here */
+          AND ((ST = 6 AND YEAR <= 2004) OR (ST != 6 AND YEAR < 2004)) /* I added this in to keep years as used */
         "
       )
     }
