@@ -1,4 +1,5 @@
-#' Create a year column based on input column specified in `source`
+#' Create a year column based on input column specified in `source` and filters
+#' out some unused records
 #'
 #' @details
 #' This function is used for both catch and composition data
@@ -12,6 +13,12 @@
 #'
 #' If `verbose = TRUE`, the function reports how many records have `NA` in
 #' `year` after extraction.
+#' 
+#' @section Oregon MRFSS bds data: 
+#' Oregon MRFSS bds data extend through 2003 in SD509. ORBS sampling also
+#' occurred in 2001-2003 and duplication occurred. There is no current way to 
+#' determine which samples were duplicates. Therefore MRFSS bds data in 2001-2003
+#' is removed using this function.
 #'
 #' @export
 #' @seealso [clean_catch()] calls 'getYear'
