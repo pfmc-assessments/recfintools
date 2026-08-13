@@ -15,7 +15,8 @@
 #' are removed when area is:
 #' * `CANADA`
 #' * `MEXICO`
-#' * `PUGET SOUND`
+#' * `PUGET SOUND` in areas other than area 4B (which equates to 
+#' SURVEY_PROGRAM_CATCH_AREA_NAME equal to BONILLA-TATOOSH LINE - SEKIU RIVER). 
 #'
 #' For recent RecFIN bds data (`source = "AGENCY_FISHED_AREA_NAME"`):
 #' * For Washington: PUNCH CARD AREAs 1 through 4, and PUNCH CARD AREAs 0 and
@@ -47,7 +48,8 @@
 #' multiple different names. When multiple names within the vector are in the
 #' dataset, picks the first.
 #' For recent catch data, use `RECFIN_WATER_AREA_NAME`, which filters out values
-#' of Canada, Mexico, and Puget Sound. Areas with `Not Known` are kept.
+#' of Canada, Mexico, and Puget Sound (but keeps area 4B). Areas with `Not Known` 
+#' are kept.
 #' For Washington historical catch data, uses `AREA`, which filters out values
 #' of 5 and greater (i.e. Puget Sound)
 #' For recent bds data, use `AGENCY_FISHED_AREA_NAME`, which filters out values
@@ -58,7 +60,7 @@
 #' "AGENCY_WATER_AREA_NAME" to remove `Mexico` records. Records with Estuary or
 #' Not Known "AGENCY_WATER_AREA_NAME" in Oregon, and Inland or San Francisco Bay
 #' AGENCY_WATER_AREA_NAME in California are flagged for the user but not removed.
-#' For MRFSS bds data, use `AREA_X`, which flags for the user `AREA_X` values
+#' For MRFSS bds data, use `AREA_X`, which flags the user about `AREA_X` values
 #' that are "5" (inland) or "6" (unknown") but does not remove them. 
 #' For all other data sets, use any valid column, since for these areas no
 #' specific records outside federal waters are identifiable.
@@ -83,17 +85,22 @@ getArea <- function(
   if (source == "RECFIN_WATER_AREA_NAME") {
     nonfed <- c(
       "CANADA",
-      "MEXICO",
-      "PUGET SOUND"
+      "MEXICO"
     )
 
     removed <- data |>
-      dplyr::filter(tolower(.data[[source]]) %in% tolower(nonfed))
+      dplyr::filter((tolower(.data[[source]]) %in% tolower(nonfed)) |
+                      ((tolower(.data[[source]]) == tolower("PUGET SOUND")) &
+                         SURVEY_PROGRAM_CATCH_AREA_NAME == "EAST OF SEKIU RIVER"))
     data <- data |>
-      dplyr::filter(!tolower(.data[[source]]) %in% tolower(nonfed))
-
+      dplyr::filter(!(
+        tolower(.data[[source]]) %in% tolower(nonfed) |
+          ((tolower(.data[[source]]) == tolower("PUGET SOUND")) & 
+             SURVEY_PROGRAM_CATCH_AREA_NAME == "EAST OF SEKIU RIVER")
+      ))
+    
     noarea <- nrow(removed)
-    nsound <- sum(tolower(removed[, source]) == tolower(nonfed[3]))
+    nsound <- sum(tolower(removed[, source]) == tolower("PUGET SOUND"))
     ncan <- sum(tolower(removed[, source]) == tolower(nonfed[1]))
     nmex <- sum(tolower(removed[, source]) == tolower(nonfed[2]))
     nunk <- sum(is.na(data[, source]))
@@ -104,7 +111,7 @@ getArea <- function(
         "i" = "There are {noarea} records outside federal waters and were removed.",
         "i" = "These include {ncan} records from Canada",
         "i" = "These include {nmex} records from Mexico",
-        "i" = "These include {nsound} records from Puget Sound",
+        "i" = "These include {nsound} records from Puget Sound outside area 4B",
         "i" = "There are {nunk} records designated as Not Known that were kept."
       ))
     }
