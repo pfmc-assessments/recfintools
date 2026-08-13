@@ -92,7 +92,7 @@ getLength <- function(
     if (verbose) {
       cli::cli_bullets(c(
         " " = "{.fn getLength} summary information -",
-        "i" = "There are {nolen} records where length was NA or 0 and were removed"
+        "i" = "There are {nolen} records where length was NA or 0 and were removed",
         "i" = "NOTE: There are records where {source} was derived from empirical
         relationships based on other types of measurements, likely another length
         measurement but possibly a weight. The user should decide how to handle 
