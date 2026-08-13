@@ -46,34 +46,57 @@ getLength <- function(
     dplyr::filter(is.na(.data[[source]]) | .data[[source]] == 0)
 
   data <- data |>
-    dplyr::filter(!is.na(.data[[source]]))
+    dplyr::filter(!is.na(.data[[source]]) | .data[[source]] != 0)
+  
+  
+  #Recent bds data
+  if(source == "RECFIN_LENGTH_MM"){
 
-
-  # Add new column 'length_cm' based on units in source
-
-  if (grepl("mm", tolower(source))) {
+    # Add new column 'length_cm' based on units in source
+  
+    if (grepl("mm", tolower(source))) {
+      data$length_cm <- data[, source] / 10
+    } else if (grepl("cm", tolower(source))) {
+      data$length_cm <- data[, source]
+    }
+  
+    # Count number of lengths with NA removed, number outside Max, and number of
+    # lengths with total length
+    nolen <- nrow(removed)
+    outmax <- sum(!data[, "IS_AGENCY_LENGTH_WITHIN_MAX"])
+    lentype <- sum(data[, "RECFIN_LENGTH_TYPE"] == "TOTAL")
+  
+    if (verbose) {
+      cli::cli_bullets(c(
+        " " = "{.fn getLength} summary information -",
+        "i" = "There are {nolen} records where length was NA or 0 and were removed",
+        "i" = "NOTE: there are {outmax} records flagged as being outside the
+        maximum length for the species. The user should decide how to handle these",
+        "i" = "NOTE: there are {lentype} records flagged as being total length as
+        opposed to fork length, which only is specified for Washington. The user 
+        should decide how to handle these"
+      ))
+    }
+  }
+  
+  #MRFSS bds data
+  if(source %in% c("LNGTH", "T_LEN")){
+    
+    # Both are in mm so convert to cm
     data$length_cm <- data[, source] / 10
-  } else if (grepl("cm", tolower(source))) {
-    data$length_cm <- data[, source]
+    
+    # Count number of lengths with NA or 0 removed
+    # Note that LENFLAG only occurs in 2004 (for CRFS samples)
+    nolen <- nrow(removed)
+    
+    if (verbose) {
+      cli::cli_bullets(c(
+        " " = "{.fn getLength} summary information -",
+        "i" = "There are {nolen} records where length was NA or 0 and were removed"
+      ))
+    }
   }
-
-  # Count number of lengths with NA removed, number outside Max, and number of
-  # lengths with total length
-  nolen <- nrow(removed)
-  outmax <- sum(!data[, "IS_AGENCY_LENGTH_WITHIN_MAX"])
-  lentype <- sum(data[, "RECFIN_LENGTH_TYPE"] == "TOTAL")
-
-  if (verbose) {
-    cli::cli_bullets(c(
-      " " = "{.fn getLength} summary information -",
-      "i" = "There are {nolen} records where length was NA or 0 and was removed",
-      "i" = "NOTE: there are {outmax} records flagged as being outside the
-      maximum length for the species. The user should decide how to handle these",
-      "i" = "NOTE: there are {lentype} records flagged as being total length as
-      opposed to fork length, which only is specified for Washington. The user 
-      should decide how to handle these"
-    ))
-  }
+  
 
   return(data)
 }

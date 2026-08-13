@@ -226,9 +226,9 @@ getArea <- function(
     
     #Remove Washington bds data if not already done
     removed <- data |>
-      dplyr::filter(ST_NAME == 53)
+      dplyr::filter(ST == 53)
     data <- data |>
-      dplyr::filter(ST_NAME != 53)
+      dplyr::filter(ST != 53)
     
     noWA <- nrow(removed)
   
@@ -244,18 +244,20 @@ getArea <- function(
       if(noWA > 0) {
         cli::cli_bullets(c(
           " " = "{.fn getArea} summary information -",
-          "i" = "There are {noWA} records from Washington that were removed.
+          "i" = "All {noWA} records from Washington were removed.
           Washington does not use MRFSS bds data for compositions",
-          "i" = "NOTE: Of the records that were kept, {nflag} records are from inland
-        or Unknown areas. The user should decide how to handle these, which are not 
-        typically included in compositions."
+          "i" = "NOTE: Of the Oregon and California records that were kept, 
+          {nflag} records are from inland ({source} = 5) or Unknown 
+          ({source} = 6) areas. The user should decide how to handle these, 
+          which are not typically included in compositions."
         ))
       }else{
         cli::cli_bullets(c(
           " " = "{.fn getArea} summary information -",
-          "i" = "NOTE: There are {nflag} records from inland or Unknown areas
-          that were not removed. The user should decide how to handle these, 
-          which are not typically included in compositions."
+          "i" = "NOTE: There are {nflag} records from inland ({source} = 5) or 
+          Unknown ({source} = 6) areas that were not removed. The user should 
+          decide how to handle these, which are not typically included in 
+          compositions."
         ))
       }
     }

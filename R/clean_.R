@@ -326,16 +326,28 @@ clean_bds <- function(data) {
 
     ## Actually removing data
 
-    # Filter out Washington records because they don't use MRFSS data
-    data <- data |>
-      dplyr::filter(!state %in% c("WA"))
+    # # Filter out Washington records because they don't use MRFSS data
+    # # Done below in getArea()
+    # data <- data |>
+    #   dplyr::filter(!state %in% c("WA"))
 
     # Filter out non-federal records
+    # Also removed Washington records because they don't use MRFSS data
     data <- getArea(
       data = data,
       source = c("AREA_X"),
       verbose = TRUE
     )
+    
+    # Remove any records without lengths and add length_cm column
+    # Flags records beyond max length, and also flags different 'total' length
+    data <- getLength(
+      data = data,
+      source = c("LNGTH"),
+      verbose = TRUE
+    )
+    
+    
 
 
     cli::cli_inform("Done cleaning MRFSS bds")
@@ -394,8 +406,9 @@ clean_bds <- function(data) {
       age_data = age_data,
       verbose = TRUE
     )
-    #to do: Still need to figure out why some age data aren't in length data
-    #Move this to outside the clean function. 
+    #to do: This is working but still need to figure out why some age data 
+    #aren't in length data
+    #Probably will move this to outside the clean function. 
 
     cli::cli_inform("Done cleaning recent bds")
   }
