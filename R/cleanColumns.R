@@ -1,11 +1,13 @@
 #' Remove columns that are not used and thus potentially confusing. Also removes
 #' columns without any information. 
 #'
-#' Clean columns of a data frame from RecFIN. All description columns are
-#' removed. Should you want anything different, please feel free to post an
+#' @details
+#' This function cleans columns of a data frame from RecFIN. It is used for 
+#' both catch and composition data. Currently, the columns that are removed 
+#' are a mix of columns with all NA values, the percentage of NA values above
+#' some threshold, and other prespecified columns that are not used regularly.
+#' Should you want anything different, please feel free to post an
 #' issue on GitHub, email the package maintainer, or submit a pull request.
-#' 
-#' Basing on the similar file in pacfintools
 #'
 #' @param data A data frame with named columns
 #' @param prop The proportion of NA values within a column after which 
@@ -20,8 +22,9 @@
 #'
 #' @export
 #' @author Brian Langseth
-#' @return A data frame with fewer columns, alongwith a message alerting user 
-#' which columns were removed.
+#' @return A data frame with fewer columns, along with a message alerting the
+#' user of the number of columns removed, and the option to specifically list 
+#' out the name of the columns removed.
 #'
 cleanColumns <- function(data, prop, verbose = TRUE, show_cols = FALSE) {
   
@@ -47,6 +50,9 @@ cleanColumns <- function(data, prop, verbose = TRUE, show_cols = FALSE) {
                     "TTYP_PROP_V1", "MULTI_PROP", "MINOR_PROP", 
                     "ANNUAL_MINOR_TOTAL", "MINOR_MO_PROP", "TTYP_PROP_V2", 
                     "BTYP_PROP_V3")
+  
+  #No other columns for WA and CA historical catch, nor for recent bds lengths 
+  #and ages or mrfss bds
   
   other_catch_cols <- c(mrfss_catch_cols, or_hist_cols)
   
