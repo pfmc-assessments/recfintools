@@ -41,6 +41,9 @@
 - [`pull_catch_recfin_recent()`](https://pfmc-assessments.github.io/recfintools/reference/pull_catch_recfin_recent.md)
   : Functions to pull catch data from recfin
 
+- [`readData()`](https://pfmc-assessments.github.io/recfintools/reference/readData.md)
+  : Read RecFIN data files
+
 - [`recfin_coldefs`](https://pfmc-assessments.github.io/recfintools/reference/recfin_coldefs.md)
   : A data frame of column descriptions
 
