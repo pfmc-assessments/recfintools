@@ -29,8 +29,8 @@ This function currently focuses on the six primary RecFIN data files:
 \code{Catch.Recent_CTE501}, \code{Catch.MRFSS}, and \code{Catch.Hist}. If multiple files
 with the same keyword are present, the most recently modified file is used.
 The loaded objects are assigned into \code{envir} using standardized object names:
-\code{bds_recent_len}, \code{bds_recent_age}, \code{bds_mrfss},
-\code{catch_recent}, \code{catch_mrfss}, and \code{catch_hist}.
+\code{bds_recent_len}, \code{bds_recent_age}, \code{bds_mrfss}, \code{catch_recent},
+\code{catch_mrfss}, and \code{catch_hist}.
 }
 \author{
 Brian Langseth

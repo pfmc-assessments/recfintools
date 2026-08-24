@@ -18,7 +18,7 @@
 #' or 0 are removed.
 #'
 #' If `verbose = TRUE`, the function reports how many records with unknown or 0
-#' length were removed, alongwith a message conveying the number of extreme
+#' length were removed, along with a message conveying the number of extreme
 #' lengths that were kept, and number of total length measurements.
 #'
 #' @export
