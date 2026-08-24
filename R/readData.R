@@ -36,7 +36,7 @@ readData <- function(path = getwd(), envir = parent.frame(), verbose = TRUE) {
     full.names = TRUE,
     ignore.case = TRUE
   )
-  files <- files[grepl("\\.rdata$", files, ignore.case = TRUE)]
+  files <- files[grepl("\\.rdata$", basename(files), ignore.case = TRUE)]
 
   latest_files <- vapply(keywords, function(keyword) {
     keyword_files <- files[
