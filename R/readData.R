@@ -1,15 +1,16 @@
 #' Read RecFIN data files
 #'
 #' Read the primary `.RData` files produced by this package and assign each
-#' loaded object to an object name that matches the file keyword.
+#' loaded object to a standardized object name.
 #'
 #' @details
 #' This function currently focuses on the six primary RecFIN data files:
 #' `BDS.Recent_SD501`, `BDS.Recent_SD506`, `BDS.MRFSS_SD509`,
 #' `Catch.Recent_CTE501`, `Catch.MRFSS`, and `Catch.Hist`. If multiple files
 #' with the same keyword are present, the most recently modified file is used.
-#' The loaded objects are assigned into `envir` using the keyword as the object
-#' name.
+#' The loaded objects are assigned into `envir` using standardized object names:
+#' `bds_recent_len`, `bds_recent_age`, `bds_mrfss`, `catch_recent`,
+#' `catch_mrfss`, and `catch_hist`.
 #'
 #' @param path A file path to the directory containing the `.RData` files.
 #'   The default is the current working directory.
@@ -23,12 +24,12 @@
 #' @author Brian Langseth
 readData <- function(path = getwd(), envir = parent.frame(), verbose = TRUE) {
   keywords <- c(
-    "BDS.Recent_SD501",
-    "BDS.Recent_SD506",
-    "BDS.MRFSS_SD509",
-    "Catch.Recent_CTE501",
-    "Catch.MRFSS",
-    "Catch.Hist"
+    BDS.Recent_SD501 = "bds_recent_len",
+    BDS.Recent_SD506 = "bds_recent_age",
+    BDS.MRFSS_SD509 = "bds_mrfss",
+    Catch.Recent_CTE501 = "catch_recent",
+    Catch.MRFSS = "catch_mrfss",
+    Catch.Hist = "catch_hist"
   )
 
   files <- list.files(
@@ -56,8 +57,9 @@ readData <- function(path = getwd(), envir = parent.frame(), verbose = TRUE) {
 
   loaded_objects <- list()
 
-  for (keyword in keywords) {
-    file <- latest_files[[keyword]]
+  for (file_keyword in names(keywords)) {
+    object_name <- keywords[[file_keyword]]
+    file <- latest_files[[file_keyword]]
 
     if (is.na(file)) {
       next
@@ -70,8 +72,8 @@ readData <- function(path = getwd(), envir = parent.frame(), verbose = TRUE) {
       next
     }
 
-    loaded_name <- if (keyword %in% object_names) {
-      keyword
+    loaded_name <- if (file_keyword %in% object_names) {
+      file_keyword
     } else if (length(object_names) == 1) {
       object_names[[1]]
     } else {
@@ -80,13 +82,13 @@ readData <- function(path = getwd(), envir = parent.frame(), verbose = TRUE) {
         basename(file),
         length(object_names),
         paste(object_names, collapse = ", "),
-        keyword
+        file_keyword
       ))
     }
 
     loaded_object <- get(loaded_name, envir = file_env)
-    assign(keyword, loaded_object, envir = envir)
-    loaded_objects[[keyword]] <- loaded_object
+    assign(object_name, loaded_object, envir = envir)
+    loaded_objects[[object_name]] <- loaded_object
   }
 
   if (verbose) {

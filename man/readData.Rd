@@ -21,15 +21,16 @@ An invisible named list of loaded objects.
 }
 \description{
 Read the primary \code{.RData} files produced by this package and assign each
-loaded object to an object name that matches the file keyword.
+loaded object to a standardized object name.
 }
 \details{
 This function currently focuses on the six primary RecFIN data files:
 \code{BDS.Recent_SD501}, \code{BDS.Recent_SD506}, \code{BDS.MRFSS_SD509},
 \code{Catch.Recent_CTE501}, \code{Catch.MRFSS}, and \code{Catch.Hist}. If multiple files
 with the same keyword are present, the most recently modified file is used.
-The loaded objects are assigned into \code{envir} using the keyword as the object
-name.
+The loaded objects are assigned into \code{envir} using standardized object names:
+\code{bds_recent_len}, \code{bds_recent_age}, \code{bds_mrfss},
+\code{catch_recent}, \code{catch_mrfss}, and \code{catch_hist}.
 }
 \author{
 Brian Langseth

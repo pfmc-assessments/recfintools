@@ -33,18 +33,18 @@ test_that("readData loads the most recent file for each keyword", {
   expect_named(
     loaded,
     c(
-      "BDS.Recent_SD501",
-      "BDS.Recent_SD506",
-      "BDS.MRFSS_SD509",
-      "Catch.Recent_CTE501",
-      "Catch.MRFSS",
-      "Catch.Hist"
+      "bds_recent_len",
+      "bds_recent_age",
+      "bds_mrfss",
+      "catch_recent",
+      "catch_mrfss",
+      "catch_hist"
     )
   )
-  expect_equal(output_env$BDS.Recent_SD501$source, "newer")
-  expect_equal(output_env$BDS.Recent_SD506$source, "sd506")
-  expect_equal(output_env$BDS.MRFSS_SD509$source, "sd509")
-  expect_equal(output_env$Catch.Recent_CTE501$source, "cte501")
-  expect_equal(output_env$Catch.MRFSS$source, "mrfss")
-  expect_equal(output_env$Catch.Hist$source, "hist")
+  expect_equal(output_env$bds_recent_len$source, "newer")
+  expect_equal(output_env$bds_recent_age$source, "sd506")
+  expect_equal(output_env$bds_mrfss$source, "sd509")
+  expect_equal(output_env$catch_recent$source, "cte501")
+  expect_equal(output_env$catch_mrfss$source, "mrfss")
+  expect_equal(output_env$catch_hist$source, "hist")
 })
