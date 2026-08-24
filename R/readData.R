@@ -70,7 +70,21 @@ readData <- function(path = getwd(), envir = parent.frame(), verbose = TRUE) {
       next
     }
 
-    loaded_object <- get(object_names[[1]], envir = file_env)
+    loaded_name <- if (keyword %in% object_names) {
+      keyword
+    } else if (length(object_names) == 1) {
+      object_names[[1]]
+    } else {
+      stop(sprintf(
+        "File '%s' contains %d objects (%s); expected exactly 1, or an object named '%s'.",
+        basename(file),
+        length(object_names),
+        paste(object_names, collapse = ", "),
+        keyword
+      ))
+    }
+
+    loaded_object <- get(loaded_name, envir = file_env)
     assign(keyword, loaded_object, envir = envir)
     loaded_objects[[keyword]] <- loaded_object
   }
