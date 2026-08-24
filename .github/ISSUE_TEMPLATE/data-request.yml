@@ -2,7 +2,7 @@ name: Data request
 description: >
   Request a type of data available for download from the RecFIN data warehouse.
 title: "Data request for species <replace with your species>"
-labels: ["type: request", "topic: database"]
+labels: ["type: request"]
 assignees:
   - brianlangseth-NOAA
 body:
@@ -26,7 +26,6 @@ body:
       options:
         - catch
         - biological data
-        - log book (not yet available)
   - type: textarea
     id: info
     attributes:
