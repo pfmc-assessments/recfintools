@@ -1,14 +1,11 @@
-# Create a length_cm column based on input column specified in `source`.
+# Create a year column based on input column specified in `source` and filters out some unused records
 
-Create a length_cm column based on input column specified in `source`.
-
-Create a year column based on input column specified in `source`
+Create a year column based on input column specified in `source` and
+filters out some unused records
 
 ## Usage
 
 ``` r
-getYear(data, source = c("RECFIN_YEAR"), verbose = TRUE)
-
 getYear(data, source = c("RECFIN_YEAR"), verbose = TRUE)
 ```
 
@@ -34,27 +31,7 @@ getYear(data, source = c("RECFIN_YEAR"), verbose = TRUE)
 
 ## Details
 
-This function is used for only composition data. It creates a new column
-in units of cm, and also flags lengths beyond max, as well as total
-length measurements (as opposed to fork length). Removes lengths with NA
-or 0
-
 This function is used for both catch and composition data
-
-## Length extraction rules
-
-`source` can be a vector of candidate column names. The first matching
-column in `data` is used.
-
-The selected source column is copied directly into a standardized
-`length_cm` column. The units are cm and adjusted based on whether the
-input source column includes mm or cm. Extreme length values are flagged
-but not removed, as are measurements in Total length. Lengths that are
-NA or 0 are removed.
-
-If `verbose = TRUE`, the function reports how many records with unknown
-or 0 length were removed, alongwith a message conveying the number of
-extreme lengths that were kept, and number of total length measurements.
 
 ## Year extraction rules
 
@@ -67,10 +44,14 @@ column. No recoding is applied.
 If `verbose = TRUE`, the function reports how many records have `NA` in
 `year` after extraction.
 
-## See also
+## Oregon MRFSS bds data
 
-[`clean_catch()`](https://pfmc-assessments.github.io/recfintools/reference/clean_catch.md)
-calls 'getLength'
+Oregon MRFSS bds data extend through 2003 in SD509. ORBS sampling also
+occurred in 2001-2003 and duplication occurred. There is no current way
+to determine which samples were duplicates. Therefore MRFSS bds data in
+2001-2003 is removed using this function.
+
+## See also
 
 [`clean_catch()`](https://pfmc-assessments.github.io/recfintools/reference/clean_catch.md)
 calls 'getYear'

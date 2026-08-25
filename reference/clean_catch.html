@@ -115,7 +115,7 @@ for recent data (CTE001 or CTE501), which extend back to 2001, and from
 historical reconstructions (CTE505), which extend through 2000. When running
 this function, Oregon catch data are removed from the MRFSS dataset.</p>
 <p>Oregon historical catches are provided in numbers. When running this function,
-average weights are calcualted that can be used to determine catch in weight.</p>
+average weights are calculated that can be used to determine catch in weight.</p>
     </div>
     <div class="section level2">
     <h2 id="california-data">California data<a class="anchor" aria-label="anchor" href="#california-data"></a></h2>
@@ -158,14 +158,20 @@ standardized into <code>mode</code> as:</p><ul><li><p><code>PR</code>: anything 
 <p>For recent RecFIN catch data (<code>source = "RECFIN_WATER_AREA_NAME"</code>), records
 are removed when area is:</p><ul><li><p><code>CANADA</code></p></li>
 <li><p><code>MEXICO</code></p></li>
-<li><p><code>PUGET SOUND</code></p></li>
-</ul><p>For recent RecFIN bds data (<code>source = "AGENCY_FISHED_AREA_NAME"</code>), records
-are kept when area is</p><ul><li><p>For Washington: PUNCH CARD AREAs 1 through 4, and PUNCH CARD AREAs 0 and
-'Not Known' when RECFIN_PORT_NAME also equals coastal ports.</p></li>
+<li><p><code>PUGET SOUND</code> in areas other than area 4B (which equates to
+SURVEY_PROGRAM_CATCH_AREA_NAME equal to BONILLA-TATOOSH LINE - SEKIU RIVER).</p></li>
+</ul><p>For recent RecFIN bds data (<code>source = "AGENCY_FISHED_AREA_NAME"</code>):</p><ul><li><p>For Washington: PUNCH CARD AREAs 1 through 4, and PUNCH CARD AREAs 0 and
+'Not Known' when RECFIN_PORT_NAME also equals coastal ports are kept. All other
+records are removed.</p></li>
+<li><p>For Oregon: All records are kept,</p></li>
 <li><p>For California: Because AGENCY_FISHED_AREA_NAME is empty for California,
-the script automatically uses "AGENCY_WATER_AREA_NAME" for california data.</p></li>
+the script automatically uses "AGENCY_WATER_AREA_NAME" for California data.</p></li>
 </ul><p>For Washington historical data (<code>source = "AREA"</code> and <code>AGENCY == "W"</code>),
 records with <code>AREA &gt;= 5</code> are removed.</p>
+<p>For MRFSS bds data (<code>source = "AREA_X"</code>):
+*For Washington: Removes Washington bds data
+*For Oregon: All records are kept
+*For California: All records are kept</p>
 <p>If <code>verbose = TRUE</code>, the function reports the number of records removed by
 category.</p>
     </div>

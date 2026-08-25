@@ -4,8 +4,13 @@
 <url><loc>https://pfmc-assessments.github.io/recfintools/authors.html</loc></url>
 <url><loc>https://pfmc-assessments.github.io/recfintools/index.html</loc></url>
 <url><loc>https://pfmc-assessments.github.io/recfintools/reference/check_catch.html</loc></url>
+<url><loc>https://pfmc-assessments.github.io/recfintools/reference/cleanColumns.html</loc></url>
+<url><loc>https://pfmc-assessments.github.io/recfintools/reference/clean_bds.html</loc></url>
 <url><loc>https://pfmc-assessments.github.io/recfintools/reference/clean_catch.html</loc></url>
+<url><loc>https://pfmc-assessments.github.io/recfintools/reference/find_na_columns.html</loc></url>
+<url><loc>https://pfmc-assessments.github.io/recfintools/reference/getAges.html</loc></url>
 <url><loc>https://pfmc-assessments.github.io/recfintools/reference/getArea.html</loc></url>
+<url><loc>https://pfmc-assessments.github.io/recfintools/reference/getLength.html</loc></url>
 <url><loc>https://pfmc-assessments.github.io/recfintools/reference/getMode.html</loc></url>
 <url><loc>https://pfmc-assessments.github.io/recfintools/reference/getState.html</loc></url>
 <url><loc>https://pfmc-assessments.github.io/recfintools/reference/getWeightHist.html</loc></url>

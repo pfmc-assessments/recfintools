@@ -1,7 +1,7 @@
-# Filter out records from Puget Sound, Canada, Mexico, or unknown areas based on input column specified in `source`.
+# Filter out records from Puget Sound, Canada, Mexico areas based on input column specified in `source`.
 
-Filter out records from Puget Sound, Canada, Mexico, or unknown areas
-based on input column specified in `source`.
+Filter out records from Puget Sound, Canada, Mexico areas based on input
+column specified in `source`.
 
 ## Usage
 
@@ -23,16 +23,22 @@ getArea(data, source = c("RECFIN_WATER_AREA_NAME"), verbose = TRUE)
   multiple different names. When multiple names within the vector are in
   the dataset, picks the first. For recent catch data, use
   `RECFIN_WATER_AREA_NAME`, which filters out values of Canada, Mexico,
-  and Puget Sound. Areas with `Not Known` are kept. For Washington
-  historical catch data, uses `AREA`, which filters out values of 5 and
-  greater (i.e. Puget Sound) For recent bds data, use
+  and Puget Sound (but keeps area 4B). Areas with `Not Known` are kept.
+  For Washington historical catch data, uses `AREA`, which filters out
+  values of 5 and greater (i.e. Puget Sound) For recent bds data, use
   `AGENCY_FISHED_AREA_NAME`, which filters out values of Canada, Mexico,
-  and Puget Sound. Areas with "Not known" or "Unknown" are kept if they
-  also have coastal port names. Because California data are empty for
-  `AGENCY_FISH_AREA_NAME`, the code instead filters California data
-  using "AGENCY_WATER_AREA_NAME" when `AGENCY_FISHED_AREA_NAME` is used.
-  For all other data sets, use any valid column, since for these areas
-  no specific records outside federal waters are identifiable.
+  and Puget Sound. Areas with "Not known" or "Unknown" for Washington
+  are kept if they also have coastal port names, but in Oregon and
+  California these are kept. Because California data are NA for
+  `AGENCY_FISHED_AREA_NAME`, the code instead filters California data
+  using "AGENCY_WATER_AREA_NAME" to remove `Mexico` records. Records
+  with Estuary or Not Known "AGENCY_WATER_AREA_NAME" in Oregon, and
+  Inland or San Francisco Bay AGENCY_WATER_AREA_NAME in California are
+  flagged for the user but not removed. For MRFSS bds data, use
+  `AREA_X`, which flags the user about `AREA_X` values that are "5"
+  (inland) or "6" (unknown") but does not remove them. For all other
+  data sets, use any valid column, since for these areas no specific
+  records outside federal waters are identifiable.
 
 - verbose:
 
@@ -58,20 +64,28 @@ records are removed when area is:
 
 - `MEXICO`
 
-- `PUGET SOUND`
+- `PUGET SOUND` in areas other than area 4B (which equates to
+  SURVEY_PROGRAM_CATCH_AREA_NAME equal to BONILLA-TATOOSH LINE - SEKIU
+  RIVER).
 
-For recent RecFIN bds data (`source = "AGENCY_FISHED_AREA_NAME"`),
-records are kept when area is
+For recent RecFIN bds data (`source = "AGENCY_FISHED_AREA_NAME"`):
 
 - For Washington: PUNCH CARD AREAs 1 through 4, and PUNCH CARD AREAs 0
-  and 'Not Known' when RECFIN_PORT_NAME also equals coastal ports.
+  and 'Not Known' when RECFIN_PORT_NAME also equals coastal ports are
+  kept. All other records are removed.
+
+- For Oregon: All records are kept,
 
 - For California: Because AGENCY_FISHED_AREA_NAME is empty for
   California, the script automatically uses "AGENCY_WATER_AREA_NAME" for
-  california data.
+  California data.
 
 For Washington historical data (`source = "AREA"` and `AGENCY == "W"`),
 records with `AREA >= 5` are removed.
+
+For MRFSS bds data (`source = "AREA_X"`): \*For Washington: Removes
+Washington bds data \*For Oregon: All records are kept \*For California:
+All records are kept
 
 If `verbose = TRUE`, the function reports the number of records removed
 by category.

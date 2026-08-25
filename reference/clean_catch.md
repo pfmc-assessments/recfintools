@@ -75,7 +75,7 @@ When running this function, Oregon catch data are removed from the MRFSS
 dataset.
 
 Oregon historical catches are provided in numbers. When running this
-function, average weights are calcualted that can be used to determine
+function, average weights are calculated that can be used to determine
 catch in weight.
 
 ## California data
@@ -129,20 +129,28 @@ records are removed when area is:
 
 - `MEXICO`
 
-- `PUGET SOUND`
+- `PUGET SOUND` in areas other than area 4B (which equates to
+  SURVEY_PROGRAM_CATCH_AREA_NAME equal to BONILLA-TATOOSH LINE - SEKIU
+  RIVER).
 
-For recent RecFIN bds data (`source = "AGENCY_FISHED_AREA_NAME"`),
-records are kept when area is
+For recent RecFIN bds data (`source = "AGENCY_FISHED_AREA_NAME"`):
 
 - For Washington: PUNCH CARD AREAs 1 through 4, and PUNCH CARD AREAs 0
-  and 'Not Known' when RECFIN_PORT_NAME also equals coastal ports.
+  and 'Not Known' when RECFIN_PORT_NAME also equals coastal ports are
+  kept. All other records are removed.
+
+- For Oregon: All records are kept,
 
 - For California: Because AGENCY_FISHED_AREA_NAME is empty for
   California, the script automatically uses "AGENCY_WATER_AREA_NAME" for
-  california data.
+  California data.
 
 For Washington historical data (`source = "AREA"` and `AGENCY == "W"`),
 records with `AREA >= 5` are removed.
+
+For MRFSS bds data (`source = "AREA_X"`): \*For Washington: Removes
+Washington bds data \*For Oregon: All records are kept \*For California:
+All records are kept
 
 If `verbose = TRUE`, the function reports the number of records removed
 by category.

@@ -6,14 +6,32 @@
   : Alert user of whether catches records for weight are missing but
   catches in number exist.
 
+- [`cleanColumns()`](https://pfmc-assessments.github.io/recfintools/reference/cleanColumns.md)
+  : Remove columns that are not used and thus potentially confusing.
+  Also removes columns without any information.
+
+- [`clean_bds()`](https://pfmc-assessments.github.io/recfintools/reference/clean_bds.md)
+  : Clean RecFIN biological data
+
 - [`clean_catch()`](https://pfmc-assessments.github.io/recfintools/reference/clean_catch.md)
   : Clean RecFIN data
+
+- [`find_na_columns()`](https://pfmc-assessments.github.io/recfintools/reference/find_na_columns.md)
+  : Identify columns of a dataframe that are empty or are mostly empty.
+
+- [`getAges()`](https://pfmc-assessments.github.io/recfintools/reference/getAges.md)
+  : Add age data to length data for recent bds data.
 
 - [`getArea()`](https://pfmc-assessments.github.io/recfintools/reference/getArea.md)
   :
 
-  Filter out records from Puget Sound, Canada, Mexico, or unknown areas
-  based on input column specified in `source`.
+  Filter out records from Puget Sound, Canada, Mexico areas based on
+  input column specified in `source`.
+
+- [`getLength()`](https://pfmc-assessments.github.io/recfintools/reference/getLength.md)
+  :
+
+  Create a length_cm column based on input column specified in `source`.
 
 - [`getMode()`](https://pfmc-assessments.github.io/recfintools/reference/getMode.md)
   :
@@ -32,7 +50,8 @@
 - [`getYear()`](https://pfmc-assessments.github.io/recfintools/reference/getYear.md)
   :
 
-  Create a length_cm column based on input column specified in `source`.
+  Create a year column based on input column specified in `source` and
+  filters out some unused records
 
 - [`pull_bds_recfin_recent()`](https://pfmc-assessments.github.io/recfintools/reference/pull_bds_recfin_recent.md)
   : Functions to pull bio data from recfin, which includes lengths and
