@@ -10,9 +10,10 @@ find_na_columns(data, prop)
 \item{data}{A data frame with named columns}
 
 \item{prop}{The proportion of NA values within a column after which
-it is considered to be mostly empty. Should be between 0 and 1. Column names
-where NA values occur at a higher proportion than this value are considered
-mostly empty. Default is 0.9}
+it is considered to be mostly empty. Should be between 0 and 1, inclusive.
+Column names where NA values occur at a higher proportion than this value
+are considered mostly empty. Default is 1, which means no columns are selected
+as mostly empty.}
 }
 \value{
 A vector of column names from a dataframe that are empty (i.e.

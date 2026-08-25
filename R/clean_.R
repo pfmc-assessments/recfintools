@@ -348,7 +348,7 @@ clean_bds <- function(data) {
       source = c("AREA_X"),
       verbose = TRUE
     )
-    
+
     # Remove any records without lengths and add length_cm column
     # Flags records beyond max length, and also flags different 'total' length
     data <- getLength(
@@ -356,8 +356,6 @@ clean_bds <- function(data) {
       source = c("LNGTH"),
       verbose = TRUE
     )
-    
-    
 
 
     cli::cli_inform("Done cleaning MRFSS bds")
@@ -395,7 +393,7 @@ clean_bds <- function(data) {
 
     # Filter out non-federal records
     # Flags records with certain qualities that warrant further decisions but
-    # not removed by this function. 
+    # not removed by this function.
     data <- getArea(
       data = data,
       source = c("AGENCY_FISHED_AREA_NAME"),
@@ -409,16 +407,16 @@ clean_bds <- function(data) {
       source = c("RECFIN_LENGTH_MM"),
       verbose = TRUE
     )
-    
+
     # Combine length and age data and remove multiple reads from ages
     data <- getAges(
       len_data = data,
       age_data = age_data,
       verbose = TRUE
     )
-    #to do: This is working but still need to figure out why some age data 
-    #aren't in length data
-    #Probably will move this to outside the clean function. 
+    # to do: This is working but still need to figure out why some age data
+    # aren't in length data
+    # Probably will move this to outside the clean function.
 
     cli::cli_inform("Done cleaning recent bds")
   }

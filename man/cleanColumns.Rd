@@ -5,18 +5,19 @@
 \title{Remove columns that are not used and thus potentially confusing. Also removes
 columns without any information.}
 \usage{
-cleanColumns(data, prop, verbose = TRUE, show_cols = FALSE)
+cleanColumns(data, prop = 1, verbose = TRUE, show_cols = FALSE)
 }
 \arguments{
 \item{data}{A data frame with named columns}
 
 \item{prop}{The proportion of NA values within a column after which
-it is considered to be mostly empty. Should be between 0 and 1. Column names
-where NA values occur at a higher proportion than this value are considered
-mostly empty. Default is 0.9}
+it is considered to be mostly empty. Should be between 0 and 1, inclusive.
+Column names where NA values occur at a higher proportion than this value
+are considered mostly empty. Default is 1, which means no columns are selected
+as mostly empty.}
 
 \item{verbose}{Whether to output detailed information about the cleaning
-process. Default is TRUE}
+process. Default is TRUE. Also required for \code{show_cols}.}
 
 \item{show_cols}{Whether to output the names of all the columns that were
 removed by this function. Default is FALSE. To show must also set
