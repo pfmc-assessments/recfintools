@@ -11,11 +11,12 @@
 #'
 #' @param data A data frame with named columns
 #' @param prop The proportion of NA values within a column after which 
-#' it is considered to be mostly empty. Should be between 0 and 1. Column names 
-#' where NA values occur at a higher proportion than this value are considered
-#' mostly empty. Default is 0.9
+#' it is considered to be mostly empty. Should be between 0 and 1, inclusive. 
+#' Column names where NA values occur at a higher proportion than this value 
+#' are considered mostly empty. Default is 1, which means no columns are selected
+#' as mostly empty. 
 #' @param verbose Whether to output detailed information about the cleaning
-#' process. Default is TRUE
+#' process. Default is TRUE. Also required for `show_cols`.
 #' @param show_cols Whether to output the names of all the columns that were
 #' removed by this function. Default is FALSE. To show must also set 
 #' `verbose` = TRUE
@@ -26,7 +27,7 @@
 #' user of the number of columns removed, and the option to specifically list 
 #' out the name of the columns removed.
 #'
-cleanColumns <- function(data, prop, verbose = TRUE, show_cols = FALSE) {
+cleanColumns <- function(data, prop = 1, verbose = TRUE, show_cols = FALSE) {
   
   #Names of columns that are either all NA or mostly NA
   empty_cols <- find_na_columns(data, prop)
@@ -35,11 +36,11 @@ cleanColumns <- function(data, prop, verbose = TRUE, show_cols = FALSE) {
   n_mostly_empty <- length(empty_cols$mostly_empty)
   
   #Additional MRFSS catch columns to exclude
-  mrfss_catch_cols <- c("ST_SSQ", "SUB_SSQ", "LNGSSQ", "WGTSSQ",    #Sum of squares things
+  mrfss_catch_cols <- c("ST_SSQ", "SUB_SSQ", "LNGSSQ", "WGTSSQ", "WGTB1SSQ", "LENB2SSQ", "LENB1SSQ", "WGTB2SSQ", #Sum of squares things
                         "SUB_WGT", "SUB_AVE", "SUBVAR", "SUB_EXAM", #Info of things by subregion
-                        "ST_WGT", "ST_AVE", "STVAR", "ST_EXAM",     #Info of things by state
-                        "RECFIN_VDATE", "RECFIN_LOG_ID", "SAS_FILENAME", "SERVER_PATH", "DATE1", #Database things
-                        "GP_CODE", "SG_CODE")                       #Codes that are already implicit in another column
+                        "ST_WGT", "ST_AVE", "STVAR", "ST_EXAM", #Info of things by state
+                        "RECFIN_LOG_ID", "SAS_FILENAME", "SERVER_PATH", "DATE1", #Database things
+                        "GP_CODE", "SG_CODE") #Codes that are already implicit in another column
 
   #Additional OR historical catch columns to exclude. These are sub-elements of 
   #the expansion process
