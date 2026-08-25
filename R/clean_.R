@@ -50,7 +50,7 @@
 #' this function, Oregon catch data are removed from the MRFSS dataset.
 #'
 #' Oregon historical catches are provided in numbers. When running this function,
-#' average weights are calcualted that can be used to determine catch in weight.
+#' average weights are calculated that can be used to determine catch in weight.
 #'
 #' @section California data:
 #'
@@ -291,6 +291,16 @@ clean_catch <- function(data) {
 }
 
 
+#' Clean RecFIN biological data
+#'
+#' Clean biological datasets from RecFIN and MRFSS so fields are standardized
+#' and prepared for analysis.
+#'
+#' @param data A loaded R data object from `pull_bds_recfin_`.
+#' @return A data frame with standardized columns along with original and
+#'   added fields.
+#' @seealso [getAges()], [clean_catch()]
+#' @author Brian Langseth and Kelli Faye Johnson
 clean_bds <- function(data) {
   type <- NULL
 

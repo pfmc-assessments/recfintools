@@ -24,7 +24,7 @@
 #' records are removed. 
 #' * For Oregon: All records are kept, 
 #' * For California: Because AGENCY_FISHED_AREA_NAME is empty for California,
-#' the script automatically uses "AGENCY_WATER_AREA_NAME" for california data.
+#' the script automatically uses "AGENCY_WATER_AREA_NAME" for California data.
 #'
 #' For Washington historical data (`source = "AREA"` and `AGENCY == "W"`),
 #' records with `AREA >= 5` are removed.
