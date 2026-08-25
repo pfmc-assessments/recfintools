@@ -16,13 +16,28 @@
 #'   The default is the current working directory.
 #' @param envir The environment to which the loaded objects should be assigned.
 #'   The default is the calling environment.
+#' @param species The species name that the `.Rdata` files represent. The user
+#'   must enter a value for this. Is case insensitive.
 #' @param verbose Whether to print a message about the files that were loaded.
 #'   Default is TRUE.
 #'
-#' @return An invisible named list of loaded objects.
+#' @return An invisible named list of loaded objects. The number of data files
+#' that were read. 
 #' @export
 #' @author Brian Langseth
-readData <- function(path = getwd(), envir = parent.frame(), verbose = TRUE) {
+#' 
+readData <- function(path = getwd(), envir = parent.frame(), 
+                     species = NULL, verbose = TRUE) {
+  
+  if(is.null(species)){
+    cli::cli_abort(c(
+    "{.fn readData} will not work because {species} was not assigned a value.
+    Please assign a value to {.var species}"
+    ))
+  }
+  
+  species = toupper(species)
+  
   keywords <- c(
     BDS.Recent_SD501 = "bds_recent_len",
     BDS.Recent_SD506 = "bds_recent_age",
@@ -32,6 +47,7 @@ readData <- function(path = getwd(), envir = parent.frame(), verbose = TRUE) {
     Catch.Hist = "catch_hist"
   )
 
+  #Obtain Rdata files in working directory
   files <- list.files(
     path = path,
     full.names = TRUE,
@@ -39,10 +55,12 @@ readData <- function(path = getwd(), envir = parent.frame(), verbose = TRUE) {
   )
   files <- files[grepl("\\.rdata$", basename(files), ignore.case = TRUE)]
 
-  latest_files <- vapply(keywords, function(keyword) {
+  #Function to keep the most recent versions of the data when multiple files
+  #of the same type exist
+  latest_files <- vapply(names(keywords), function(keyword) {
     keyword_files <- files[
       grepl(
-        tolower(keyword),
+        tolower(paste(species, keyword, sep = ".")),
         tolower(basename(files)),
         fixed = TRUE
       )
@@ -53,7 +71,9 @@ readData <- function(path = getwd(), envir = parent.frame(), verbose = TRUE) {
     }
 
     keyword_files[which.max(file.info(keyword_files)$mtime)]
-  }, character(1))
+  }, 
+  character(1)
+  )
 
   loaded_objects <- list()
 
