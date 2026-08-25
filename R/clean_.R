@@ -64,7 +64,7 @@
 #' @import dplyr
 #'
 #' @export
-#' @author Brian Langseth and Kelli Faye Johnson
+#' @author Brian Langseth
 #' @return A data frame with standardized columns along with original and
 #' added fields.
 #' See the data object `recfin_coldefs` for more complete descriptions of
