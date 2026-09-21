@@ -40,7 +40,7 @@ columns without any information.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cleanColumns</span><span class="op">(</span><span class="va">data</span>, <span class="va">prop</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, show_cols <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cleanColumns</span><span class="op">(</span><span class="va">data</span>, prop <span class="op">=</span> <span class="fl">1</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span>, show_cols <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -53,14 +53,15 @@ columns without any information.</p>
 
 <dt id="arg-prop">prop<a class="anchor" aria-label="anchor" href="#arg-prop"></a></dt>
 <dd><p>The proportion of NA values within a column after which
-it is considered to be mostly empty. Should be between 0 and 1. Column names
-where NA values occur at a higher proportion than this value are considered
-mostly empty. Default is 0.9</p></dd>
+it is considered to be mostly empty. Should be between 0 and 1, inclusive.
+Column names where NA values occur at a higher proportion than this value
+are considered mostly empty. Default is 1, which means no columns are selected
+as mostly empty.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
 <dd><p>Whether to output detailed information about the cleaning
-process. Default is TRUE</p></dd>
+process. Default is TRUE. Also required for <code>show_cols</code>.</p></dd>
 
 
 <dt id="arg-show-cols">show_cols<a class="anchor" aria-label="anchor" href="#arg-show-cols"></a></dt>

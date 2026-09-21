@@ -180,4 +180,4 @@ interpolated years are NA.
 
 ## Author
 
-Brian Langseth and Kelli Faye Johnson
+Brian Langseth

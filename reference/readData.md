@@ -6,7 +6,12 @@ loaded object to a standardized object name.
 ## Usage
 
 ``` r
-readData(path = getwd(), envir = parent.frame(), verbose = TRUE)
+readData(
+  path = getwd(),
+  envir = parent.frame(),
+  species = NULL,
+  verbose = TRUE
+)
 ```
 
 ## Arguments
@@ -21,6 +26,11 @@ readData(path = getwd(), envir = parent.frame(), verbose = TRUE)
   The environment to which the loaded objects should be assigned. The
   default is the calling environment.
 
+- species:
+
+  The species name that the `.Rdata` files represent. The user must
+  enter a value for this. Is case insensitive.
+
 - verbose:
 
   Whether to print a message about the files that were loaded. Default
@@ -28,7 +38,8 @@ readData(path = getwd(), envir = parent.frame(), verbose = TRUE)
 
 ## Value
 
-An invisible named list of loaded objects.
+An invisible named list of loaded objects. The number of data files that
+were read.
 
 ## Details
 

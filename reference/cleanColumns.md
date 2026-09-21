@@ -6,7 +6,7 @@ removes columns without any information.
 ## Usage
 
 ``` r
-cleanColumns(data, prop, verbose = TRUE, show_cols = FALSE)
+cleanColumns(data, prop = 1, verbose = TRUE, show_cols = FALSE)
 ```
 
 ## Arguments
@@ -18,14 +18,15 @@ cleanColumns(data, prop, verbose = TRUE, show_cols = FALSE)
 - prop:
 
   The proportion of NA values within a column after which it is
-  considered to be mostly empty. Should be between 0 and 1. Column names
-  where NA values occur at a higher proportion than this value are
-  considered mostly empty. Default is 0.9
+  considered to be mostly empty. Should be between 0 and 1, inclusive.
+  Column names where NA values occur at a higher proportion than this
+  value are considered mostly empty. Default is 1, which means no
+  columns are selected as mostly empty.
 
 - verbose:
 
   Whether to output detailed information about the cleaning process.
-  Default is TRUE
+  Default is TRUE. Also required for `show_cols`.
 
 - show_cols:
 
