@@ -22,22 +22,21 @@
 #'   Default is TRUE.
 #'
 #' @return An invisible named list of loaded objects. The number of data files
-#' that were read. 
+#' that were read.
 #' @export
 #' @author Brian Langseth
-#' 
-readData <- function(path = getwd(), envir = parent.frame(), 
+#'
+readData <- function(path = getwd(), envir = parent.frame(),
                      species = NULL, verbose = TRUE) {
-  
-  if(is.null(species)){
+  if (is.null(species)) {
     cli::cli_abort(c(
-    "{.fn readData} will not work because {species} was not assigned a value.
+      "{.fn readData} will not work because {species} was not assigned a value.
     Please assign a value to {.var species}"
     ))
   }
-  
-  species = toupper(species)
-  
+
+  species <- toupper(species)
+
   keywords <- c(
     BDS.Recent_SD501 = "bds_recent_len",
     BDS.Recent_SD506 = "bds_recent_age",
@@ -47,7 +46,7 @@ readData <- function(path = getwd(), envir = parent.frame(),
     Catch.Hist = "catch_hist"
   )
 
-  #Obtain Rdata files in working directory
+  # Obtain Rdata files in working directory
   files <- list.files(
     path = path,
     full.names = TRUE,
@@ -55,24 +54,25 @@ readData <- function(path = getwd(), envir = parent.frame(),
   )
   files <- files[grepl("\\.rdata$", basename(files), ignore.case = TRUE)]
 
-  #Function to keep the most recent versions of the data when multiple files
-  #of the same type exist
-  latest_files <- vapply(names(keywords), function(keyword) {
-    keyword_files <- files[
-      grepl(
-        tolower(paste(species, keyword, sep = ".")),
-        tolower(basename(files)),
-        fixed = TRUE
-      )
-    ]
+  # Function to keep the most recent versions of the data when multiple files
+  # of the same type exist
+  latest_files <- vapply(
+    names(keywords), function(keyword) {
+      keyword_files <- files[
+        grepl(
+          tolower(paste(species, keyword, sep = ".")),
+          tolower(basename(files)),
+          fixed = TRUE
+        )
+      ]
 
-    if (length(keyword_files) == 0) {
-      return(NA_character_)
-    }
+      if (length(keyword_files) == 0) {
+        return(NA_character_)
+      }
 
-    keyword_files[which.max(file.info(keyword_files)$mtime)]
-  }, 
-  character(1)
+      keyword_files[which.max(file.info(keyword_files)$mtime)]
+    },
+    character(1)
   )
 
   loaded_objects <- list()

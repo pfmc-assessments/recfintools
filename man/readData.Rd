@@ -4,7 +4,12 @@
 \alias{readData}
 \title{Read RecFIN data files}
 \usage{
-readData(path = getwd(), envir = parent.frame(), verbose = TRUE)
+readData(
+  path = getwd(),
+  envir = parent.frame(),
+  species = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{path}{A file path to the directory containing the \code{.RData} files.
@@ -13,11 +18,15 @@ The default is the current working directory.}
 \item{envir}{The environment to which the loaded objects should be assigned.
 The default is the calling environment.}
 
+\item{species}{The species name that the \code{.Rdata} files represent. The user
+must enter a value for this. Is case insensitive.}
+
 \item{verbose}{Whether to print a message about the files that were loaded.
 Default is TRUE.}
 }
 \value{
-An invisible named list of loaded objects.
+An invisible named list of loaded objects. The number of data files
+that were read.
 }
 \description{
 Read the primary \code{.RData} files produced by this package and assign each

@@ -173,5 +173,5 @@ are NA.
 }
 
 \author{
-Brian Langseth and Kelli Faye Johnson
+Brian Langseth
 }

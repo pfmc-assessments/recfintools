@@ -13,10 +13,10 @@
 #'
 #' If `verbose = TRUE`, the function reports how many records have `NA` in
 #' `year` after extraction.
-#' 
-#' @section Oregon MRFSS bds data: 
+#'
+#' @section Oregon MRFSS bds data:
 #' Oregon MRFSS bds data extend through 2003 in SD509. ORBS sampling also
-#' occurred in 2001-2003 and duplication occurred. There is no current way to 
+#' occurred in 2001-2003 and duplication occurred. There is no current way to
 #' determine which samples were duplicates. Therefore MRFSS bds data in 2001-2003
 #' is removed using this function.
 #'
@@ -58,26 +58,23 @@ getYear <- function(
       "i" = "There are {noyear} records for which the year is NA"
     ))
   }
-  
-  #Remove records in 2001-2003 for Oregon MRFSS bds data because these years 
-  #overlap in time with recent bds data sampling efforts, and cannot distinguish
-  #whether the same or different fish were sampled. 
-  if(source == "YEAR" & 
-     "ID_CODE" %in% colnames(data)) {
-    
+
+  # Remove records in 2001-2003 for Oregon MRFSS bds data because these years
+  # overlap in time with recent bds data sampling efforts, and cannot distinguish
+  # whether the same or different fish were sampled.
+  if (source == "YEAR" &
+    "ID_CODE" %in% colnames(data)) {
     removed <- which(data$YEAR > 2000 & data$ST == 41)
-    data <- data[-removed,]
-    
+    data <- data[-removed, ]
+
     nrem <- length(removed)
-    
+
     if (verbose) {
       cli::cli_bullets(c(
-        "i" = "There were {nrem} Oregon MRFSS records removed from 2001-2003 
+        "i" = "There were {nrem} Oregon MRFSS records removed from 2001-2003
         because they overlap with recent (ORBS) sampling efforts."
       ))
     }
-    
-    
   }
 
   return(data)
