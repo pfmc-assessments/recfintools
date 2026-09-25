@@ -112,7 +112,8 @@ getArea <- function(
         "i" = "These include {ncan} records from Canada",
         "i" = "These include {nmex} records from Mexico",
         "i" = "These include {nsound} records from Puget Sound outside area 4B",
-        "i" = "There are {nunk} records designated as Not Known that were kept."
+        "i" = "There are {nunk} records designated as Not Known that were kept.",
+        ""
       ))
     }
 
@@ -143,7 +144,8 @@ getArea <- function(
         "i" = "These include {ncan} records from Canada",
         "i" = "These include {nmex} records from Mexico",
         "i" = "These include {nsound} records from Puget Sound",
-        "i" = "There are {nna} records without {source} that were kept."
+        "i" = "There are {nna} records without {source} that were kept.",
+        ""
       ))
     }
 
@@ -221,7 +223,8 @@ getArea <- function(
         Washington or California. The user should decide how to handle these.
         It is recommended to exclude them if fish caught in Washington
         or Califoria waters but landed in Oregon ports are also excluded from
-        catches."
+        catches.",
+        ""
       ))
     }
 
@@ -255,7 +258,8 @@ getArea <- function(
           "i" = "NOTE: Of the Oregon and California records that were kept,
           {nflag} records are from inland ({source} = 5) or Unknown
           ({source} = 6) areas. The user should decide how to handle these,
-          which are not typically included in compositions."
+          which are not typically included in compositions.",
+          ""
         ))
       } else {
         cli::cli_bullets(c(
@@ -263,7 +267,8 @@ getArea <- function(
           "i" = "NOTE: There are {nflag} records from inland ({source} = 5) or
           Unknown ({source} = 6) areas that were not removed. The user should
           decide how to handle these, which are not typically included in
-          compositions."
+          compositions.",
+          ""
         ))
       }
     }

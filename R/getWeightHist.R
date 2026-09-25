@@ -236,7 +236,8 @@ getWeightHist <- function(
       cli::cli_bullets(c(
         " " = "{.fn getWeightHist} summary information -",
         "i" = "Average weight from MRFSS type 3 data added to Oregon historical
-        as 'calc_wgt_kg' column"
+        as 'calc_wgt_kg' column",
+        ""
       ))
     }
   }
@@ -246,7 +247,8 @@ getWeightHist <- function(
       cli::cli_bullets(c(
         " " = "{.fn getWeightHist} summary information -",
         "i" = "Average weight calculations not needed at this time for
-        Washington or California historical catches"
+        Washington or California historical catches",
+        ""
       ))
     }
   }

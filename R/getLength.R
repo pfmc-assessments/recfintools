@@ -76,7 +76,8 @@ getLength <- function(
         maximum length for the species. The user should decide how to handle these",
         "i" = "NOTE: there are {lentype} records flagged as being total length as
         opposed to fork length, which only is specified for Washington. The user
-        should decide how to handle these"
+        should decide how to handle these",
+        ""
       ))
     }
   }
@@ -113,7 +114,8 @@ getLength <- function(
         where precision is important, such as for W-L or growth relationships,
         only direct measured samples are encouraged. For compositions, where
         imprecision in the empirical relationship is likely to be less than the
-        bin size used, measurements obtained from conversions are likely suitable."
+        bin size used, measurements obtained from conversions are likely suitable.",
+        ""
       ))
     }
   }

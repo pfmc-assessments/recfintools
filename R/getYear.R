@@ -54,8 +54,9 @@ getYear <- function(
 
   if (verbose) {
     cli::cli_bullets(c(
-      " " = "{.fn getState} summary information -",
-      "i" = "There are {noyear} records for which the year is NA"
+      " " = "{.fn getYear} summary information -",
+      "i" = "There are {noyear} records for which the year is NA",
+      ""
     ))
   }
 
@@ -72,7 +73,8 @@ getYear <- function(
     if (verbose) {
       cli::cli_bullets(c(
         "i" = "There were {nrem} Oregon MRFSS records removed from 2001-2003
-        because they overlap with recent (ORBS) sampling efforts."
+        because they overlap with recent (ORBS) sampling efforts.",
+        ""
       ))
     }
   }

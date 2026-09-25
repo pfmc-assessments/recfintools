@@ -63,7 +63,8 @@ getAges <- function(
       "i" = "There are {nage} structures with {nage_read} age reads that were
       added to the length data.",
       "i" = "Some records were not added, and include {nmult} multiple reads
-      from ODFW, and {nage_omit} records not present in the length data."
+      from ODFW, and {nage_omit} records not present in the length data.",
+      ""
     ))
   }
 
