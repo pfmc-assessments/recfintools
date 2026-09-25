@@ -22,7 +22,8 @@
 #'   Default is TRUE.
 #'
 #' @return An invisible named list of loaded objects. The number of data files
-#' that were read.
+#' that were read and their names. 
+#' 
 #' @export
 #' @author Brian Langseth
 #'
@@ -112,7 +113,10 @@ readData <- function(path = getwd(), envir = parent.frame(),
   }
 
   if (verbose) {
-    cli::cli_inform("Loaded {length(loaded_objects)} RecFIN data file{?s}.")
+    temp <- paste(basename(latest_files))
+    msg <- c("Loaded {length(loaded_objects)} RecFIN data file{?s}:",
+      stats::setNames(temp, rep("*", length(temp))))
+    cli::cli_inform(msg)
   }
 
   invisible(loaded_objects)
