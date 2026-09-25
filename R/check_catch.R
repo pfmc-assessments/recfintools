@@ -29,7 +29,6 @@ check_catch <- function(
   source = c("RETAINED", "RELEASED_ALIVE", "RELEASED_DEAD"),
   verbose = TRUE
 ) {
-  
   cols <- colnames(data)[
     intersect(
       grep(paste(source, collapse = "|"), colnames(data)),
@@ -51,7 +50,7 @@ check_catch <- function(
 
   fullcols$dead_mt <- rowSums(fullcols[, deadcols], na.rm = TRUE)
 
-  if (sum(fullcols$dead_mt, na.rm = TRUE) != sum(data[, grep("TOTAL_MORTALITY_MT", colnames(data))], na.rm = TRUE)) {   
+  if (sum(fullcols$dead_mt, na.rm = TRUE) != sum(data[, grep("TOTAL_MORTALITY_MT", colnames(data))], na.rm = TRUE)) {
     cli::cli_inform("The sum of total mortality does not equal the sum of retained
                     and released dead mortality.")
   }
@@ -61,23 +60,26 @@ check_catch <- function(
   retainOff <- length(
     which(
       (fullcols[, grep("RETAINED_MT", colnames(fullcols))] == 0 |
-         is.na(fullcols[, grep("RETAINED_MT", colnames(fullcols))])
-       ) &
-      fullcols[, grep("RETAINED_NUM", colnames(fullcols))] > 0)
+        is.na(fullcols[, grep("RETAINED_MT", colnames(fullcols))])
+      ) &
+        fullcols[, grep("RETAINED_NUM", colnames(fullcols))] > 0
+    )
   )
   releaseOff <- length(
     which(
       (fullcols[, grep("RELEASED_ALIVE_MT", colnames(fullcols))] == 0 |
-         is.na(fullcols[, grep("RELEASED_ALIVE_MT", colnames(fullcols))])
-       ) &
-      fullcols[, grep("RELEASED_ALIVE_NUM", colnames(fullcols))] > 0)
+        is.na(fullcols[, grep("RELEASED_ALIVE_MT", colnames(fullcols))])
+      ) &
+        fullcols[, grep("RELEASED_ALIVE_NUM", colnames(fullcols))] > 0
+    )
   )
   deadOff <- length(
     which(
       (fullcols[, grep("RELEASED_DEAD_MT", colnames(fullcols))] == 0 |
-         is.na(fullcols[, grep("RELEASED_DEAD_MT", colnames(fullcols))])
-       ) &
-      fullcols[, grep("RELEASED_DEAD_NUM", colnames(fullcols))] > 0)
+        is.na(fullcols[, grep("RELEASED_DEAD_MT", colnames(fullcols))])
+      ) &
+        fullcols[, grep("RELEASED_DEAD_NUM", colnames(fullcols))] > 0
+    )
   )
 
   if (verbose) {
@@ -87,7 +89,7 @@ check_catch <- function(
       in numbers but have no weight",
       "i" = "There are {deadOff} records where released dead catches are
       reported in numbers but have no weight",
-      "These should be looked at by the user to determine how to handle since  
+      "These should be looked at by the user to determine how to handle since
       RETAINED_MT and RELEASED_DEAM_MT sum to create total mortality.",
       ""
     ))
