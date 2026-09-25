@@ -74,7 +74,7 @@ clean_catch <- function(data) {
   type <- NULL
 
   # Historical data
-  if (is.list(data)) {
+  if (class(data) == "list") {
     type <- "hist"
 
     # Repeat for each state
