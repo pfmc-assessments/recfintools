@@ -4,7 +4,7 @@
 #'
 #' @details
 #' This function is used for catch data. It lets the user know when records have
-#' catch in numbers (for retained, released alive, and released dead) but not
+#' catch in numbers (for retained and released dead) but not
 #' corresponding weight, and therefore when the total catch in weight may be off.
 #' It is up to the user to decide how to use this information.
 #' This function also confirms that the total mortality is the sum of retained
@@ -88,7 +88,8 @@ check_catch <- function(
       "i" = "There are {deadOff} records where released dead catches are
       reported in numbers but have no weight",
       "These should be looked at by the user to determine how to handle since  
-      RETAINED_MT and RELEASED_DEAM_MT sum to create TOTAL_MORTALITY_MT."
+      RETAINED_MT and RELEASED_DEAM_MT sum to create total mortality.",
+      ""
     ))
   }
 
