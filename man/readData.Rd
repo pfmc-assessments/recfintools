@@ -26,7 +26,7 @@ Default is TRUE.}
 }
 \value{
 An invisible named list of loaded objects. The number of data files
-that were read.
+that were read and their names.
 }
 \description{
 Read the primary \code{.RData} files produced by this package and assign each
