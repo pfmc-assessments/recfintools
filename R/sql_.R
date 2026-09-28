@@ -131,19 +131,317 @@ sql_catch <- function(species_name, type, apex = FALSE) {
   }
 
   # Catches from years during MRFSS sampling
-  # As there is no official apex report for this, build own.
+  # UPDATE: As of Oct 2026 this is based on CTE008 - which is a new report for 
+  # MRFSS catches. Previously built own report based on legacy estimates. 
   # Cut off data to 2004 and before for CA, 2003 and before for OR and WA
   if (type == "mrfss") {
-    sqlcall <- glue::glue(
-      "
-      SELECT *
-      FROM RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_ESTIMATES
-      WHERE COMMON = ANY ({toupper(species)})
-        AND ((ST = 6 AND YEAR <= 2004) OR (ST != 6 AND YEAR < 2004))
-      "
-    )
+    # sqlcall <- glue::glue(
+    #   "
+    #   SELECT *
+    #   FROM RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_ESTIMATES
+    #   WHERE COMMON = ANY ({toupper(species)})
+    #     AND ((ST = 6 AND YEAR <= 2004) OR (ST != 6 AND YEAR < 2004))
+    #   "
+    # )
+    
+      sqlcall <- glue::glue(
+        "
+        WITH SRC AS (
+          SELECT
+            YEAR,
+            WAVE,
+            SUB_REG,
+            SUB_REG_NAME,
+            ST,
+            ST_NAME,
+            MODE_FX,
+            MODE_FX_NAME,
+            \"MODE\", /* Syntax needed because MODE is a special keyword in oracle */
+            AREA,
+            AREA_X,
+            AREA_X_NAME,
+            NUMRTRIP,
+            PERCENT,
+            ESTRIPS,
+            NUMVAR,
+            SP_CODE,
+            SPECIES_NAME,
+            COMMON,
+            COMMON2,
+            SCI_NAME,
+            GP_CODE,
+            SG_CODE,
+            SUPER,
+            \"GROUP\", /* Syntax needed because GROUP is a special keyword in oracle */
+            ESTCLAIM,
+            ESTCLVAR,
+            ESTHARV,
+            ESTHVAR,
+            ESTREL,
+            ESTRLVAR,
+            LANDING,
+            LAND_VAR,
+            TOT_CAT,
+            TOT_VAR,
+            ESTWGT,
+            ESTWTVAR,
+            WGT_AB1,
+            VAR_WAB1,
+            LBS_AB1,
+            VAR_LBS,
+            SMP_TRIP,
+            TTRIP,
+            INT_TRIP,
+            TSPCLAIM,
+            F_PER_T,
+            VARCLAIM,
+            TSP_HARV,
+            UNAHPTRP,
+            VARHARV,
+            TSP_REL,
+            UNARPTRP,
+            VAREL,
+            VARREL,
+            TSP_EXAM,
+            TSP_WGT,
+            TSPAVEW,
+            VARWGT,
+            TSP_LEX,
+            TSP_LEN,
+            TSPAVEL,
+            VARLNGTH,
+            LNGSSQ,
+            OUTFLG,
+            POOL_FLG,
+            EX_FLG,
+            FLAG_WGT,
+            ST_EXAM,
+            ST_WGT,
+            ST_AVE,
+            STVAR,
+            ST_SSQ,
+            SUB_EXAM,
+            SUB_WGT,
+            SUB_AVE,
+            SUBVAR,
+            SUB_SSQ,
+            \"TYPE\", /* Syntax needed because TYPE is a special keyword in oracle */
+            TYPE_,
+            WGTSSQ,
+            SURVEY,
+            RECALC,
+            B1_PER_A,
+            B2_PER_A,
+            ESTRIPS0,
+            NUMVAR0,
+            B2LM,
+            B2LV,
+            B2LN,
+            B2KM,
+            B2KV,
+            B2KN,
+            B2WK,
+            B2WKV,
+            B2WKF,
+            FREQ_,
+            B,
+            LENB1N,
+            LENB1M,
+            LENB1SSQ,
+            LENB1SUM,
+            WGTB1N,
+            WGTB1M,
+            WGTB1SSQ,
+            WGTB1SUM,
+            LENB1V,
+            WGTB1V,
+            LENB2N,
+            LENB2M,
+            LENB2SSQ,
+            LENB2SUM,
+            WGTB2N,
+            WGTB2M,
+            WGTB2SSQ,
+            WGTB2SUM,
+            LENB2V,
+            WGTB2V,
+            WGT_B1,
+            WGT_B1V,
+            PCTB1,
+            RECFINSP,
+            B1WE,
+            B1WEV,
+            B2WE,
+            B2WEV,
+            LENB1S,
+            WGTB1S,
+            LENB2S,
+            WGTB2S,
+            B1MEV,
+            B2MEV,
+            AWEM,
+            AWEMV,
+            B1WEM,
+            B1WEMV,
+            B2WEM,
+            B2WEMV,
+            DATE1,
+            RECFIN_LOG_ID,
+            RECFIN_VDATE
+          FROM 
+            RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_ESTIMATES
+          WHERE COMMON = ANY ({toupper(species)})
+            AND ((ST = 6 AND YEAR <= 2004) OR (ST != 6 AND YEAR < 2004))
+        )
+        SELECT
+            YEAR,
+            WAVE,
+            SUB_REG,
+            SUB_REG_NAME,
+            ST,
+            ST_NAME,
+            MODE_FX,
+            MODE_FX_NAME,
+            \"MODE\", /* Syntax needed because MODE is a special keyword in oracle */
+            AREA,
+            AREA_X,
+            AREA_X_NAME,
+            NUMRTRIP,
+            PERCENT,
+            ESTRIPS,
+            NUMVAR,
+            SP_CODE,
+            SPECIES_NAME,
+            COMMON,
+            COMMON2,
+            SCI_NAME,
+            GP_CODE,
+            SG_CODE,
+            SUPER,
+            \"GROUP\", /* Syntax needed because GROUP is a special keyword in oracle */
+            ESTCLAIM,
+            ESTCLVAR,
+            ESTHARV,
+            ESTHVAR,
+            ESTREL,
+            ESTRLVAR,
+            LANDING,
+            LAND_VAR,
+            TOT_CAT,
+            TOT_VAR,
+            ESTWGT,
+            ESTWTVAR,
+            WGT_AB1,
+            VAR_WAB1,
+            LBS_AB1,
+            VAR_LBS,
+            SMP_TRIP,
+            TTRIP,
+            INT_TRIP,
+            TSPCLAIM,
+            F_PER_T,
+            VARCLAIM,
+            TSP_HARV,
+            UNAHPTRP,
+            VARHARV,
+            TSP_REL,
+            UNARPTRP,
+            VAREL,
+            VARREL,
+            TSP_EXAM,
+            TSP_WGT,
+            TSPAVEW,
+            VARWGT,
+            TSP_LEX,
+            TSP_LEN,
+            TSPAVEL,
+            VARLNGTH,
+            LNGSSQ,
+            OUTFLG,
+            POOL_FLG,
+            EX_FLG,
+            FLAG_WGT,
+            ST_EXAM,
+            ST_WGT,
+            ST_AVE,
+            STVAR,
+            ST_SSQ,
+            SUB_EXAM,
+            SUB_WGT,
+            SUB_AVE,
+            SUBVAR,
+            SUB_SSQ,
+            \"TYPE\", /* Syntax needed because TYPE is a special keyword in oracle */
+            TYPE_,
+            WGTSSQ,
+            SURVEY,
+            RECALC,
+            B1_PER_A,
+            B2_PER_A,
+            ESTRIPS0,
+            NUMVAR0,
+            B2LM,
+            B2LV,
+            B2LN,
+            B2KM,
+            B2KV,
+            B2KN,
+            B2WK,
+            B2WKV,
+            B2WKF,
+            FREQ_,
+            B,
+            LENB1N,
+            LENB1M,
+            LENB1SSQ,
+            LENB1SUM,
+            WGTB1N,
+            WGTB1M,
+            WGTB1SSQ,
+            WGTB1SUM,
+            LENB1V,
+            WGTB1V,
+            LENB2N,
+            LENB2M,
+            LENB2SSQ,
+            LENB2SUM,
+            WGTB2N,
+            WGTB2M,
+            WGTB2SSQ,
+            WGTB2SUM,
+            LENB2V,
+            WGTB2V,
+            WGT_B1,
+            WGT_B1V,
+            PCTB1,
+            RECFINSP,
+            B1WE,
+            B1WEV,
+            B2WE,
+            B2WEV,
+            LENB1S,
+            WGTB1S,
+            LENB2S,
+            WGTB2S,
+            B1MEV,
+            B2MEV,
+            AWEM,
+            AWEMV,
+            B1WEM,
+            B1WEMV,
+            B2WEM,
+            B2WEMV,
+            DATE1,
+            RECFIN_LOG_ID,
+            RECFIN_VDATE
+        FROM SRC
+        "
+      )
+      
     sqlcall <- gsub("\\n", " ", sqlcall)
   }
+  
+  
 
   # Catches from historical reconstructions of each state
   # A few fields (RECFIN_LOG_ID for WA and CA, and SURVEY_PROGRAM_ID for CA)
@@ -254,7 +552,7 @@ sql_species <- function() {
 #' must specify a valid option.
 #' @param apex The specific recfin apex report that you want to reproduce.
 #' Available options include "SD001" and "SD501" (which are for lengths) and
-#' "SD506" (which is for ages) when type equals "recent", and "SD508" and "SD509"
+#' "SD506" (which is for ages) when type equals "recent", and "SD508" and "SD517"
 #' when type equals "mrfss". There is no default so the user must specify a
 #' valid option. Currently, there is no option to keep just the raw sql data.
 #'
@@ -623,152 +921,237 @@ sql_bds <- function(species_name, type, apex) {
       )
     }
 
-    if (apex == "SD509") {
-      # Based on SD509 bio data for available catch (Type 3 - A)
-      # Cut off data to 2004 and before for CA, 2003 and before for OR and WA
+    # if (apex == "SD509") {
+    #   # Based on SD509 bio data for available catch (Type 3 - A)
+    #   # Cut off data to 2004 and before for CA, 2003 and before for OR and WA
+    #   sqlcall <- glue::glue(
+    #     "
+    #     SELECT
+    #       crl.ID_CODE,
+    #       crl.YEAR,
+    #       crl.WAVE,
+    #       crl.MONTH,
+    #       crl.WEEK,
+    #       crl.TIME,
+    #       crl.DATE1,
+    #       crl.ST,
+    #       CASE  /* Manually adding ST_NAME into script */
+    #         WHEN crl.ST = 6 THEN
+    #           'California'
+    #         WHEN crl.ST = 41 THEN
+    #           'Oregon'
+    #         WHEN crl.ST = 53 THEN
+    #           'Washington'
+    #       END AS ST_NAME,
+    #       crl.CNTY,
+    #       crl.SUB_REG,
+    #       CASE  /* Manually adding ST_NAME into script */
+    #         WHEN crl.SUB_REG = 1 THEN
+    #           'Southern California'
+    #         WHEN crl.SUB_REG = 2 THEN
+    #           'Northern California'
+    #         WHEN crl.SUB_REG = 3 THEN
+    #           'Oregon'
+    #         WHEN crl.SUB_REG = 4 THEN
+    #           'Washington'
+    #       END AS SUB_REG_NAME,
+    #       crl.DIST,
+    #       crl.MODE_FX,
+    #       /* MODE_FX_NAME, */
+    #       crl.MODE_F,
+    #       /* MODE_F_NAME,	*/
+    #       crl.AREA_X,
+    #       /* AREA_X_NAME,	*/
+    #       crl.AREA,
+    #       /* AREA_NAME, */
+    #       crl.PORT,
+    #       crl.SP_CODE,
+    #       rs.SPECIES_NAME AS SP_NAME,
+    #       crl.PRIM1,
+    #       crl.PRIM2,
+    #       crl.INTSITE,
+    #       crl.GEAR,
+    #       crl.HRSF,
+    #       crl.CNTRBTRS,
+    #       crl.NUM_TYP3,
+    #       crl.NUM3,
+    #       crl.NUM_FISH,
+    #       crl.PUNCH,
+    #       crl.ADD_HRS,
+    #       crl.ID_CODE3,
+    #       crl.DISPO,
+    #       crl.\"NUMBER\", /* Syntax needed because NUMBER is a special keyword in oracle */
+    #       crl.C,
+    #       crl.FSHINSP,
+    #       crl.AREA_NC,
+    #       crl.LNGTH,
+    #       crl.WGT,
+    #       crl.X1,
+    #       crl.T_LEN,
+    #       crl.OLD_WGT,
+    #       crl.WGT_FLAG,
+    #       crl.OLD_LEN,
+    #       crl.RIG,
+    #       crl.DISP3,
+    #       crl.LEADER,
+    #       crl.OLDWGT,
+    #       crl.FISHINSP,
+    #       crl.NUM_TYP4,
+    #       crl.CATCH,
+    #       crl.A_FT,
+    #       crl.B_FT,
+    #       crl.R,
+    #       crl.Z,
+    #       crl.STATUS,
+    #       crl.INVALID,
+    #       crl.TEMP,
+    #       crl.SALMON,
+    #       crl.SHORT,
+    #       crl.F_SEX,
+    #       crl.SP_CPDE,
+    #       crl.LENGTH,
+    #       crl.FFDAYS2,
+    #       crl.FFDAYS12,
+    #       crl.TRIPSAMP,
+    #       crl.FSEX,
+    #       crl.LEN,
+    #       crl.SFCODE,
+    #       crl.HLOC,
+    #       crl.TAG,
+    #       crl.DISTRICT,
+    #       crl.ASSNID,
+    #       crl.CRFS,
+    #       crl.RECN,
+    #       crl.SPN,
+    #       crl.LOCN,
+    #       crl.DEPTHN,
+    #       crl.SURVEY,
+    #       crl.NRS,
+    #       crl.MEASN,
+    #       crl.LENFLAG,
+    #       crl.REC,
+    #       crl.TRIPTYPE,
+    #       crl.DEPTH,
+    #       crl.SPECIES,
+    #       crl.CWTFISH,
+    #       crl.ADFISH,
+    #       crl.OTOFISH,
+    #       crl.HLOC3,
+    #       crl.SCAN_RSLT,
+    #       crl.MAXLEN,
+    #       crl.HEART,
+    #       crl.TBENC_DATE,
+    #       crl.DD,
+    #       crl.P,
+    #       crl.PC,
+    #       crl.SP,
+    #       crl.BT,
+    #       crl.TRIPSPECIES,
+    #       crl.TT,
+    #       crl.ALPHA5,
+    #       crl.TINY,
+    #       crl.MICRO,
+    #       crl.REF_NUM,
+    #       crl.RELDEVNUM,
+    #       crl.DEPTHFT,
+    #       crl.DEPTHNR,
+    #       crl.RECFIN_VDATE
+    #     FROM
+    #       RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_TYPE_3 crl
+    #     LEFT JOIN
+    #       RECFIN_FOUNDATION.RECFIN_SPECIES rs
+    #       ON crl.SP_CODE = TO_CHAR(rs.RECFIN_SPECIES_CODE)
+    #     WHERE
+    #       rs.SPECIES_NAME = ANY ({stringr::str_to_title(species)}) /* Renamed as SP_NAME above but need to use original name here */
+    #       AND ((ST = 6 AND YEAR <= 2004) OR (ST != 6 AND YEAR < 2004)) /* I added this in to keep years as used */
+    #     "
+    #   )
+    # }
+    
+    
+    if (apex == "SD517") {
+      # Based on SD517 bio data for available catch (Type 3 - A)
+      # This is an update of what was SD509 and is what is currently available
+      # on the recfin website
       sqlcall <- glue::glue(
         "
-        SELECT
-          crl.ID_CODE,
-          crl.YEAR,
-          crl.WAVE,
-          crl.MONTH,
-          crl.WEEK,
-          crl.TIME,
-          crl.DATE1,
-          crl.ST,
-          CASE  /* Manually adding ST_NAME into script */
-            WHEN crl.ST = 6 THEN
-              'California'
-            WHEN crl.ST = 41 THEN
-              'Oregon'
-            WHEN crl.ST = 53 THEN
-              'Washington'
-          END AS ST_NAME,
-          crl.CNTY,
-          crl.SUB_REG,
-          CASE  /* Manually adding ST_NAME into script */
-            WHEN crl.SUB_REG = 1 THEN
-              'Southern California'
-            WHEN crl.SUB_REG = 2 THEN
-              'Northern California'
-            WHEN crl.SUB_REG = 3 THEN
-              'Oregon'
-            WHEN crl.SUB_REG = 4 THEN
-              'Washington'
-          END AS SUB_REG_NAME,
-          crl.DIST,
-          crl.MODE_FX,
-          /* MODE_FX_NAME, */
-          crl.MODE_F,
-          /* MODE_F_NAME,	*/
-          crl.AREA_X,
-          /* AREA_X_NAME,	*/
-          crl.AREA,
-          /* AREA_NAME, */
-          crl.PORT,
-          crl.SP_CODE,
-          rs.SPECIES_NAME AS SP_NAME,
-          crl.PRIM1,
-          crl.PRIM2,
-          crl.INTSITE,
-          crl.GEAR,
-          crl.HRSF,
-          crl.CNTRBTRS,
-          crl.NUM_TYP3,
-          crl.NUM3,
-          crl.NUM_FISH,
-          crl.PUNCH,
-          crl.ADD_HRS,
-          crl.ID_CODE3,
-          crl.DISPO,
-          crl.\"NUMBER\", /* Syntax needed because NUMBER is a special keyword in oracle */
-          crl.C,
-          crl.FSHINSP,
-          crl.AREA_NC,
-          crl.LNGTH,
-          crl.WGT,
-          crl.X1,
-          crl.T_LEN,
-          crl.OLD_WGT,
-          crl.WGT_FLAG,
-          crl.OLD_LEN,
-          crl.RIG,
-          crl.DISP3,
-          crl.LEADER,
-          crl.OLDWGT,
-          crl.FISHINSP,
-          crl.NUM_TYP4,
-          crl.CATCH,
-          crl.A_FT,
-          crl.B_FT,
-          crl.R,
-          crl.Z,
-          crl.STATUS,
-          crl.INVALID,
-          crl.TEMP,
-          crl.SALMON,
-          crl.SHORT,
-          crl.F_SEX,
-          crl.SP_CPDE,
-          crl.LENGTH,
-          crl.FFDAYS2,
-          crl.FFDAYS12,
-          crl.TRIPSAMP,
-          crl.FSEX,
-          crl.LEN,
-          crl.SFCODE,
-          crl.HLOC,
-          crl.TAG,
-          crl.DISTRICT,
-          crl.ASSNID,
-          crl.CRFS,
-          crl.RECN,
-          crl.SPN,
-          crl.LOCN,
-          crl.DEPTHN,
-          crl.SURVEY,
-          crl.NRS,
-          crl.MEASN,
-          crl.LENFLAG,
-          crl.REC,
-          crl.TRIPTYPE,
-          crl.DEPTH,
-          crl.SPECIES,
-          crl.CWTFISH,
-          crl.ADFISH,
-          crl.OTOFISH,
-          crl.HLOC3,
-          crl.SCAN_RSLT,
-          crl.MAXLEN,
-          crl.HEART,
-          crl.TBENC_DATE,
-          crl.DD,
-          crl.P,
-          crl.PC,
-          crl.SP,
-          crl.BT,
-          crl.TRIPSPECIES,
-          crl.TT,
-          crl.ALPHA5,
-          crl.TINY,
-          crl.MICRO,
-          crl.REF_NUM,
-          crl.RELDEVNUM,
-          crl.DEPTHFT,
-          crl.DEPTHNR,
-          crl.RECFIN_VDATE
-        FROM
-          RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_TYPE_3 crl
-        LEFT JOIN
-          RECFIN_FOUNDATION.RECFIN_SPECIES rs
-          ON crl.SP_CODE = TO_CHAR(rs.RECFIN_SPECIES_CODE)
-        WHERE
-          rs.SPECIES_NAME = ANY ({stringr::str_to_title(species)}) /* Renamed as SP_NAME above but need to use original name here */
-          AND ((ST = 6 AND YEAR <= 2004) OR (ST != 6 AND YEAR < 2004)) /* I added this in to keep years as used */
-        "
+        WITH SRC AS (
+          SELECT 
+            ID_CODE,
+            SP_CODE,
+            SPECIES_NAME,
+            PRIM1,
+            PRIM1_SPECIES_NAME,
+            PRIM2,
+            PRIM2_SPECIES_NAME,
+            MODE_FX,
+            MODE_FX_NAME,
+            MODE_F,
+            MODE_F_NAME,
+            AREA_X,
+            AREA_X_NAME,
+            AREA,
+            AREA_NAME,
+            DIST,
+            ST,
+            ST_NAME,
+            INTSITE,
+            HRSF,
+            CNTRBTRS,
+            NUM_TYP3,
+            NUM3,
+            SUB_REG,
+            SUB_REG_NAME,
+            FSHINSP,
+            LNGTH,
+            WGT,
+            WAVE,
+            PUNCH,
+            X1,
+            YEAR,
+            ADD_HRS,
+            ID_CODE3,
+            CNTY,
+            T_LEN,
+            OLD_WGT,
+            LEN_FLAG,
+            WGT_FLAG,
+            GEAR,
+            GEAR_NAME,
+            OLD_LEN,
+            \"NUMBER\", /* Syntax needed because NUMBER is a special keyword in oracle */
+            C,
+            RIG,
+            DISP3,
+            DISP3_DESCRIPTION,
+            TIME,
+            LEADER,
+            FISHINSP,
+            A_FT,
+            B_FT,
+            TEMP,
+            SALMON,
+            SHORT,
+            STATUS,
+            F_SEX,
+            TRIPSAMP,
+            SFCODE,
+            HLOC,
+            DATE1,
+            RECFIN_VDATE,
+            RECFIN_LOG_ID
+          FROM 
+            RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_TYPE_3
+          WHERE 
+            YEAR <= 2003
+            AND SPECIES_NAME = ANY ({toupper(species)})
+        )
+      SELECT *
+      FROM SRC
+      "
       )
     }
+    
     sqlcall <- gsub("\\n", " ", sqlcall)
   }
   return(sqlcall)

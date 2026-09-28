@@ -1,11 +1,12 @@
 #' Functions to pull catch data from recfin
 #'
 #' Read catch data from the various total mortality reports in recfin:
-#' 'CTE501' or 'CTE001'
+#' Recent times series:
+#' User enters either 'CTE501' (confidential) or 'CTE001' (non-confidential)
 #' Historical times series for each state:
-#' 'CTE503' or 'CTE507'
+#' Automatically chooses all of 'CTE503', 'CTE507', and 'CTE508' 
 #' MRFSS catch data:
-#' Does not have a formal apex report (though CTE510 was a temporary report)
+#' Automatically chooses 'CTE008'.
 #'
 #' @inheritParams sql
 #' @inheritParams pacfintools::getDB

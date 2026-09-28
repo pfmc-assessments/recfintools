@@ -5,7 +5,7 @@
 #'
 #' @details
 #' This function currently focuses on the six primary RecFIN data files:
-#' `BDS.Recent_SD501`, `BDS.Recent_SD506`, `BDS.MRFSS_SD509`,
+#' `BDS.Recent_SD501`, `BDS.Recent_SD506`, `BDS.MRFSS_SD517`,
 #' `Catch.Recent_CTE501`, `Catch.MRFSS`, and `Catch.Hist`. If multiple files
 #' with the same keyword are present, the most recently modified file is used.
 #' The loaded objects are assigned into `envir` using standardized object names:
@@ -41,7 +41,7 @@ readData <- function(path = getwd(), envir = parent.frame(),
   keywords <- c(
     BDS.Recent_SD501 = "bds_recent_len",
     BDS.Recent_SD506 = "bds_recent_age",
-    BDS.MRFSS_SD509 = "bds_mrfss",
+    BDS.MRFSS_SD517 = "bds_mrfss",
     Catch.Recent_CTE501 = "catch_recent",
     Catch.MRFSS = "catch_mrfss",
     Catch.Hist = "catch_hist"

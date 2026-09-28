@@ -3,7 +3,8 @@
 #' Read bio data from the various biological reports in recfin:
 #' 'SD001' or 'SD501' for lengths, 'SD506' for ages
 #' MRFSS bio data:
-#' 'SD508' or 'SD509' for Type 2 and Type 3 data, respectively
+#' 'SD508' or 'SD517' for Type 2 and Type 3 data, respectively. 
+#' 
 #'
 #' @inheritParams sql
 #' @inheritParams pacfintools::getDB
@@ -29,7 +30,7 @@
 #' bio.recfin.501 <- pull_bds_recfin_recent("QUILLBACK ROCKFISH", apex = "SD501")
 #' bio.recfin.506 <- pull_bds_recfin_recent("QUILLBACK ROCKFISH", apex = "SD506")
 #' bio.mrfss.508 <- pull_bds_recfin_mrfss("QUILLBACK ROCKFISH", apex = "SD508")
-#' bio.mrfss.509 <- pull_bds_recfin_mrfss("QUILLBACK ROCKFISH", apex = "SD509")
+#' bio.mrfss.517 <- pull_bds_recfin_mrfss("QUILLBACK ROCKFISH", apex = "SD517")
 #' }
 #'
 pull_bds_recfin_recent <- function(
