@@ -299,7 +299,12 @@ clean_catch <- function(data) {
 #' @param data A loaded R data object from `pull_bds_recfin_`.
 #' @return A data frame with standardized columns along with original and
 #'   added fields.
+#'   
 #' @seealso [getAges()], [clean_catch()]
+#' 
+#' @inheritSection getYear Oregon MRFSS bds data
+#' @inheritSection getYear Oregon ORBS bds data
+#' 
 #' @author Brian Langseth and Kelli Faye Johnson
 clean_bds <- function(data) {
   type <- NULL
