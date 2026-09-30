@@ -23,11 +23,15 @@
 #' 'Not Known' when RECFIN_PORT_NAME also equals coastal ports are kept. All other
 #' records are removed.
 #' * For Oregon: All records are kept,
-#' * For California: Because AGENCY_FISHED_AREA_NAME is empty for California,
-#' the script automatically uses "AGENCY_WATER_AREA_NAME" for California data.
+#' * For California: All records are kept. Because AGENCY_FISHED_AREA_NAME is 
+#' empty for California, the script automatically uses "AGENCY_WATER_AREA_NAME" 
+#' for California data.
 #'
-#' For Washington historical data (`source = "AREA"` and `AGENCY == "W"`),
+#' For Washington historical catch data (`source = "AREA"` and `AGENCY == "W"`),
 #' records with `AREA >= 5` are removed.
+#' 
+#' For MRFSS catch data (`source = "AREA_X`):
+#' *For California: Removes Mexico ("M") records
 #'
 #' For MRFSS bds data (`source = "AREA_X"`):
 #' *For Washington: Removes Washington bds data
@@ -47,21 +51,26 @@
 #' Coded to accept a vector of names where the same type or era of data has
 #' multiple different names. When multiple names within the vector are in the
 #' dataset, picks the first.
+#' 
 #' For recent catch data, use `RECFIN_WATER_AREA_NAME`, which filters out values
 #' of Canada, Mexico, and Puget Sound (but keeps area 4B). Areas with `Not Known`
 #' are kept.
-#' For Washington historical catch data, uses `AREA`, which filters out values
-#' of 5 and greater (i.e. Puget Sound)
+#' For Washington historical catch data, use `AREA`, which filters out values
+#' of 5 and greater (i.e. Puget Sound).
+#' For MRFSS catch data, use `AREA_X`, which filters out Mexico records ("M").
+#'  
 #' For recent bds data, use `AGENCY_FISHED_AREA_NAME`, which filters out values
 #' of Canada, Mexico, and Puget Sound. Areas with "Not known" or "Unknown" for
 #' Washington are kept if they also have coastal port names, but in Oregon
 #' and California these are kept. Because California data are NA for
 #' `AGENCY_FISHED_AREA_NAME`, the code instead filters California data using
-#' "AGENCY_WATER_AREA_NAME" to remove `Mexico` records. Records with Estuary or
+#' "AGENCY_WATER_AREA_NAME" to remove Mexico records. Records with Estuary or
 #' Not Known "AGENCY_WATER_AREA_NAME" in Oregon, and Inland or San Francisco Bay
 #' AGENCY_WATER_AREA_NAME in California are flagged for the user but not removed.
 #' For MRFSS bds data, use `AREA_X`, which flags the user about `AREA_X` values
-#' that are "5" (inland) or "6" (unknown") but does not remove them.
+#' that are "3" (unavailable), "5" (inland) or "6" (unknown") but does not 
+#' remove them.
+#' 
 #' For all other data sets, use any valid column, since for these areas no
 #' specific records outside federal waters are identifiable.
 #'
@@ -112,13 +121,35 @@ getArea <- function(
         "i" = "These include {ncan} records from Canada",
         "i" = "These include {nmex} records from Mexico",
         "i" = "These include {nsound} records from Puget Sound outside area 4B",
-        "i" = "There are {nunk} records designated as Not Known that were kept.",
+        "i" = "There are {nunk} records designated as Not Known and were kept.",
         ""
       ))
     }
 
     flag <- TRUE
   }
+  
+  ## MRFSS catch data
+  if (source %in% c("AREA_X") & "WGT_AB1" %in% colnames(data)) {
+    removed <- data |>
+      dplyr::filter(.data[[source]] == "M")
+    data <- data |>
+      dplyr::filter(!.data[[source]] %in% "M")
+    
+    nmex <- nrow(removed)
+    nna <- sum(is.na(data[, source]))
+    
+    if (verbose) {
+      cli::cli_bullets(c(
+        " " = "{.fn getArea} summary information -",
+        "i" = "There are {nmex} records  from Mexcio that were removed.",
+        "i" = "There are {nna} records without {source} and were kept.",
+        ""
+      ))
+    }
+    
+    flag <- TRUE
+    }
 
 
   ## Washington historical catch data
@@ -218,12 +249,12 @@ getArea <- function(
         have Not Known or Estuary water area names, and {flag_InBay} records in
         California are from Inland or San Francisco Bay water area names.
         The user should decide how to handle these, which are not
-        typically included in compositions.",
+        typically included in compositions, but could be depending on their 
+        distributions and sample size.",
         "i" = "NOTE: There are also {flag_WaCa} records from Oregon of fish caught in
         Washington or California. The user should decide how to handle these.
-        It is recommended to exclude them if fish caught in Washington
-        or Califoria waters but landed in Oregon ports are also excluded from
-        catches.",
+        It is recommended to match the treatment of catch for fish caught in 
+        Washington or Califoria waters but landed in Oregon ports.",
         ""
       ))
     }
@@ -232,7 +263,7 @@ getArea <- function(
   }
 
   ## MRFSS bds data
-  if (source %in% c("AREA_X")) {
+  if (source %in% c("AREA_X") & "LNGTH" %in% colnames(data)) {
     # Remove Washington bds data if not already done
     removed <- data |>
       dplyr::filter(ST == 53)
@@ -243,9 +274,10 @@ getArea <- function(
 
 
     # Flag records that were not removed but which the user should decide what
-    # to do with. These include records with AREA_X = 5 (inland) or 6 (not known).
+    # to do with. These include records with AREA_X = 3 (unavilable) or 
+    # 5 (inland) or 6 (not known) or NA.
     flag <- data |>
-      dplyr::filter(.data[[source]] %in% c(5, 6))
+      dplyr::filter(.data[[source]] %in% c(3, 5, 6, NA))
 
     nflag <- nrow(flag)
 
@@ -256,18 +288,21 @@ getArea <- function(
           "i" = "All {noWA} records from Washington were removed.
           Washington does not use MRFSS bds data for compositions",
           "i" = "NOTE: Of the Oregon and California records that were kept,
-          {nflag} records are from inland ({source} = 5) or Unknown
-          ({source} = 6) areas. The user should decide how to handle these,
-          which are not typically included in compositions.",
+          {nflag} records are from Unavailable ({source} = 3), 
+          inland ({source} = 5), Unknown ({source} = 6), or NA ({source} = NA) 
+          areas. The user should decide how to handle these, which are not 
+          typically included in compositions, but could be depending on their 
+          distributions and sample size.",
           ""
         ))
       } else {
         cli::cli_bullets(c(
           " " = "{.fn getArea} summary information -",
-          "i" = "NOTE: There are {nflag} records from inland ({source} = 5) or
-          Unknown ({source} = 6) areas that were not removed. The user should
-          decide how to handle these, which are not typically included in
-          compositions.",
+          "i" = "NOTE: There are {nflag} records are from Unavailable 
+          ({source} = 3), inland ({source} = 5), Unknown ({source} = 6), or 
+          NA ({source} = NA) areas. The user should decide how to handle these, 
+          which are not typically included in compositions, but could be 
+          depending on sample size and the similarirty of their distributions.",
           ""
         ))
       }
