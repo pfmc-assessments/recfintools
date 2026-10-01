@@ -42,15 +42,23 @@ getLength <- function(
     cli::cli_inform("The column {source} was not found in the data.
                     Length information has not been standardized")
   }
+  if (!"remove" %in% colnames(data)){
+    data$remove <- "no"
+  }
 
   source <- source[which(source %in% colnames(data))[1]]
 
   removed <- data |>
     dplyr::filter(is.na(.data[[source]]) | .data[[source]] == 0)
 
-  data <- data |>
-    dplyr::filter(!is.na(.data[[source]]) | .data[[source]] != 0)
-
+  data <- data |> 
+    dplyr::mutate(
+      remove = dplyr::if_else(
+        (is.na(.data[[source]]) | .data[[source]] == 0),
+        "length",
+        .data$remove
+      )
+    )
 
   # Recent bds data
   if (source == "RECFIN_LENGTH_MM") {
@@ -65,18 +73,19 @@ getLength <- function(
     # Count number of lengths with NA removed, number outside Max, and number of
     # lengths with total length
     nolen <- nrow(removed)
-    outmax <- sum(!data[, "IS_AGENCY_LENGTH_WITHIN_MAX"])
-    lentype <- sum(data[, "RECFIN_LENGTH_TYPE"] == "TOTAL")
+    outmax <- sum(!data[data$remove %in% "no", "IS_AGENCY_LENGTH_WITHIN_MAX"])
+    lentype <- sum(data[data$remove %in% "no", "RECFIN_LENGTH_TYPE"] == "TOTAL")
 
     if (verbose) {
       cli::cli_bullets(c(
         " " = "{.fn getLength} summary information -",
         "i" = "There are {nolen} records where length was NA or 0 and were removed",
-        "i" = "NOTE: there are {outmax} records flagged as being outside the
-        maximum length for the species. The user should decide how to handle these",
-        "i" = "NOTE: there are {lentype} records flagged as being total length as
-        opposed to fork length, which only is specified for Washington. The user
-        should decide how to handle these",
+        "i" = "NOTE: there are {outmax} records flagged by `IS_AGENCY_LENGTH_WITHIN_MAX`
+        as being outside the maximum length for the species and were kept. The
+        user should decide how to handle these",
+        "i" = "NOTE: there are {lentype} records flagged by `RECFIN_LENGTH_TYPE`
+        as being total length as opposed to fork length and were kept. These 
+        only occur for Washington. The user should decide how to handle these",
         ""
       ))
     }
@@ -108,18 +117,18 @@ getLength <- function(
         "i" = "There are {nolen} records where length was NA or 0 and were removed",
         "i" = "NOTE: There are records where {source} was likely derived from
         empirical relationships from another measurement, either from {other_l} or
-        WGT. This can be inferred based on the number of decimal places.
-        The user should decide how to handle these by checking the number of
-        decimals of {source} compared to {other_l} or WGT. For applications
-        where precision is important, such as for W-L or growth relationships,
-        only direct measured samples are encouraged. For compositions, where
-        imprecision in the empirical relationship is likely to be less than the
-        bin size used, measurements obtained from conversions are likely suitable.",
+        WGT. This can be inferred based on the number of decimal places, using
+        `count_decimals()`. These records were kept. The user should decide how 
+        to handle these by checking the number of decimals of {source} compared 
+        to {other_l} or WGT. For applications where precision is important, such 
+        as for W-L or growth relationships, direct measured samples are typically 
+        used. For compositions, where imprecision in the empirical relationship 
+        is likely to be less than the bin size used, measurements obtained from 
+        conversions are likely suitable.",
         ""
       ))
     }
   }
-
 
   return(data)
 }

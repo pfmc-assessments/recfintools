@@ -48,6 +48,9 @@ getYear <- function(
     cli::cli_inform("The column {source} was not found in the data.
                     Year information has not been standardized")
   }
+  if (!"remove" %in% colnames(data)){
+    data$remove <- "no"
+  }
 
   # To avoid having to pick a unique field name for every data type and era,
   # if source is a vector, pick the first field among those in the vector
@@ -57,6 +60,7 @@ getYear <- function(
   data$year <- data[, source]
 
   noyear <- sum(is.na(data$year))
+  data[is.na(data$year),"remove"] <- "year"
 
   if (verbose) {
     cli::cli_bullets(c(
@@ -72,7 +76,7 @@ getYear <- function(
   if (source == "RECFIN_YEAR" &
       "RECFIN_LENGTH_MM" %in% colnames(data)) {
     removed <- which(data$RECFIN_YEAR %in% c(1999,2000) & data$STATE_NAME == "OREGON")
-    data <- data[-removed, ]
+    data[removed, "remove"] <- "year"
     
     nrem <- length(removed)
     
@@ -80,7 +84,7 @@ getYear <- function(
       cli::cli_bullets(c(
         "i" = "There were {nrem} Oregon ORBS records removed from 1999-2000
         because they were sampled under different protocols than later years,
-        and overlap with MRFSS bds sampling efforts.",
+        and overlap with early (MRFSS) sampling efforts.",
         ""
       ))
     }
@@ -92,7 +96,7 @@ getYear <- function(
   if (source == "YEAR" &
     "ID_CODE" %in% colnames(data)) {
     removed <- which(data$YEAR > 2000 & data$ST == 41)
-    data <- data[-removed, ]
+    data[removed, "remove"] <- "year"
 
     nrem <- length(removed)
 

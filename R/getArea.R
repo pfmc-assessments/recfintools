@@ -1,7 +1,6 @@
 #' Filter out records from Puget Sound, Canada, Mexico areas based
 #' on input column specified in `source`.
 #'
-#'
 #' @details
 #' This function is used for both catch and composition data. Because the case
 #' for values are sometimes different across data sets, fields with values as
@@ -84,7 +83,10 @@ getArea <- function(
     cli::cli_inform("The column {source} was not found in the data.
                     Records outside federal waters have not been removed")
   }
-
+  if (!"remove" %in% colnames(data)){
+    data$remove <- "no"
+  }
+  
   source <- source[which(source %in% colnames(data))[1]]
 
   flag <- FALSE
@@ -101,18 +103,23 @@ getArea <- function(
       dplyr::filter((tolower(.data[[source]]) %in% tolower(nonfed)) |
         ((tolower(.data[[source]]) == tolower("PUGET SOUND")) &
           SURVEY_PROGRAM_CATCH_AREA_NAME == "EAST OF SEKIU RIVER"))
-    data <- data |>
-      dplyr::filter(!(
-        tolower(.data[[source]]) %in% tolower(nonfed) |
-          ((tolower(.data[[source]]) == tolower("PUGET SOUND")) &
-            SURVEY_PROGRAM_CATCH_AREA_NAME == "EAST OF SEKIU RIVER")
-      ))
+    data <- data |> 
+      dplyr::mutate(
+        remove = dplyr::if_else(
+          tolower(.data[[source]]) %in% tolower(nonfed) | 
+            ((tolower(.data[[source]]) == tolower("PUGET SOUND")) & 
+               SURVEY_PROGRAM_CATCH_AREA_NAME == "EAST OF SEKIU RIVER"),
+          "area",
+          .data$remove
+        )
+      )
 
     noarea <- nrow(removed)
     nsound <- sum(tolower(removed[, source]) == tolower("PUGET SOUND"))
     ncan <- sum(tolower(removed[, source]) == tolower(nonfed[1]))
     nmex <- sum(tolower(removed[, source]) == tolower(nonfed[2]))
-    nunk <- sum(is.na(data[, source]))
+    nunk <- sum(is.na(data[, source]), 
+                tolower(data[, source]) == tolower("NOT KNOWN"))
 
     if (verbose) {
       cli::cli_bullets(c(
@@ -131,19 +138,27 @@ getArea <- function(
   
   ## MRFSS catch data
   if (source %in% c("AREA_X") & "WGT_AB1" %in% colnames(data)) {
+    
     removed <- data |>
       dplyr::filter(.data[[source]] == "M")
     data <- data |>
-      dplyr::filter(!.data[[source]] %in% "M")
-    
+      dplyr::mutate(
+        remove = dplyr::if_else(
+          .data[[source]] %in% "M",
+          "area",
+          .data$remove
+        )
+      )
+      
     nmex <- nrow(removed)
-    nna <- sum(is.na(data[, source]))
+    nna <- sum(is.na(data[, source]),
+               data[,source] %in% c(6, 8))
     
     if (verbose) {
       cli::cli_bullets(c(
         " " = "{.fn getArea} summary information -",
         "i" = "There are {nmex} records  from Mexcio that were removed.",
-        "i" = "There are {nna} records without {source} and were kept.",
+        "i" = "There are {nna} records with unknown {source} and were kept.",
         ""
       ))
     }
@@ -160,7 +175,13 @@ getArea <- function(
     removed <- data |>
       dplyr::filter(.data[[source]] >= 5)
     data <- data |>
-      dplyr::filter(!.data[[source]] >= 5)
+      dplyr::mutate(
+        remove = dplyr::if_else(
+          .data[[source]] >= 5,
+          "area",
+          .data$remove
+        )
+      )
 
     noarea <- nrow(removed)
     nsound <- noarea
@@ -204,13 +225,19 @@ getArea <- function(
       ))
 
     data <- data |>
-      dplyr::filter(dplyr::case_when(
-        STATE_NAME == "WASHINGTON" & .data[[source]] %in% "NOT KNOWN" ~
-          RECFIN_PORT_NAME %in% c("CHINOOK", "ILWACO", "LA PUSH", "NEAH BAY", "SEKIU", "WESTPORT", "OCEAN SHORES"),
-        STATE_NAME == "WASHINGTON" ~ tolower(.data[[source]]) %in% tolower(wa_fed),
-        STATE_NAME == "CALIFORNIA" ~ !grepl("MEXICO", .data$AGENCY_WATER_AREA_NAME),
-        STATE_NAME == "OREGON" ~ TRUE
-      ))
+      dplyr::mutate(
+        remove = dplyr::if_else(
+          dplyr::case_when(
+            STATE_NAME == "WASHINGTON" & .data[[source]] %in% "NOT KNOWN" ~
+              RECFIN_PORT_NAME %in% c("CHINOOK", "ILWACO", "LA PUSH", "NEAH BAY", "SEKIU", "WESTPORT", "OCEAN SHORES"),
+            STATE_NAME == "WASHINGTON" ~ tolower(.data[[source]]) %in% tolower(wa_fed),
+            STATE_NAME == "CALIFORNIA" ~ !grepl("MEXICO", .data$AGENCY_WATER_AREA_NAME),
+            STATE_NAME == "OREGON" ~ TRUE
+          ),
+          .data$remove,
+          "area"
+        )
+      )
 
     noarea <- nrow(removed)
     ncan <- sum(removed[, source] == "PUNCH CARD AREA 20", na.rm = TRUE)
@@ -245,7 +272,7 @@ getArea <- function(
         "i" = "There are {nunk} records designated as Not Known or Unknown in
         Washington that could not be associated with federal areas in other
         fields and so were removed.",
-        "i" = "NOTE: Of the records that were kept, {flag_EstUnk} records in Oregon
+        "i" = "NOTE: Of the records that were kept, {flag_EstUnkOr} records in Oregon
         have Not Known or Estuary water area names, and {flag_InBay} records in
         California are from Inland or San Francisco Bay water area names.
         The user should decide how to handle these, which are not
@@ -254,7 +281,7 @@ getArea <- function(
         "i" = "NOTE: There are also {flag_WaCa} records from Oregon of fish caught in
         Washington or California. The user should decide how to handle these.
         It is recommended to match the treatment of catch for fish caught in 
-        Washington or Califoria waters but landed in Oregon ports.",
+        Washington or Califoria waters that are landed in Oregon ports.",
         ""
       ))
     }
@@ -274,7 +301,7 @@ getArea <- function(
 
 
     # Flag records that were not removed but which the user should decide what
-    # to do with. These include records with AREA_X = 3 (unavilable) or 
+    # to do with. These include records with AREA_X = 3 (unavailable) or 
     # 5 (inland) or 6 (not known) or NA.
     flag <- data |>
       dplyr::filter(.data[[source]] %in% c(3, 5, 6, NA))

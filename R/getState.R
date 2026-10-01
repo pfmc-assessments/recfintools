@@ -38,6 +38,9 @@ getState <- function(
     cli::cli_inform("The column {source} was not found in the data.
                     State information has not been standardized")
   }
+  if (!"remove" %in% colnames(data)){
+    data$remove <- "no"
+  }
 
   source <- source[which(source %in% colnames(data))[1]]
 
@@ -58,7 +61,7 @@ getState <- function(
 
   states <- c("WA", "OR", "CA")
   nostate <- sum(!data[, "state"] %in% states)
-
+  
   if (verbose) {
     cli::cli_bullets(c(
       " " = "{.fn getState} summary information -",

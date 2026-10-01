@@ -1,13 +1,22 @@
 #' Clean RecFIN data
 #'
 #' Clean RecFIN data to provide data in a similar format with consistent
-#' column names and values, and data prepared and ready for analysis.
+#' column names and values, and data prepared and ready for analysis.  
 #' For example, states are standardized to be state abbreviations rather than
 #' single letters or full names and are available in the column called `state`,
-#' or Canada, Mexico, and Puget Sound records are removed
+#' or Canada, Mexico, and Puget Sound records are removed. 
+#' 
+#' This function also removes unsuitable data provided `clean = TRUE` (default).
+#' If `clean = FALSE` all data are retained along with an additional column 
+#' "remove" that is populated with the function where data would be removed. 
+#' Using `clean = FALSE` is for exploration purposes only and is NOT RECOMMENDED
+#' for final use within US West Coast assessments. 
 #'
 #' @param data A loaded Rdata object from pull_catch_recfin_ or
 #' pull_bds_recfin_.
+#' @param clean A logical value used when you want to remove data from the input
+#' data set. The default is `TRUE`, where the opposite returns the data 
+#' with additional columns and reports on what would have been removed.
 #' @param verbose Whether to output detailed information about the cleaning
 #' process. Default is TRUE.
 #'
@@ -40,6 +49,10 @@
 #'
 #' Washington does not differentiate by mode in its historical reconstruction.
 #' Therefore, when running getMode() all records are assigned as 'UNK'.
+#' 
+#' Washington also does not have dead discard estimates from 1990-2004. Mortality
+#' in these years is only of retained fish. Consider applying estimates for
+#' discard amounts based on conversations with Washington. 
 #'
 #' todo: create a function to estimate Washington weights for recent and historical?
 #'
@@ -70,7 +83,9 @@
 #' See the data object `recfin_coldefs` for more complete descriptions of
 #' column names and their contents.
 #'
-clean_catch <- function(data) {
+clean_catch <- function(data,
+                        clean = TRUE,
+                        verbose = TRUE) {
   type <- NULL
 
   # Historical data
@@ -89,7 +104,7 @@ clean_catch <- function(data) {
       data[[i]] <- getState(
         data = data[[i]],
         source = c("AGENCY"),
-        verbose = TRUE
+        verbose = verbose
       )
 
       # Rename modes
@@ -99,14 +114,14 @@ clean_catch <- function(data) {
       data[[i]] <- getMode(
         data = data[[i]],
         source = c("RECFIN_MODE_NAME", "AGENCY"),
-        verbose = TRUE
+        verbose = verbose
       )
 
       # Set up year column
       data[[i]] <- getYear(
         data = data[[i]],
         source = c("YEAR", "RECFIN_YEAR"), # YEAR is for OR and CA, RECFIN_YEAR is for WA
-        verbose = TRUE
+        verbose = verbose
       )
 
 
@@ -120,7 +135,7 @@ clean_catch <- function(data) {
       data[[i]] <- getArea(
         data = data[[i]],
         source = c("AREA", "RECFIN_DISTRICT_NAME", "SURVEY_PROGRAM_AREA_NAME"), # AREA for WA, Recfin_district_name for OR, SURVEY_PROGRAM_AREA_NAME for CA
-        verbose = TRUE
+        verbose = verbose
       )
 
 
@@ -153,21 +168,21 @@ clean_catch <- function(data) {
     data <- getState(
       data = data,
       source = c("ST"),
-      verbose = TRUE
+      verbose = verbose
     )
 
     # Rename modes
     data <- getMode(
       data = data,
       source = c("MODE"),
-      verbose = TRUE
+      verbose = verbose
     )
 
     # Set up year column
     data <- getYear(
       data = data,
       source = c("YEAR"),
-      verbose = TRUE
+      verbose = verbose
     )
 
 
@@ -176,12 +191,13 @@ clean_catch <- function(data) {
     # Filter out Oregon and Washington records because they don't use MRFSS data
     data <- data |>
       dplyr::filter(!state %in% c("OR", "WA"))
+    
 
     # Filter out non-federal records
     data <- getArea(
       data = data,
-      source = c("AREA"),
-      verbose = TRUE
+      source = c("AREA_X"),
+      verbose = verbose
     )
 
 
@@ -200,7 +216,7 @@ clean_catch <- function(data) {
     data <- check_catch(
       data = data,
       source = c("RETAINED", "RELEASED_ALIVE", "RELEASED_DEAD"),
-      verbose = TRUE
+      verbose = verbose
     )
 
     ## Standardize fields
@@ -209,21 +225,21 @@ clean_catch <- function(data) {
     data <- getState(
       data = data,
       source = c("AGENCY", "STATE_NAME"), # AGENCY is in CTE001, STATE_NAME in CTE501
-      verbose = TRUE
+      verbose = verbose
     )
 
     # Rename modes
     data <- getMode(
       data = data,
       source = c("RECFIN_MODE_NAME"),
-      verbose = TRUE
+      verbose = verbose
     )
 
     # Set up year column
     data <- getYear(
       data = data,
       source = c("RECFIN_YEAR"),
-      verbose = TRUE
+      verbose = verbose
     )
 
 
@@ -233,60 +249,77 @@ clean_catch <- function(data) {
     data <- getArea(
       data = data,
       source = c("RECFIN_WATER_AREA_NAME"),
-      verbose = TRUE
+      verbose = verbose
     )
 
     cli::cli_inform("Done cleaning recent catches")
   }
 
-  # # Report removals
-  # if (verbose) {
-  #   narea <- sum(bad[, "badarea"])
-  #   ntype <- sum(bad[, "badstype"])
-  #   nmethod <- sum(bad[, "badsmeth"])
-  #   nnumber <- sum(bad[, "badsno"])
-  #   nstate <- sum(bad[, "badstate"])
-  #   ngear <- sum(bad[, "badgear"])
-  #   nlength <- sum(is.na(data$lengthmm))
-  #   nage <- sum(is.na(data$Age))
-  #   nlenage <- sum(is.na(data$lengthmm) & is.na(data$Age))
-  #   nclean <- NROW(data) - sum(bad[, "remove"])
-  #   nremoved <- sum(bad[, "remove"])
-  #
-  #   cli::cli_bullets(c(
-  #     " " = "Summary of data processing and cleaning checks:",
-  #     " " = "The following records would be removed if clean = TRUE. Users should inspect these records to make sure that those record should be removed from the cleaned data or if the keep arguments should be revised.",
-  #     " " = "The number of records potentially removed for the various reasons below if clean = TRUE are not mutually exclusive.",
-  #     "!" = "Number of records not in federal waters: {narea}",
-  #     "!" = "Number of records not in keep_sample_type (SAMPLE_TYPE): {ntype}",
-  #     "!" = "Number of records not in keep_sample_method (SAMPLE_METHOD_CODE): {nmethod}",
-  #     "!" = "Number of records without SAMPLE_NUMBER: {nnumber}",
-  #     "!" = "Number of records not in keep_states: {nstate}",
-  #     "!" = "Number of records not in keep_gears: {ngear}",
-  #     "!" = "Number of records without length and Age: {nlenage}",
-  #     "i" = "Number of records remaining if clean = TRUE: {nclean}",
-  #     "i" = "Number of records removed if clean = TRUE: {nremoved}"
-  #   ))
-  #
-  #   if (check_pacfin_species_code_calcom(data$PACFIN_SPECIES_CODE)) {
-  #     if (!check_calcom) {
-  #       cli::cli_alert_danger(
-  #         "Additional biological data are available from CALCOM for flatfish species pre-1990, please contact E.J. (edward.dick@noaa.gov) and Brenda (BErwin@psmfc.org)."
-  #       )
-  #     }
-  #   }
-  # }
-  #
-  # clean_vector <- ifelse(
-  #   bad[, "remove"] == TRUE,
-  #   yes = FALSE,
-  #   no = TRUE
-  # )
-  # data[, "clean"] <- clean_vector
-  # if (clean) {
-  #   data <- data[clean_vector, ]
-  # }
-
+  # Report removals and remove cleaned records provided clean == "TRUE"
+  if(type == "hist"){
+    
+    narea = nyear = nstate = nclean = nlength = nremoved = clean_vector = list()
+    for (i in 1:length(data)) {
+      
+      narea[i] <- sum(data[,remove] %in% "area")
+      nyear[i] <- sum(data[,remove] %in% "year")
+      nstate[i] <- sum(data[,remove] %in% "state")
+      nlength[i] <- sum(data[,remove] %in% "length")
+      nclean[i] <- sum(data[,remove] %in% "no")
+      nremoved[i] <- sum(!data[,remove] %in% "no")
+      
+      if(clean){
+        clean_vector[i] <- ifelse(
+          data[i][,"remove"] == "no",
+          FALSE,
+          TRUE
+          )
+        data[i] <- data[i][clean_vector[i],]
+      }
+    }
+    
+    narea <- sapply(narea, sum)
+    nyear <- sapply(nyear, sum)
+    nstate <- sapply(nstate, sum)
+    nlength <- sapply(nlength, sum)
+    nclean <- sapply(nclean, sum)
+    nremoved <- sapply(nremoved, sum)
+  }
+  
+  if(type %in% c("recent", "mrfss")){
+  
+    narea <- sum(data[,remove] %in% "area")
+    nyear <- sum(data[,remove] %in% "year")
+    nstate <- sum(data[,remove] %in% "state")
+    nlength <- sum(data[,remove] %in% "length")
+    nclean <- sum(data[,remove] %in% "no")
+    nremoved <- sum(!data[,remove] %in% "no")
+    
+    if(clean){
+      clean_vector <- ifelse(
+        data[,"remove"] == "no",
+        FALSE,
+        TRUE
+      )
+      data <- data[clean_vector[i],]
+    }
+  }
+    
+  cli::cli_bullets(c(
+    " " = "Summary of data processing and cleaning checks:",
+    " " = "The following records would be removed if clean = TRUE. Users 
+    should inspect these records to make sure that those record should be 
+    removed from the cleaned data or if the keep arguments should be revised.",
+    " " = "The number of records potentially removed for the various reasons 
+    below if clean = TRUE are not mutually exclusive.",
+    "!" = "Number of records not in federal waters: {narea}",
+    "!" = "Number of records without a year: {nyear}",
+    "!" = "Number of records without a state: {nstate}",
+    "!" = "Number of records without length: {nlength}",
+    "i" = "Number of records remaining if clean = TRUE: {nclean}",
+    "i" = "Number of records removed if clean = TRUE: {nremoved}"
+  ))
+  
   return(data)
 }
 
@@ -321,21 +354,21 @@ clean_bds <- function(data) {
     data <- getState(
       data = data,
       source = c("ST"),
-      verbose = TRUE
+      verbose = verbose
     )
 
     # Rename modes
     data <- getMode(
       data = data,
       source = c("MODE_FX"),
-      verbose = TRUE
+      verbose = verbose
     )
 
     # Set up year column
     data <- getYear(
       data = data,
       source = c("YEAR"),
-      verbose = TRUE
+      verbose = verbose
     )
 
 
@@ -351,7 +384,7 @@ clean_bds <- function(data) {
     data <- getArea(
       data = data,
       source = c("AREA_X"),
-      verbose = TRUE
+      verbose = verbose
     )
 
     # Remove any records without lengths and add length_cm column
@@ -359,9 +392,8 @@ clean_bds <- function(data) {
     data <- getLength(
       data = data,
       source = c("LNGTH"),
-      verbose = TRUE
+      verbose = verbose
     )
-
 
     cli::cli_inform("Done cleaning MRFSS bds")
   }
@@ -376,21 +408,21 @@ clean_bds <- function(data) {
     data <- getState(
       data = data,
       source = c("STATE_NAME"),
-      verbose = TRUE
+      verbose = verbose
     )
 
     # Rename modes
     data <- getMode(
       data = data,
       source = c("RECFIN_MODE_NAME"),
-      verbose = TRUE
+      verbose = verbose
     )
 
     # Set up year column
     data <- getYear(
       data = data,
       source = c("RECFIN_YEAR"),
-      verbose = TRUE
+      verbose = verbose
     )
 
 
@@ -402,7 +434,7 @@ clean_bds <- function(data) {
     data <- getArea(
       data = data,
       source = c("AGENCY_FISHED_AREA_NAME"),
-      verbose = TRUE
+      verbose = verbose
     )
 
     # Remove any records without lengths and add length_cm column
@@ -410,14 +442,14 @@ clean_bds <- function(data) {
     data <- getLength(
       data = data,
       source = c("RECFIN_LENGTH_MM"),
-      verbose = TRUE
+      verbose = verbose
     )
 
     # Combine length and age data and remove multiple reads from ages
     data <- getAges(
       len_data = data,
       age_data = age_data,
-      verbose = TRUE
+      verbose = verbose
     )
     # to do: This is working but still need to figure out why some age data
     # aren't in length data
@@ -426,5 +458,38 @@ clean_bds <- function(data) {
     cli::cli_inform("Done cleaning recent bds")
   }
 
+  # Report removals and remove cleaned records provided clean == "TRUE"
+  narea <- sum(data[,remove] %in% "area")
+  nyear <- sum(data[,remove] %in% "year")
+  nstate <- sum(data[,remove] %in% "state")
+  nlength <- sum(data[,remove] %in% "length")
+  nclean <- sum(data[,remove] %in% "no")
+  nremoved <- sum(!data[,remove] %in% "no")
+  
+  if(clean){
+    clean_vector <- ifelse(
+      data[,"remove"] == "no",
+      FALSE,
+      TRUE
+    )
+    data <- data[clean_vector[i],]
+  }
+
+  
+  cli::cli_bullets(c(
+    " " = "Summary of data processing and cleaning checks:",
+    " " = "The following records would be removed if clean = TRUE. Users 
+    should inspect these records to make sure that those record should be 
+    removed from the cleaned data or if the keep arguments should be revised.",
+    " " = "The number of records potentially removed for the various reasons 
+    below if clean = TRUE are not mutually exclusive.",
+    "!" = "Number of records not in federal waters: {narea}",
+    "!" = "Number of records without a year: {nyear}",
+    "!" = "Number of records without a state: {nstate}",
+    "!" = "Number of records without length: {nlength}",
+    "i" = "Number of records remaining if clean = TRUE: {nclean}",
+    "i" = "Number of records removed if clean = TRUE: {nremoved}"
+  ))
+  
   return(data)
 }
