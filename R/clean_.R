@@ -67,6 +67,7 @@
 #'
 #' @section California data:
 #'
+#' @seealso [clean_bds()]
 #'
 #' @inheritSection getState State mapping rules
 #' @inheritSection getMode Mode mapping rules
@@ -446,11 +447,13 @@ clean_bds <- function(data) {
     )
 
     # Combine length and age data and remove multiple reads from ages
-    data <- getAges(
+    temp <- getAges(
       len_data = data,
       age_data = age_data,
       verbose = verbose
     )
+    data = temp$len_data
+    age_data = temp$age_data
     # to do: This is working but still need to figure out why some age data
     # aren't in length data
     # Probably will move this to outside the clean function.
@@ -463,6 +466,8 @@ clean_bds <- function(data) {
   nyear <- sum(data[,remove] %in% "year")
   nstate <- sum(data[,remove] %in% "state")
   nlength <- sum(data[,remove] %in% "length")
+  nageNA <- sum(age_data[,remove] %in% "naAge")
+  nageMult <- sum(age_data[,remove] %in% "multRead")
   nclean <- sum(data[,remove] %in% "no")
   nremoved <- sum(!data[,remove] %in% "no")
   
@@ -487,6 +492,8 @@ clean_bds <- function(data) {
     "!" = "Number of records without a year: {nyear}",
     "!" = "Number of records without a state: {nstate}",
     "!" = "Number of records without length: {nlength}",
+    "!" = "Number of age records without a valid age: {nageNA}",
+    "!" = "Number of multiple age reads of the same fish: {nageMult}",
     "i" = "Number of records remaining if clean = TRUE: {nclean}",
     "i" = "Number of records removed if clean = TRUE: {nremoved}"
   ))
