@@ -131,8 +131,8 @@ sql_catch <- function(species_name, type, apex = FALSE) {
   }
 
   # Catches from years during MRFSS sampling
-  # UPDATE: As of Oct 2026 this is based on CTE008 - which is a new report for 
-  # MRFSS catches. Previously built own report based on legacy estimates. 
+  # UPDATE: As of Oct 2026 this is based on CTE008 - which is a new report for
+  # MRFSS catches. Previously built own report based on legacy estimates.
   # Cut off data to 2004 and before for CA, 2003 and before for OR and WA
   if (type == "mrfss") {
     # sqlcall <- glue::glue(
@@ -143,9 +143,9 @@ sql_catch <- function(species_name, type, apex = FALSE) {
     #     AND ((ST = 6 AND YEAR <= 2004) OR (ST != 6 AND YEAR < 2004))
     #   "
     # )
-    
-      sqlcall <- glue::glue(
-        "
+
+    sqlcall <- glue::glue(
+      "
         WITH SRC AS (
           SELECT
             YEAR,
@@ -288,7 +288,7 @@ sql_catch <- function(species_name, type, apex = FALSE) {
             DATE1,
             RECFIN_LOG_ID,
             RECFIN_VDATE
-          FROM 
+          FROM
             RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_ESTIMATES
           WHERE COMMON = ANY ({toupper(species)})
             AND ((ST = 6 AND YEAR <= 2004) OR (ST != 6 AND YEAR < 2004))
@@ -436,12 +436,11 @@ sql_catch <- function(species_name, type, apex = FALSE) {
             RECFIN_VDATE
         FROM SRC
         "
-      )
-      
+    )
+
     sqlcall <- gsub("\\n", " ", sqlcall)
   }
-  
-  
+
 
   # Catches from historical reconstructions of each state
   # A few fields (RECFIN_LOG_ID for WA and CA, and SURVEY_PROGRAM_ID for CA)
@@ -1067,8 +1066,8 @@ sql_bds <- function(species_name, type, apex) {
     #     "
     #   )
     # }
-    
-    
+
+
     if (apex == "SD517") {
       # Based on SD517 bio data for available catch (Type 3 - A)
       # This is an update of what was SD509 and is what is currently available
@@ -1076,7 +1075,7 @@ sql_bds <- function(species_name, type, apex) {
       sqlcall <- glue::glue(
         "
         WITH SRC AS (
-          SELECT 
+          SELECT
             ID_CODE,
             SP_CODE,
             SPECIES_NAME,
@@ -1140,9 +1139,9 @@ sql_bds <- function(species_name, type, apex) {
             DATE1,
             RECFIN_VDATE,
             RECFIN_LOG_ID
-          FROM 
+          FROM
             RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_TYPE_3
-          WHERE 
+          WHERE
             YEAR <= 2003
             AND SPECIES_NAME = ANY ({toupper(species)})
         )
@@ -1151,7 +1150,7 @@ sql_bds <- function(species_name, type, apex) {
       "
       )
     }
-    
+
     sqlcall <- gsub("\\n", " ", sqlcall)
   }
   return(sqlcall)

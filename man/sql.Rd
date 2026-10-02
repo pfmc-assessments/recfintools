@@ -25,7 +25,7 @@ must specify a valid option.}
 
 \item{apex}{The specific recfin apex report that you want to reproduce.
 Available options include "SD001" and "SD501" (which are for lengths) and
-"SD506" (which is for ages) when type equals "recent", and "SD508" and "SD509"
+"SD506" (which is for ages) when type equals "recent", and "SD508" and "SD517"
 when type equals "mrfss". There is no default so the user must specify a
 valid option. Currently, there is no option to keep just the raw sql data.}
 }

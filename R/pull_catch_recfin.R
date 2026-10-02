@@ -4,7 +4,7 @@
 #' Recent times series:
 #' User enters either 'CTE501' (confidential) or 'CTE001' (non-confidential)
 #' Historical times series for each state:
-#' Automatically chooses all of 'CTE503', 'CTE507', and 'CTE508' 
+#' Automatically chooses all of 'CTE503', 'CTE507', and 'CTE508'
 #' MRFSS catch data:
 #' Automatically chooses 'CTE008'.
 #'

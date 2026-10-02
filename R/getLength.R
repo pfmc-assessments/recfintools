@@ -42,7 +42,7 @@ getLength <- function(
     cli::cli_inform("The column {source} was not found in the data.
                     Length information has not been standardized")
   }
-  if (!"remove" %in% colnames(data)){
+  if (!"remove" %in% colnames(data)) {
     data$remove <- "no"
   }
 
@@ -51,7 +51,7 @@ getLength <- function(
   removed <- data |>
     dplyr::filter(is.na(.data[[source]]) | .data[[source]] == 0)
 
-  data <- data |> 
+  data <- data |>
     dplyr::mutate(
       remove = dplyr::if_else(
         (is.na(.data[[source]]) | .data[[source]] == 0),
@@ -84,7 +84,7 @@ getLength <- function(
         as being outside the maximum length for the species and were kept. The
         user should decide how to handle these",
         "i" = "NOTE: there are {lentype} records flagged by `RECFIN_LENGTH_TYPE`
-        as being total length as opposed to fork length and were kept. These 
+        as being total length as opposed to fork length and were kept. These
         only occur for Washington. The user should decide how to handle these",
         ""
       ))
@@ -118,12 +118,12 @@ getLength <- function(
         "i" = "NOTE: There are records where {source} was likely derived from
         empirical relationships from another measurement, either from {other_l} or
         WGT. This can be inferred based on the number of decimal places, using
-        `count_decimals()`. These records were kept. The user should decide how 
-        to handle these by checking the number of decimals of {source} compared 
-        to {other_l} or WGT. For applications where precision is important, such 
-        as for W-L or growth relationships, direct measured samples are typically 
-        used. For compositions, where imprecision in the empirical relationship 
-        is likely to be less than the bin size used, measurements obtained from 
+        `count_decimals()`. These records were kept. The user should decide how
+        to handle these by checking the number of decimals of {source} compared
+        to {other_l} or WGT. For applications where precision is important, such
+        as for W-L or growth relationships, direct measured samples are typically
+        used. For compositions, where imprecision in the empirical relationship
+        is likely to be less than the bin size used, measurements obtained from
         conversions are likely suitable.",
         ""
       ))
