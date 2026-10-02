@@ -1,10 +1,10 @@
 #' Alert user of whether catches records for weight are missing but catches in
-#' number exist.
+#' number exist. Currently only used for recent catch data.
 #'
 #'
 #' @details
-#' This function is used for catch data. It lets the user know when records have
-#' catch in numbers (for retained and released dead) but not
+#' This function is used for recent catch data. It lets the user know when 
+#' records have catch in numbers (for retained and released dead) but not
 #' corresponding weight, and therefore when the total catch in weight may be off.
 #' It is up to the user to decide how to use this information.
 #' This function also confirms that the total mortality is the sum of retained
@@ -16,13 +16,12 @@
 #'
 #' @inheritParams clean_catch
 #'
-#' @param source Column keywords where the information is located. Depends on the
-#' type of data (catch or bds) and era (recent, mrfss, or historical). Default
-#' value is for recent catch data (i.e. RETAINED_, RELEASED_ALIVE_,
-#' RELEASED_DEAD_). The functions searches for the columns that contain these words.
-
+#' @param source Column keywords where the information is located. Can depend
+#' on era (recent, mrfss, or historical) however currently this is only used
+#' for recent catch data. Default value is for recent catch data 
+#' (i.e. RETAINED_, RELEASED_ALIVE_, RELEASED_DEAD_). The function searches for 
+#' the columns that contain these words.
 #'
-#' #Not really using source as fully user defined. Consider removing
 
 check_catch <- function(
   data,
@@ -81,16 +80,22 @@ check_catch <- function(
   )
 
   if (verbose) {
-    cli::cli_bullets(c(
-      " " = "{.fn check_catch} summary information -",
-      "i" = "There are {retainOff} records where retained catches are reported
+    
+    if(sum(retainOff, deadOff, na.rm = TRUE) > 0){
+      cli::cli_bullets(c(
+        " " = "{.fn check_catch} summary information -",
+        " " = "There are records where catch in numbers exist yet catch in weight
+        is zero.",
+        "i" = "There are {retainOff} records where retained catches are reported
       in numbers but have no weight",
-      "i" = "There are {deadOff} records where released dead catches are
+        "i" = "There are {deadOff} records where released dead catches are
       reported in numbers but have no weight",
-      "These should be looked at by the user to determine how to handle since  
+        "These should be looked at by the user to determine how to handle since  
       RETAINED_MT and RELEASED_DEAM_MT sum to create total mortality.",
-      ""
-    ))
+        ""
+      ))
+    }
+    
   }
 
   return(data)
