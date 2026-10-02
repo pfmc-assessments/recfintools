@@ -16,7 +16,7 @@
 #'
 #' If `verbose = TRUE`, the function reports how many records were assigned
 #' `UNK`.
-#' 
+#'
 #' Note that Washington historical data does not contain mode information so
 #' everything is assigned as `UNK`
 #'
@@ -42,10 +42,10 @@ getMode <- function(
     cli::cli_inform("The column {source} was not found in the data.
                     Mode information has not been standardized")
   }
-  if (!"remove" %in% colnames(data)){
+  if (!"remove" %in% colnames(data)) {
     data$remove <- "no"
   }
-  
+
   source <- source[which(source %in% colnames(data))[1]]
 
   data <- data |>

@@ -26,7 +26,7 @@ Default is TRUE.}
 }
 \value{
 An invisible named list of loaded objects. The number of data files
-that were read.
+that were read and their names.
 }
 \description{
 Read the primary \code{.RData} files produced by this package and assign each
@@ -34,7 +34,7 @@ loaded object to a standardized object name.
 }
 \details{
 This function currently focuses on the six primary RecFIN data files:
-\code{BDS.Recent_SD501}, \code{BDS.Recent_SD506}, \code{BDS.MRFSS_SD509},
+\code{BDS.Recent_SD501}, \code{BDS.Recent_SD506}, \code{BDS.MRFSS_SD517},
 \code{Catch.Recent_CTE501}, \code{Catch.MRFSS}, and \code{Catch.Hist}. If multiple files
 with the same keyword are present, the most recently modified file is used.
 The loaded objects are assigned into \code{envir} using standardized object names:

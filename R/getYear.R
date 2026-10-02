@@ -20,11 +20,11 @@
 #' determine which samples were duplicates. Therefore MRFSS bds data in 2001-2003
 #' are removed using this function.
 #' @section Oregon ORBS bds data:
-#' Oregon ORBS bds data extend back to 1999 in SD501, overlapping for years 
+#' Oregon ORBS bds data extend back to 1999 in SD501, overlapping for years
 #' 1999-2000 with MRFSS samples. During 1999-2000, ORBS operated under a different
 #' sampling protocol than it did for years 2001-current, raising doubts on its
 #' representativeness for those years. Therefore, ORBS bds data in 1999-2000 are
-#' removed using this function.     
+#' removed using this function.
 #'
 #' @export
 #' @seealso [clean_catch()] calls 'getYear'
@@ -48,7 +48,7 @@ getYear <- function(
     cli::cli_inform("The column {source} was not found in the data.
                     Year information has not been standardized")
   }
-  if (!"remove" %in% colnames(data)){
+  if (!"remove" %in% colnames(data)) {
     data$remove <- "no"
   }
 
@@ -60,7 +60,7 @@ getYear <- function(
   data$year <- data[, source]
 
   noyear <- sum(is.na(data$year))
-  data[is.na(data$year),"remove"] <- "year"
+  data[is.na(data$year), "remove"] <- "year"
 
   if (verbose) {
     cli::cli_bullets(c(
@@ -74,12 +74,12 @@ getYear <- function(
   # overlap in time with MRFSS bds data, and occurred under a different sampling
   # protocol than later years (2001-current).
   if (source == "RECFIN_YEAR" &
-      "RECFIN_LENGTH_MM" %in% colnames(data)) {
-    removed <- which(data$RECFIN_YEAR %in% c(1999,2000) & data$STATE_NAME == "OREGON")
+    "RECFIN_LENGTH_MM" %in% colnames(data)) {
+    removed <- which(data$RECFIN_YEAR %in% c(1999, 2000) & data$STATE_NAME == "OREGON")
     data[removed, "remove"] <- "year"
-    
+
     nrem <- length(removed)
-    
+
     if (verbose) {
       cli::cli_bullets(c(
         "i" = "There were {nrem} Oregon ORBS records removed from 1999-2000
@@ -89,7 +89,7 @@ getYear <- function(
       ))
     }
   }
-  
+
   # Remove records in 2001-2003 for Oregon MRFSS bds data because these years
   # overlap in time with recent bds data sampling efforts, and cannot distinguish
   # whether the same or different fish were sampled.

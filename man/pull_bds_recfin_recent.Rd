@@ -25,7 +25,7 @@ The default is the current working directory. If don't want to save use NULL.}
 
 \item{apex}{The specific recfin apex report that you want to reproduce.
 Available options include "SD001" and "SD501" (which are for lengths) and
-"SD506" (which is for ages) when type equals "recent", and "SD508" and "SD509"
+"SD506" (which is for ages) when type equals "recent", and "SD508" and "SD517"
 when type equals "mrfss". There is no default so the user must specify a
 valid option. Currently, there is no option to keep just the raw sql data.}
 }
@@ -37,7 +37,7 @@ also returned invisibly.
 Read bio data from the various biological reports in recfin:
 'SD001' or 'SD501' for lengths, 'SD506' for ages
 MRFSS bio data:
-'SD508' or 'SD509' for Type 2 and Type 3 data, respectively
+'SD508' or 'SD517' for Type 2 and Type 3 data, respectively.
 }
 \examples{
 \dontrun{
@@ -45,7 +45,7 @@ bio.recfin.001 <- pull_bds_recfin_recent("QUILLBACK ROCKFISH", apex = "SD001")
 bio.recfin.501 <- pull_bds_recfin_recent("QUILLBACK ROCKFISH", apex = "SD501")
 bio.recfin.506 <- pull_bds_recfin_recent("QUILLBACK ROCKFISH", apex = "SD506")
 bio.mrfss.508 <- pull_bds_recfin_mrfss("QUILLBACK ROCKFISH", apex = "SD508")
-bio.mrfss.509 <- pull_bds_recfin_mrfss("QUILLBACK ROCKFISH", apex = "SD509")
+bio.mrfss.517 <- pull_bds_recfin_mrfss("QUILLBACK ROCKFISH", apex = "SD517")
 }
 
 }

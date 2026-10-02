@@ -25,7 +25,7 @@ The default is the current working directory. If don't want to save use NULL.}
 
 \item{apex}{The specific recfin apex report that you want to reproduce.
 Available options include "SD001" and "SD501" (which are for lengths) and
-"SD506" (which is for ages) when type equals "recent", and "SD508" and "SD509"
+"SD506" (which is for ages) when type equals "recent", and "SD508" and "SD517"
 when type equals "mrfss". There is no default so the user must specify a
 valid option. Currently, there is no option to keep just the raw sql data.}
 }
@@ -35,11 +35,12 @@ also returned invisibly.
 }
 \description{
 Read catch data from the various total mortality reports in recfin:
-'CTE501' or 'CTE001'
+Recent times series:
+User enters either 'CTE501' (confidential) or 'CTE001' (non-confidential)
 Historical times series for each state:
-'CTE503' or 'CTE507'
+Automatically chooses all of 'CTE503', 'CTE507', and 'CTE508'
 MRFSS catch data:
-Does not have a formal apex report (though CTE510 was a temporary report)
+Automatically chooses 'CTE008'.
 }
 \examples{
 \dontrun{

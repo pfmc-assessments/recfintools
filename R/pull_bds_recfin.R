@@ -3,8 +3,8 @@
 #' Read bio data from the various biological reports in recfin:
 #' 'SD001' or 'SD501' for lengths, 'SD506' for ages
 #' MRFSS bio data:
-#' 'SD508' or 'SD517' for Type 2 and Type 3 data, respectively. 
-#' 
+#' 'SD508' or 'SD517' for Type 2 and Type 3 data, respectively.
+#'
 #'
 #' @inheritParams sql
 #' @inheritParams pacfintools::getDB

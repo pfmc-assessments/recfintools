@@ -1,5 +1,5 @@
-#' Add age information for recent bds data to the length data. Also flags 
-#' records in age data that should be removed.    
+#' Add age information for recent bds data to the length data. Also flags
+#' records in age data that should be removed.
 #'
 #' @details
 #' This function is used for only for recent composition data, and combines the
@@ -12,7 +12,7 @@
 #' reported as multiple rows in SD506, by keeping the first occurrence. This
 #' does not occur often, and only for ODFW, but when it does the length of the
 #' fish is duplicated for each read. These records are flagged in the age data
-#' as are records where age is not entered. 
+#' as are records where age is not entered.
 #'
 #' @export
 #' @seealso [clean_bds()] calls 'getAges'
@@ -23,11 +23,11 @@
 #' report SD501.
 #' @param age_data A loaded Rdata object from pull_bds_recfin_recent for apex
 #' report SD506
-#' 
+#'
 #' @return Returns two data frames. The first `len_data` is the entered length
 #' data with age information added. The second `age_data` is the entered age data
 #' with a column "remove" added for later filtering because records are either
-#' multiple reads of the same fish (`remove = "multRead"`) or are NA 
+#' multiple reads of the same fish (`remove = "multRead"`) or are NA
 #' (`remove = "naAge"`).
 #'
 getAges <- function(
@@ -35,9 +35,9 @@ getAges <- function(
   age_data,
   verbose = TRUE
 ) {
-  #Create temporary age dataset where ages are added to lengths
+  # Create temporary age dataset where ages are added to lengths
   temp_age_data <- age_data
-  
+
   len_data$dataset <- "SD501"
   temp_age_data$dataset <- "SD506"
 
@@ -70,14 +70,14 @@ getAges <- function(
 
   # Also add column into original age dataset flagging ages that were removed
   # or that are NA
-  
-  if (!"remove" %in% colnames(age_data)){
+
+  if (!"remove" %in% colnames(age_data)) {
     age_data$remove <- "no"
   }
-  
-  #Flag removed records that were multiples reads from the same fish for ODFW 
-  #as well as any remaining ages that are NA
-  age_data <- age_data |> 
+
+  # Flag removed records that were multiples reads from the same fish for ODFW
+  # as well as any remaining ages that are NA
+  age_data <- age_data |>
     dplyr::mutate(
       remove = dplyr::if_else(
         duplicated(age_data[, "SAMPLE_ID"]),
@@ -91,7 +91,7 @@ getAges <- function(
       )
     )
   nnaAge <- sum(age_data$remove %in% "naAge")
-  
+
   if (verbose) {
     cli::cli_bullets(c(
       " " = "{.fn getAges} summary information -",
@@ -107,6 +107,5 @@ getAges <- function(
   return(list(
     "len_data" = data,
     "age_data" = age_data
-    )
-  )
+  ))
 }

@@ -3,7 +3,7 @@
 #'
 #'
 #' @details
-#' This function is used for recent catch data. It lets the user know when 
+#' This function is used for recent catch data. It lets the user know when
 #' records have catch in numbers (for retained and released dead) but not
 #' corresponding weight, and therefore when the total catch in weight may be off.
 #' It is up to the user to decide how to use this information.
@@ -18,8 +18,8 @@
 #'
 #' @param source Column keywords where the information is located. Can depend
 #' on era (recent, mrfss, or historical) however currently this is only used
-#' for recent catch data. Default value is for recent catch data 
-#' (i.e. RETAINED_, RELEASED_ALIVE_, RELEASED_DEAD_). The function searches for 
+#' for recent catch data. Default value is for recent catch data
+#' (i.e. RETAINED_, RELEASED_ALIVE_, RELEASED_DEAD_). The function searches for
 #' the columns that contain these words.
 #'
 
@@ -28,7 +28,6 @@ check_catch <- function(
   source = c("RETAINED", "RELEASED_ALIVE", "RELEASED_DEAD"),
   verbose = TRUE
 ) {
-  
   cols <- colnames(data)[
     intersect(
       grep(paste(source, collapse = "|"), colnames(data)),
@@ -50,7 +49,7 @@ check_catch <- function(
 
   fullcols$dead_mt <- rowSums(fullcols[, deadcols], na.rm = TRUE)
 
-  if (sum(fullcols$dead_mt, na.rm = TRUE) != sum(data[, grep("TOTAL_MORTALITY_MT", colnames(data))], na.rm = TRUE)) {   
+  if (sum(fullcols$dead_mt, na.rm = TRUE) != sum(data[, grep("TOTAL_MORTALITY_MT", colnames(data))], na.rm = TRUE)) {
     cli::cli_inform("The sum of total mortality does not equal the sum of retained
                     and released dead mortality.")
   }
@@ -60,28 +59,30 @@ check_catch <- function(
   retainOff <- length(
     which(
       (fullcols[, grep("RETAINED_MT", colnames(fullcols))] == 0 |
-         is.na(fullcols[, grep("RETAINED_MT", colnames(fullcols))])
-       ) &
-      fullcols[, grep("RETAINED_NUM", colnames(fullcols))] > 0)
+        is.na(fullcols[, grep("RETAINED_MT", colnames(fullcols))])
+      ) &
+        fullcols[, grep("RETAINED_NUM", colnames(fullcols))] > 0
+    )
   )
   releaseOff <- length(
     which(
       (fullcols[, grep("RELEASED_ALIVE_MT", colnames(fullcols))] == 0 |
-         is.na(fullcols[, grep("RELEASED_ALIVE_MT", colnames(fullcols))])
-       ) &
-      fullcols[, grep("RELEASED_ALIVE_NUM", colnames(fullcols))] > 0)
+        is.na(fullcols[, grep("RELEASED_ALIVE_MT", colnames(fullcols))])
+      ) &
+        fullcols[, grep("RELEASED_ALIVE_NUM", colnames(fullcols))] > 0
+    )
   )
   deadOff <- length(
     which(
       (fullcols[, grep("RELEASED_DEAD_MT", colnames(fullcols))] == 0 |
-         is.na(fullcols[, grep("RELEASED_DEAD_MT", colnames(fullcols))])
-       ) &
-      fullcols[, grep("RELEASED_DEAD_NUM", colnames(fullcols))] > 0)
+        is.na(fullcols[, grep("RELEASED_DEAD_MT", colnames(fullcols))])
+      ) &
+        fullcols[, grep("RELEASED_DEAD_NUM", colnames(fullcols))] > 0
+    )
   )
 
   if (verbose) {
-    
-    if(sum(retainOff, deadOff, na.rm = TRUE) > 0){
+    if (sum(retainOff, deadOff, na.rm = TRUE) > 0) {
       cli::cli_bullets(c(
         " " = "{.fn check_catch} summary information -",
         " " = "There are records where catch in numbers exist yet catch in weight
@@ -90,12 +91,11 @@ check_catch <- function(
       in numbers but have no weight",
         "i" = "There are {deadOff} records where released dead catches are
       reported in numbers but have no weight",
-        "These should be looked at by the user to determine how to handle since  
+        "These should be looked at by the user to determine how to handle since
       RETAINED_MT and RELEASED_DEAM_MT sum to create total mortality.",
         ""
       ))
     }
-    
   }
 
   return(data)

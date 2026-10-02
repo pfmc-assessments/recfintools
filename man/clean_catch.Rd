@@ -4,11 +4,15 @@
 \alias{clean_catch}
 \title{Clean RecFIN data}
 \usage{
-clean_catch(data)
+clean_catch(data, clean = TRUE, verbose = TRUE)
 }
 \arguments{
 \item{data}{A loaded Rdata object from pull_catch_recfin_ or
 pull_bds_recfin_.}
+
+\item{clean}{A logical value used when you want to remove data from the input
+data set. The default is \code{TRUE}, where the opposite returns the data
+with additional columns and reports on what would have been removed.}
 
 \item{verbose}{Whether to output detailed information about the cleaning
 process. Default is TRUE.}
@@ -24,7 +28,14 @@ Clean RecFIN data to provide data in a similar format with consistent
 column names and values, and data prepared and ready for analysis.
 For example, states are standardized to be state abbreviations rather than
 single letters or full names and are available in the column called \code{state},
-or Canada, Mexico, and Puget Sound records are removed
+or Canada, Mexico, and Puget Sound records are removed.
+}
+\details{
+This function also removes unsuitable data provided \code{clean = TRUE} (default).
+If \code{clean = FALSE} all data are retained along with an additional column
+"remove" that is populated with the function where data would be removed.
+Using \code{clean = FALSE} is for exploration purposes only and is NOT RECOMMENDED
+for final use within US West Coast assessments.
 }
 \section{Missing years}{
 
@@ -58,6 +69,10 @@ dataset.
 
 Washington does not differentiate by mode in its historical reconstruction.
 Therefore, when running getMode() all records are assigned as 'UNK'.
+
+Washington also does not have dead discard estimates from 1990-2004. Mortality
+in these years is only of retained fish. Consider applying estimates for
+discard amounts based on conversations with Washington.
 
 todo: create a function to estimate Washington weights for recent and historical?
 }
@@ -110,6 +125,9 @@ standardized into \code{mode} as:
 
 If \code{verbose = TRUE}, the function reports how many records were assigned
 \code{UNK}.
+
+Note that Washington historical data does not contain mode information so
+everything is assigned as \code{UNK}
 }
 
 \section{Area filtering rules}{
@@ -131,12 +149,16 @@ For recent RecFIN bds data (\code{source = "AGENCY_FISHED_AREA_NAME"}):
 'Not Known' when RECFIN_PORT_NAME also equals coastal ports are kept. All other
 records are removed.
 \item For Oregon: All records are kept,
-\item For California: Because AGENCY_FISHED_AREA_NAME is empty for California,
-the script automatically uses "AGENCY_WATER_AREA_NAME" for California data.
+\item For California: All records are kept. Because AGENCY_FISHED_AREA_NAME is
+empty for California, the script automatically uses "AGENCY_WATER_AREA_NAME"
+for California data.
 }
 
-For Washington historical data (\code{source = "AREA"} and \code{AGENCY == "W"}),
+For Washington historical catch data (\code{source = "AREA"} and \code{AGENCY == "W"}),
 records with \code{AREA >= 5} are removed.
+
+For MRFSS catch data (\verb{source = "AREA_X}):
+*For California: Removes Mexico ("M") records
 
 For MRFSS bds data (\code{source = "AREA_X"}):
 *For Washington: Removes Washington bds data
@@ -172,6 +194,9 @@ average from all years and modes. Sample sizes for these interpolated years
 are NA.
 }
 
+\seealso{
+\code{\link[=clean_bds]{clean_bds()}}
+}
 \author{
 Brian Langseth
 }

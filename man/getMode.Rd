@@ -42,6 +42,9 @@ standardized into \code{mode} as:
 
 If \code{verbose = TRUE}, the function reports how many records were assigned
 \code{UNK}.
+
+Note that Washington historical data does not contain mode information so
+everything is assigned as \code{UNK}
 }
 
 \seealso{
