@@ -39,12 +39,12 @@ readData(
 ## Value
 
 An invisible named list of loaded objects. The number of data files that
-were read.
+were read and their names.
 
 ## Details
 
 This function currently focuses on the six primary RecFIN data files:
-`BDS.Recent_SD501`, `BDS.Recent_SD506`, `BDS.MRFSS_SD509`,
+`BDS.Recent_SD501`, `BDS.Recent_SD506`, `BDS.MRFSS_SD517`,
 `Catch.Recent_CTE501`, `Catch.MRFSS`, and `Catch.Hist`. If multiple
 files with the same keyword are present, the most recently modified file
 is used. The loaded objects are assigned into `envir` using standardized

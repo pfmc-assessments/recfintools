@@ -20,6 +20,21 @@ clean_bds(data)
 A data frame with standardized columns along with original and added
 fields.
 
+## Oregon MRFSS bds data
+
+Oregon MRFSS bds data extend through 2003 in SD517. ORBS sampling also
+occurred in 2001-2003 and duplication occurred. There is no current way
+to determine which samples were duplicates. Therefore MRFSS bds data in
+2001-2003 are removed using this function.
+
+## Oregon ORBS bds data
+
+Oregon ORBS bds data extend back to 1999 in SD501, overlapping for years
+1999-2000 with MRFSS samples. During 1999-2000, ORBS operated under a
+different sampling protocol than it did for years 2001-current, raising
+doubts on its representativeness for those years. Therefore, ORBS bds
+data in 1999-2000 are removed using this function.
+
 ## See also
 
 [`getAges()`](https://pfmc-assessments.github.io/recfintools/reference/getAges.md),

@@ -52,6 +52,9 @@ are standardized into `mode` as:
 If `verbose = TRUE`, the function reports how many records were assigned
 `UNK`.
 
+Note that Washington historical data does not contain mode information
+so everything is assigned as `UNK`
+
 ## See also
 
 [`clean_catch()`](https://pfmc-assessments.github.io/recfintools/reference/clean_catch.md)

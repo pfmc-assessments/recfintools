@@ -4,7 +4,7 @@
 
 - [`check_catch()`](https://pfmc-assessments.github.io/recfintools/reference/check_catch.md)
   : Alert user of whether catches records for weight are missing but
-  catches in number exist.
+  catches in number exist. Currently only used for recent catch data.
 
 - [`cleanColumns()`](https://pfmc-assessments.github.io/recfintools/reference/cleanColumns.md)
   : Remove columns that are not used and thus potentially confusing.
@@ -20,7 +20,8 @@
   : Identify columns of a dataframe that are empty or are mostly empty.
 
 - [`getAges()`](https://pfmc-assessments.github.io/recfintools/reference/getAges.md)
-  : Add age data to length data for recent bds data.
+  : Add age information for recent bds data to the length data. Also
+  flags records in age data that should be removed.
 
 - [`getArea()`](https://pfmc-assessments.github.io/recfintools/reference/getArea.md)
   :

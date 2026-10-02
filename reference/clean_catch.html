@@ -3,11 +3,11 @@
 column names and values, and data prepared and ready for analysis.
 For example, states are standardized to be state abbreviations rather than
 single letters or full names and are available in the column called state,
-or Canada, Mexico, and Puget Sound records are removed"><meta property="og:description" content="Clean RecFIN data to provide data in a similar format with consistent
+or Canada, Mexico, and Puget Sound records are removed."><meta property="og:description" content="Clean RecFIN data to provide data in a similar format with consistent
 column names and values, and data prepared and ready for analysis.
 For example, states are standardized to be state abbreviations rather than
 single letters or full names and are available in the column called state,
-or Canada, Mexico, and Puget Sound records are removed"></head><body>
+or Canada, Mexico, and Puget Sound records are removed."></head><body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
@@ -44,12 +44,12 @@ or Canada, Mexico, and Puget Sound records are removed"></head><body>
 column names and values, and data prepared and ready for analysis.
 For example, states are standardized to be state abbreviations rather than
 single letters or full names and are available in the column called <code>state</code>,
-or Canada, Mexico, and Puget Sound records are removed</p>
+or Canada, Mexico, and Puget Sound records are removed.</p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">clean_catch</span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">clean_catch</span><span class="op">(</span><span class="va">data</span>, clean <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -59,6 +59,12 @@ or Canada, Mexico, and Puget Sound records are removed</p>
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
 <dd><p>A loaded Rdata object from pull_catch_recfin_ or
 pull_bds_recfin_.</p></dd>
+
+
+<dt id="arg-clean">clean<a class="anchor" aria-label="anchor" href="#arg-clean"></a></dt>
+<dd><p>A logical value used when you want to remove data from the input
+data set. The default is <code>TRUE</code>, where the opposite returns the data
+with additional columns and reports on what would have been removed.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
@@ -72,6 +78,14 @@ process. Default is TRUE.</p></dd>
 added fields.
 See the data object <code>recfin_coldefs</code> for more complete descriptions of
 column names and their contents.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>This function also removes unsuitable data provided <code>clean = TRUE</code> (default).
+If <code>clean = FALSE</code> all data are retained along with an additional column
+"remove" that is populated with the function where data would be removed.
+Using <code>clean = FALSE</code> is for exploration purposes only and is NOT RECOMMENDED
+for final use within US West Coast assessments.</p>
     </div>
     <div class="section level2">
     <h2 id="missing-years">Missing years<a class="anchor" aria-label="anchor" href="#missing-years"></a></h2>
@@ -104,6 +118,9 @@ MRFSS dataset, and Puget Sound areas (5+) are removed from the historical
 dataset.</p>
 <p>Washington does not differentiate by mode in its historical reconstruction.
 Therefore, when running getMode() all records are assigned as 'UNK'.</p>
+<p>Washington also does not have dead discard estimates from 1990-2004. Mortality
+in these years is only of retained fish. Consider applying estimates for
+discard amounts based on conversations with Washington.</p>
 <p>todo: create a function to estimate Washington weights for recent and historical?</p>
     </div>
     <div class="section level2">
@@ -149,6 +166,8 @@ standardized into <code>mode</code> as:</p><ul><li><p><code>PR</code>: anything 
 <li><p><code>UNK</code>: all unmatched values</p></li>
 </ul><p>If <code>verbose = TRUE</code>, the function reports how many records were assigned
 <code>UNK</code>.</p>
+<p>Note that Washington historical data does not contain mode information so
+everything is assigned as <code>UNK</code></p>
     </div>
     <div class="section level2">
     <h2 id="area-filtering-rules">Area filtering rules<a class="anchor" aria-label="anchor" href="#area-filtering-rules"></a></h2>
@@ -164,10 +183,13 @@ SURVEY_PROGRAM_CATCH_AREA_NAME equal to BONILLA-TATOOSH LINE - SEKIU RIVER).</p>
 'Not Known' when RECFIN_PORT_NAME also equals coastal ports are kept. All other
 records are removed.</p></li>
 <li><p>For Oregon: All records are kept,</p></li>
-<li><p>For California: Because AGENCY_FISHED_AREA_NAME is empty for California,
-the script automatically uses "AGENCY_WATER_AREA_NAME" for California data.</p></li>
-</ul><p>For Washington historical data (<code>source = "AREA"</code> and <code>AGENCY == "W"</code>),
+<li><p>For California: All records are kept. Because AGENCY_FISHED_AREA_NAME is
+empty for California, the script automatically uses "AGENCY_WATER_AREA_NAME"
+for California data.</p></li>
+</ul><p>For Washington historical catch data (<code>source = "AREA"</code> and <code>AGENCY == "W"</code>),
 records with <code>AREA &gt;= 5</code> are removed.</p>
+<p>For MRFSS catch data (<code>source = "AREA_X</code>):
+*For California: Removes Mexico ("M") records</p>
 <p>For MRFSS bds data (<code>source = "AREA_X"</code>):
 *For Washington: Removes Washington bds data
 *For Oregon: All records are kept
@@ -198,6 +220,10 @@ ocean areas (AREA_X = 1 - 4).</p>
 1979, 1990-1992). Weights are applied for these years based on an overall
 average from all years and modes. Sample sizes for these interpolated years
 are NA.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p><code><a href="clean_bds.html">clean_bds()</a></code></p></div>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>

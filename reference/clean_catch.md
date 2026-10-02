@@ -4,12 +4,12 @@ Clean RecFIN data to provide data in a similar format with consistent
 column names and values, and data prepared and ready for analysis. For
 example, states are standardized to be state abbreviations rather than
 single letters or full names and are available in the column called
-`state`, or Canada, Mexico, and Puget Sound records are removed
+`state`, or Canada, Mexico, and Puget Sound records are removed.
 
 ## Usage
 
 ``` r
-clean_catch(data)
+clean_catch(data, clean = TRUE, verbose = TRUE)
 ```
 
 ## Arguments
@@ -17,6 +17,12 @@ clean_catch(data)
 - data:
 
   A loaded Rdata object from pull_catch_recfin\_ or pull_bds_recfin\_.
+
+- clean:
+
+  A logical value used when you want to remove data from the input data
+  set. The default is `TRUE`, where the opposite returns the data with
+  additional columns and reports on what would have been removed.
 
 - verbose:
 
@@ -28,6 +34,15 @@ clean_catch(data)
 A data frame with standardized columns along with original and added
 fields. See the data object `recfin_coldefs` for more complete
 descriptions of column names and their contents.
+
+## Details
+
+This function also removes unsuitable data provided `clean = TRUE`
+(default). If `clean = FALSE` all data are retained along with an
+additional column "remove" that is populated with the function where
+data would be removed. Using `clean = FALSE` is for exploration purposes
+only and is NOT RECOMMENDED for final use within US West Coast
+assessments.
 
 ## Missing years
 
@@ -62,6 +77,10 @@ removed from the historical dataset.
 Washington does not differentiate by mode in its historical
 reconstruction. Therefore, when running getMode() all records are
 assigned as 'UNK'.
+
+Washington also does not have dead discard estimates from 1990-2004.
+Mortality in these years is only of retained fish. Consider applying
+estimates for discard amounts based on conversations with Washington.
 
 todo: create a function to estimate Washington weights for recent and
 historical?
@@ -118,6 +137,9 @@ are standardized into `mode` as:
 If `verbose = TRUE`, the function reports how many records were assigned
 `UNK`.
 
+Note that Washington historical data does not contain mode information
+so everything is assigned as `UNK`
+
 ## Area filtering rules
 
 Values in `source` are evaluated using case-insensitive matching.
@@ -141,12 +163,15 @@ For recent RecFIN bds data (`source = "AGENCY_FISHED_AREA_NAME"`):
 
 - For Oregon: All records are kept,
 
-- For California: Because AGENCY_FISHED_AREA_NAME is empty for
-  California, the script automatically uses "AGENCY_WATER_AREA_NAME" for
-  California data.
+- For California: All records are kept. Because AGENCY_FISHED_AREA_NAME
+  is empty for California, the script automatically uses
+  "AGENCY_WATER_AREA_NAME" for California data.
 
-For Washington historical data (`source = "AREA"` and `AGENCY == "W"`),
-records with `AREA >= 5` are removed.
+For Washington historical catch data (`source = "AREA"` and
+`AGENCY == "W"`), records with `AREA >= 5` are removed.
+
+For MRFSS catch data (`source = "AREA_X`): \*For California: Removes
+Mexico ("M") records
 
 For MRFSS bds data (`source = "AREA_X"`): \*For Washington: Removes
 Washington bds data \*For Oregon: All records are kept \*For California:
@@ -177,6 +202,10 @@ MRFSS samples are missing for some years where catch in numbers exist
 (e.g. 1979, 1990-1992). Weights are applied for these years based on an
 overall average from all years and modes. Sample sizes for these
 interpolated years are NA.
+
+## See also
+
+[`clean_bds()`](https://pfmc-assessments.github.io/recfintools/reference/clean_bds.md)
 
 ## Author
 

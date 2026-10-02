@@ -1,7 +1,7 @@
-# Alert user of whether catches records for weight are missing but catches in number exist.
+# Alert user of whether catches records for weight are missing but catches in number exist. Currently only used for recent catch data.
 
 Alert user of whether catches records for weight are missing but catches
-in number exist.
+in number exist. Currently only used for recent catch data.
 
 ## Usage
 
@@ -21,13 +21,11 @@ check_catch(
 
 - source:
 
-  Column keywords where the information is located. Depends on the type
-  of data (catch or bds) and era (recent, mrfss, or historical). Default
-  value is for recent catch data (i.e. RETAINED\_, RELEASED_ALIVE\_,
-  RELEASED_DEAD\_). The functions searches for the columns that contain
-  these words.
-
-  \#Not really useing source as fully user defined. Consider removing
+  Column keywords where the information is located. Can depend on era
+  (recent, mrfss, or historical) however currently this is only used for
+  recent catch data. Default value is for recent catch data (i.e.
+  RETAINED\_, RELEASED_ALIVE\_, RELEASED_DEAD\_). The function searches
+  for the columns that contain these words.
 
 - verbose:
 
@@ -36,12 +34,12 @@ check_catch(
 
 ## Details
 
-This function is used for catch data. It lets the user know when records
-have catch in numbers (for retained, released alive, and released dead)
-but not corresponding weight, and therefore when the total catch in
-weight may be off. It is up to the user to decide how to use this
-information. This function also confirms that the total mortality is the
-sum of retained and released dead.
+This function is used for recent catch data. It lets the user know when
+records have catch in numbers (for retained and released dead) but not
+corresponding weight, and therefore when the total catch in weight may
+be off. It is up to the user to decide how to use this information. This
+function also confirms that the total mortality is the sum of retained
+and released dead.
 
 ## See also
 

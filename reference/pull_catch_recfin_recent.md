@@ -1,9 +1,10 @@
 # Functions to pull catch data from recfin
 
 Read catch data from the various total mortality reports in recfin:
-'CTE501' or 'CTE001' Historical times series for each state: 'CTE503' or
-'CTE507' MRFSS catch data: Does not have a formal apex report (though
-CTE510 was a temporary report)
+Recent times series: User enters either 'CTE501' (confidential) or
+'CTE001' (non-confidential) Historical times series for each state:
+Automatically chooses all of 'CTE503', 'CTE507', and 'CTE508' MRFSS
+catch data: Automatically chooses 'CTE008'.
 
 ## Usage
 
@@ -41,7 +42,7 @@ pull_catch_recfin_recent(
   The specific recfin apex report that you want to reproduce. Available
   options include "SD001" and "SD501" (which are for lengths) and
   "SD506" (which is for ages) when type equals "recent", and "SD508" and
-  "SD509" when type equals "mrfss". There is no default so the user must
+  "SD517" when type equals "mrfss". There is no default so the user must
   specify a valid option. Currently, there is no option to keep just the
   raw sql data.
 
