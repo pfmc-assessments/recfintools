@@ -806,121 +806,124 @@ sql_bds <- function(species_name, type, apex) {
   }
 
   # Biological data from years during MRFSS sampling
-  # Cut off data to 2004 and before for CA, 2003 and before for OR and WA
+  # Cuts off data after 2003 to avoid confusion since these legacy data actually
+  # have data out to 2016 that is not MRFSS
   if (type == "mrfss") {
-    if (apex == "SD508") {
-      # Based on SD508 bio data for unavailable catch (Type 2 - B1 and B2)
-      sqlcall <- glue::glue(
-        "
-        SELECT
-          crl.ID_CODE,
-          crl.YEAR,
-          crl.WAVE,
-          crl.MONTH,
-          crl.WEEK,
-          crl.TIME,
-          crl.DATE1,
-          crl.ST,
-          CASE  /* Manually adding ST_NAME into script */
-            WHEN crl.ST = 6 THEN
-              'California'
-            WHEN crl.ST = 41 THEN
-              'Oregon'
-            WHEN crl.ST = 53 THEN
-              'Washington'
-          END AS ST_NAME,
-          crl.CNTY,
-          crl.SUB_REG,
-          CASE  /* Manually adding ST_NAME into script */
-            WHEN crl.SUB_REG = 1 THEN
-              'Southern California'
-            WHEN crl.SUB_REG = 2 THEN
-              'Northern California'
-            WHEN crl.SUB_REG = 3 THEN
-              'Oregon'
-            WHEN crl.SUB_REG = 4 THEN
-              'Washington'
-          END AS SUB_REG_NAME,
-          crl.DIST,
-          crl.MODE_FX,
-          /* MODE_FX_NAME, */
-          crl.MODE_F,
-          /* MODE_F_NAME,	*/
-          crl.AREA_X,
-          /* AREA_X_NAME,	*/
-          crl.AREA,
-          /* AREA_NAME, */
-          crl.PORT,
-          crl.SP_CODE,
-          rs.SPECIES_NAME AS SP_NAME,
-          crl.PRIM1,
-          crl.PRIM2,
-          crl.INTSITE,
-          crl.GEAR,
-          crl.HRSF,
-          crl.CNTRBTRS,
-          crl.NUM_TYP2,
-          crl.NUM2,
-          crl.NUM_FISH,
-          crl.PUNCH,
-          crl.ADD_HRS,
-          crl.ID_CODE2,
-          crl.DISPO,
-          crl.\"NUMBER\", /* Syntax needed because NUMBER is a special keyword in oracle */
-          crl.C,
-          crl.FSHINSP,
-          crl.AREA_NC,
-          crl.SP_OCDE,
-          crl.NUM_TYP4,
-          crl.CATCH,
-          crl.STATUS,
-          crl.INVALID,
-          crl.SALMON,
-          crl.SHORT,
-          crl.CODE,
-          crl.SP,
-          crl.FFDAYS2,
-          crl.FFDAYS12,
-          crl.TRIPSAMP,
-          crl.DISP3,
-          crl.SFCODE,
-          crl.HLOC,
-          crl.DISTRICT,
-          crl.ASSNID,
-          crl.CRFS,
-          crl.RECN,
-          crl.SPN,
-          crl.LOCN,
-          crl.DEPTHN,
-          crl.SURVEY,
-          crl.TRIPTYPE,
-          crl.DEPTH,
-          crl.SPECIES,
-          crl.ADFISH,
-          crl.HLOC2,
-          crl.TBENC_DATE,
-          crl.P,
-          crl.DD,
-          crl.ALPHA5,
-          crl.REF_NUM,
-          crl.RELS_DD,
-          crl.RELDEVNUM,
-          crl.DEPTHFT,
-          crl.DEPTHNR,
-          crl.RECFIN_VDATE
-        FROM
-          RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_TYPE_2 crl
-        LEFT JOIN
-          RECFIN_FOUNDATION.RECFIN_SPECIES rs
-          ON crl.SP_CODE = TO_CHAR(rs.RECFIN_SPECIES_CODE)
-        WHERE
-          rs.SPECIES_NAME = ANY ({stringr::str_to_title(species)}) /* Renamed as SP_NAME above but need to use original name here */
-          AND ((ST = 6 AND YEAR <= 2004) OR (ST != 6 AND YEAR < 2004)) /* I added this in to keep years as used */
-        "
-      )
-    }
-
-    # if (apex == "SD509") {
+    
+    # Cut off data to 2004 and before for CA, 2003 and before for OR and WA
+    # if (apex == SD508) {
+    #   # Based on SD508 bio data for unavailable catch (Type 2 - B1 and B2)
+    #   sqlcall <- glue::glue(
+    #     "
+    #     SELECT
+    #       crl.ID_CODE,
+    #       crl.YEAR,
+    #       crl.WAVE,
+    #       crl.MONTH,
+    #       crl.WEEK,
+    #       crl.TIME,
+    #       crl.DATE1,
+    #       crl.ST,
+    #       CASE  /* Manually adding ST_NAME into script */
+    #         WHEN crl.ST = 6 THEN
+    #           'California'
+    #         WHEN crl.ST = 41 THEN
+    #           'Oregon'
+    #         WHEN crl.ST = 53 THEN
+    #           'Washington'
+    #       END AS ST_NAME,
+    #       crl.CNTY,
+    #       crl.SUB_REG,
+    #       CASE  /* Manually adding ST_NAME into script */
+    #         WHEN crl.SUB_REG = 1 THEN
+    #           'Southern California'
+    #         WHEN crl.SUB_REG = 2 THEN
+    #           'Northern California'
+    #         WHEN crl.SUB_REG = 3 THEN
+    #           'Oregon'
+    #         WHEN crl.SUB_REG = 4 THEN
+    #           'Washington'
+    #       END AS SUB_REG_NAME,
+    #       crl.DIST,
+    #       crl.MODE_FX,
+    #       /* MODE_FX_NAME, */
+    #       crl.MODE_F,
+    #       /* MODE_F_NAME,	*/
+    #       crl.AREA_X,
+    #       /* AREA_X_NAME,	*/
+    #       crl.AREA,
+    #       /* AREA_NAME, */
+    #       crl.PORT,
+    #       crl.SP_CODE,
+    #       rs.SPECIES_NAME AS SP_NAME,
+    #       crl.PRIM1,
+    #       crl.PRIM2,
+    #       crl.INTSITE,
+    #       crl.GEAR,
+    #       crl.HRSF,
+    #       crl.CNTRBTRS,
+    #       crl.NUM_TYP2,
+    #       crl.NUM2,
+    #       crl.NUM_FISH,
+    #       crl.PUNCH,
+    #       crl.ADD_HRS,
+    #       crl.ID_CODE2,
+    #       crl.DISPO,
+    #       crl.\"NUMBER\", /* Syntax needed because NUMBER is a special keyword in oracle */
+    #       crl.C,
+    #       crl.FSHINSP,
+    #       crl.AREA_NC,
+    #       crl.SP_OCDE,
+    #       crl.NUM_TYP4,
+    #       crl.CATCH,
+    #       crl.STATUS,
+    #       crl.INVALID,
+    #       crl.SALMON,
+    #       crl.SHORT,
+    #       crl.CODE,
+    #       crl.SP,
+    #       crl.FFDAYS2,
+    #       crl.FFDAYS12,
+    #       crl.TRIPSAMP,
+    #       crl.DISP3,
+    #       crl.SFCODE,
+    #       crl.HLOC,
+    #       crl.DISTRICT,
+    #       crl.ASSNID,
+    #       crl.CRFS,
+    #       crl.RECN,
+    #       crl.SPN,
+    #       crl.LOCN,
+    #       crl.DEPTHN,
+    #       crl.SURVEY,
+    #       crl.TRIPTYPE,
+    #       crl.DEPTH,
+    #       crl.SPECIES,
+    #       crl.ADFISH,
+    #       crl.HLOC2,
+    #       crl.TBENC_DATE,
+    #       crl.P,
+    #       crl.DD,
+    #       crl.ALPHA5,
+    #       crl.REF_NUM,
+    #       crl.RELS_DD,
+    #       crl.RELDEVNUM,
+    #       crl.DEPTHFT,
+    #       crl.DEPTHNR,
+    #       crl.RECFIN_VDATE
+    #     FROM
+    #       RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_TYPE_2 crl
+    #     LEFT JOIN
+    #       RECFIN_FOUNDATION.RECFIN_SPECIES rs
+    #       ON crl.SP_CODE = TO_CHAR(rs.RECFIN_SPECIES_CODE)
+    #     WHERE
+    #       rs.SPECIES_NAME = ANY ({stringr::str_to_title(species)}) /* Renamed as SP_NAME above but need to use original name here */
+    #       AND ((ST = 6 AND YEAR <= 2004) OR (ST != 6 AND YEAR < 2004)) /* I added this in to keep years as used */
+    #     "
+    #   )
+    # }
+    
+    # if (apex == SD509) {
     #   # Based on SD509 bio data for available catch (Type 3 - A)
     #   # Cut off data to 2004 and before for CA, 2003 and before for OR and WA
     #   sqlcall <- glue::glue(
@@ -1066,8 +1069,79 @@ sql_bds <- function(species_name, type, apex) {
     #     "
     #   )
     # }
-
-
+    
+    if (apex == "SD516") {
+      # Based on SD516 bio data for unavailable catch (Type 2 - B1 and B2)
+      # This is an update of what was SD508 and is what is currently available
+      # on the recfin website
+      sqlcall <- glue::glue(
+        "
+        WITH SRC AS (
+          SELECT
+            ID_CODE,
+            DATE1,
+            SP_CODE,
+            SPECIES_NAME,
+            PRIM2,
+            PRIM2_SPECIES_NAME,
+            MODE_FX,
+            MODE_FX_NAME,
+            MODE_F,
+            MODE_F_NAME,
+            AREA_X,
+            AREA_X_NAME,
+            AREA,
+            AREA_NAME,
+            DIST,
+            ST,
+            ST_NAME,
+            INTSITE,
+            HRSF,
+            CNTRBTRS,
+            NUM_TYP2,
+            NUM2,
+            SUB_REG,
+            SUB_REG_NAME,        
+            NUM_FISH,
+            WAVE,
+            PUNCH,
+            YEAR,
+            ADD_HRS,
+            ID_CODE2,
+            DISPO,
+            DISPO_DESCRIPTION,
+            CNTY,
+            GEAR,
+            GEAR_NAME,
+            \"NUMBER\", /* Syntax needed because NUMBER is a special keyword in oracle */
+              C,
+            PRIM1,
+            PRIM1_SPECIES_NAME,
+            TIME,
+            SP_OCDE,
+            SALMON,
+            SHORT,
+            STATUS,
+            FFDAYS2,
+            FFDAYS12,
+            TRIPSAMP,
+            DISP3,
+            SFCODE,
+            HLOC,
+            RECFIN_VDATE,
+            RECFIN_LOG_ID
+          FROM 
+            RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_TYPE_2
+          WHERE
+            YEAR <= 2003
+            AND SPECIES_NAME = ANY ({toupper(species)})
+        )
+        SELECT * 
+        FROM SRC
+        "
+      )
+    }
+      
     if (apex == "SD517") {
       # Based on SD517 bio data for available catch (Type 3 - A)
       # This is an update of what was SD509 and is what is currently available
