@@ -55,6 +55,8 @@ getState <- function(
       .data[[source]] == "53" ~ "WA", # ST
       .data[[source]] == "41" ~ "OR", # ST
       .data[[source]] == "6" ~ "CA", # ST
+      .data[[source]] == "WDFW" ~ "WA", # SAMPLING_AGENCY_NAME for ages
+      .data[[source]] == "ODFW" ~ "OR", # SAMPLING_AGENCY_NAME for ages
 
       TRUE ~ "UNK"
     ))

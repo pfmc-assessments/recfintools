@@ -280,7 +280,6 @@ clean_catch <- function(data,
     narea <- sapply(narea, sum)
     nyear <- sapply(nyear, sum)
     nstate <- sapply(nstate, sum)
-    nlength <- sapply(nlength, sum)
     nclean <- sapply(nclean, sum)
     nremoved <- sapply(nremoved, sum)
   }
@@ -289,7 +288,6 @@ clean_catch <- function(data,
     narea <- sum(data[, remove] %in% "area")
     nyear <- sum(data[, remove] %in% "year")
     nstate <- sum(data[, remove] %in% "state")
-    nlength <- sum(data[, remove] %in% "length")
     nclean <- sum(data[, remove] %in% "no")
     nremoved <- sum(!data[, remove] %in% "no")
 
@@ -313,7 +311,6 @@ clean_catch <- function(data,
     "!" = "Number of records not in federal waters: {narea}",
     "!" = "Number of records without a year: {nyear}",
     "!" = "Number of records without a state: {nstate}",
-    "!" = "Number of records without length: {nlength}",
     "i" = "Number of records remaining if clean = TRUE: {nclean}",
     "i" = "Number of records removed if clean = TRUE: {nremoved}"
   ))
@@ -327,7 +324,8 @@ clean_catch <- function(data,
 #' Clean biological datasets from RecFIN and MRFSS so fields are standardized
 #' and prepared for analysis.
 #'
-#' @param data A loaded R data object from `pull_bds_recfin_`.
+#' @param data A loaded R data object from `pull_bds_recfin_`. Can be either
+#' length data or age data. 
 #' @return A data frame with standardized columns along with original and
 #'   added fields.
 #'
@@ -342,7 +340,10 @@ clean_bds <- function(data) {
 
   # Dont have historical bds data
 
+  ## 
   # MRFSS bds data
+  ##
+  
   if ("SERVER_PATH" %in% colnames(data)) {
     type <- "mrfss"
 
@@ -396,7 +397,10 @@ clean_bds <- function(data) {
     cli::cli_inform("Done cleaning MRFSS bds")
   }
 
-  # Recent bds data
+  ##
+  # Recent bds length data
+  ##
+  
   if ("RECFIN_YEAR" %in% colnames(data)) {
     type <- "recfin"
 
@@ -427,8 +431,8 @@ clean_bds <- function(data) {
     ## Actually removing data
 
     # Filter out non-federal records
-    # Flags records with certain qualities that warrant further decisions but
-    # not removed by this function.
+    # Flags other records with certain qualities that warrant further decisions 
+    # but not removed by this function.
     data <- getArea(
       data = data,
       source = c("AGENCY_FISHED_AREA_NAME"),
@@ -455,8 +459,65 @@ clean_bds <- function(data) {
     # aren't in length data
     # Probably will move this to outside the clean function.
 
-    cli::cli_inform("Done cleaning recent bds")
+    cli::cli_inform("Done cleaning recent bds length data")
   }
+  
+  ##
+  # Recent bds age data
+  ##
+  
+  if ("SAMPLE_YEAR" %in% colnames(data)) {
+    type <- "recfin"
+    
+    ## Standardize fields
+    
+    # Rename state
+    data <- getState(
+      data = data,
+      source = c("SAMPLING_AGENCY_NAME"),
+      verbose = verbose
+    )
+    
+    # Rename modes
+    data <- getMode(
+      data = data,
+      source = c("RECFIN_MODE_NAME"),
+      verbose = verbose
+    )
+    
+    # Set up year column
+    data <- getYear(
+      data = data,
+      source = c("SAMPLING_YEAR"),
+      verbose = verbose
+    )
+    
+    
+    ## Actually removing data
+    
+    # Filter out non-federal records
+    # Flags other records with certain qualities that warrant further decisions 
+    # but not removed by this function.
+    data <- getArea(
+      data = data,
+      source = c("SURVEY_PROGRAM_CATCH_AREA_NAME"),
+      verbose = verbose
+    )
+    
+    # Remove multiple reads from ages and ages with NA. While this function can 
+    # also combine length and age data, this is not done when NULL is used for 
+    # length data
+    temp <- getAges(
+      len_data = NULL,
+      age_data = data,
+      verbose = verbose
+    )
+    data <- temp$age_data
+    
+    cli::cli_inform("Done cleaning recent bds age data")
+  }
+  
+  
 
   # Report removals and remove cleaned records provided clean == "TRUE"
   narea <- sum(data[, remove] %in% "area")

@@ -208,7 +208,7 @@ getArea <- function(
   }
 
 
-  ## Recent bds data
+  ## Recent bds LENGTH data
   if (source %in% c("AGENCY_FISHED_AREA_NAME")) {
     wa_fed <- c(
       "PUNCH CARD AREA 0",
@@ -291,6 +291,60 @@ getArea <- function(
 
     flag <- TRUE
   }
+  
+  ## Recent bds AGE data
+  if (source %in% c("SURVEY_PROGRAM_CATCH_AREA_NAME")) {
+    wa_fed <- c(
+      "PUNCH CARD AREA 0",
+      "PUNCH CARD AREA 1",
+      "PUNCH CARD AREA 2",
+      "PUNCH CARD AREA 3",
+      "PUNCH CARD AREA 4"
+    )
+    
+    removed <- data |>
+      dplyr::filter(dplyr::case_when(
+        SAMPLING_AGENCY_NAME == "WDFW" & .data[[source]] %in% c(NA, "PUNCH CARD AREA 0") ~
+          !PORT_NAME %in% c("CHINOOK", "ILWACO", "LA PUSH", "NEAH BAY", "SEKIU", "WESTPORT", "OCEAN SHORES"),
+        SAMPLING_AGENCY_NAME == "WDFW" ~ (!is.na(.data[[source]]) & !(tolower(.data[[source]]) %in% tolower(wa_fed)))
+      ))
+    
+    data <- data |>
+      dplyr::mutate(
+        remove = dplyr::if_else(
+          dplyr::case_when(
+            SAMPLING_AGENCY_NAME== "WDFW" & .data[[source]] %in% c(NA, "PUNCH CARD AREA 0") ~
+              PORT_NAME %in% c("CHINOOK", "ILWACO", "LA PUSH", "NEAH BAY", "SEKIU", "WESTPORT", "OCEAN SHORES"),
+            SAMPLING_AGENCY_NAME == "WDFW" ~ (!is.na(.data[[source]])) & (tolower(.data[[source]]) %in% tolower(wa_fed)),
+            SAMPLING_AGENCY_NAME == "ODFW" ~ TRUE
+          ),
+          .data$remove,
+          "area"
+        )
+      )
+    
+    noarea <- nrow(removed)
+    ncan <- sum(removed[, source] == "PUNCH CARD AREA 20", na.rm = TRUE)
+    nsound <- sum(grepl("PUNCH CARD AREA", removed[, source]), na.rm = TRUE) - ncan
+    nunk <- sum(removed[, source] %in% c("PUNCH CARD AREA 0"), na.rm = TRUE) +
+      sum(is.na(removed[, source]), na.rm = TRUE)
+    
+    if (verbose) {
+      cli::cli_bullets(c(
+        " " = "{.fn getArea} summary information -",
+        "i" = "There are {noarea} records outside federal waters and were removed.",
+        "i" = "These include {ncan} records from Canada",
+        "i" = "These include {nsound} records from Puget Sound",
+        "i" = "There are {nunk} records designated as Not Known or Unknown in
+        Washington that could not be associated with federal areas in other
+        fields and so were removed.",
+        ""
+      ))
+    }
+    
+    flag <- TRUE
+  }
+  
 
   ## MRFSS bds data
   if (source %in% c("AREA_X") & "LNGTH" %in% colnames(data)) {
