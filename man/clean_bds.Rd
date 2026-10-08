@@ -7,7 +7,8 @@
 clean_bds(data)
 }
 \arguments{
-\item{data}{A loaded R data object from \code{pull_bds_recfin_}.}
+\item{data}{A loaded R data object from \code{pull_bds_recfin_}. Can be either
+length data or age data.}
 }
 \value{
 A data frame with standardized columns along with original and
