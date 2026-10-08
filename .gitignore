@@ -1,6 +1,7 @@
 .Rhistory
-RecFIN.*RData
+*.RData
 .Rproj.user
 docs
 R/others scripts*
 *.Rproj
+
