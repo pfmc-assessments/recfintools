@@ -6,9 +6,9 @@
 #' single letters or full names and are available in the column called `state`,
 #' or Canada, Mexico, and Puget Sound records are removed.
 #'
-#' This function also removes unsuitable data provided `clean = TRUE` (default).
+#' This function removes unsuitable data provided `clean = TRUE` (default).
 #' If `clean = FALSE` all data are retained along with an additional column
-#' "remove" that is populated with the function where data would be removed.
+#' "remove" that is populated with the functions where data would be removed.
 #' Using `clean = FALSE` is for exploration purposes only and is NOT RECOMMENDED
 #' for final use within US West Coast assessments.
 #'
@@ -126,7 +126,7 @@ clean_catch <- function(data,
       )
 
 
-      ## Actually removing data
+      ## Actually removing data if clean == TRUE
 
       # to do: Add function to clean up confusing columns
 
@@ -142,10 +142,10 @@ clean_catch <- function(data,
 
       ## Adding columns
 
-      # Add calculated weight column
+      # Add calculated weight column - Only applies for Oregon
       data[[i]] <- getWeightHist(
         catch_data = data[[i]],
-        bds_data = sd509_data,
+        bds_data = bds_mrfss,
         state = unique(data[[i]]$state),
         figure = TRUE
       )
@@ -191,8 +191,13 @@ clean_catch <- function(data,
 
     # Filter out Oregon and Washington records because they don't use MRFSS data
     data <- data |>
-      dplyr::filter(!state %in% c("OR", "WA"))
-
+        dplyr::mutate(
+          remove = dplyr::if_else(
+            .data[["state"]] %in% c("OR", "WA"),
+            "dontUse",
+            .data$remove
+          )
+        )
 
     # Filter out non-federal records
     data <- getArea(
@@ -288,6 +293,7 @@ clean_catch <- function(data,
     narea <- sum(data[, remove] %in% "area")
     nyear <- sum(data[, remove] %in% "year")
     nstate <- sum(data[, remove] %in% "state")
+    ndontuse <- sum(data[, remove] %in% "dontUse") 
     nclean <- sum(data[, remove] %in% "no")
     nremoved <- sum(!data[, remove] %in% "no")
 
@@ -309,8 +315,11 @@ clean_catch <- function(data,
     " " = "The number of records potentially removed for the various reasons
     below if clean = TRUE are not mutually exclusive.",
     "!" = "Number of records not in federal waters: {narea}",
-    "!" = "Number of records without a year: {nyear}",
+    "!" = "Number of records without a year or occuring in overlapping years with
+    other data sets: {nyear}",
     "!" = "Number of records without a state: {nstate}",
+    "!" = "Number of Oregon and Washington MRFSS catch records removed because
+    we dont use these data: {ndontUse}",
     "i" = "Number of records remaining if clean = TRUE: {nclean}",
     "i" = "Number of records removed if clean = TRUE: {nremoved}"
   ))
