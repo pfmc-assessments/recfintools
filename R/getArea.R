@@ -291,7 +291,7 @@ getArea <- function(
 
     flag <- TRUE
   }
-  
+
   ## Recent bds AGE data
   if (source %in% c("SURVEY_PROGRAM_CATCH_AREA_NAME")) {
     wa_fed <- c(
@@ -301,19 +301,19 @@ getArea <- function(
       "PUNCH CARD AREA 3",
       "PUNCH CARD AREA 4"
     )
-    
+
     removed <- data |>
       dplyr::filter(dplyr::case_when(
         SAMPLING_AGENCY_NAME == "WDFW" & .data[[source]] %in% c(NA, "PUNCH CARD AREA 0") ~
           !PORT_NAME %in% c("CHINOOK", "ILWACO", "LA PUSH", "NEAH BAY", "SEKIU", "WESTPORT", "OCEAN SHORES"),
         SAMPLING_AGENCY_NAME == "WDFW" ~ (!is.na(.data[[source]]) & !(tolower(.data[[source]]) %in% tolower(wa_fed)))
       ))
-    
+
     data <- data |>
       dplyr::mutate(
         remove = dplyr::if_else(
           dplyr::case_when(
-            SAMPLING_AGENCY_NAME== "WDFW" & .data[[source]] %in% c(NA, "PUNCH CARD AREA 0") ~
+            SAMPLING_AGENCY_NAME == "WDFW" & .data[[source]] %in% c(NA, "PUNCH CARD AREA 0") ~
               PORT_NAME %in% c("CHINOOK", "ILWACO", "LA PUSH", "NEAH BAY", "SEKIU", "WESTPORT", "OCEAN SHORES"),
             SAMPLING_AGENCY_NAME == "WDFW" ~ (!is.na(.data[[source]])) & (tolower(.data[[source]]) %in% tolower(wa_fed)),
             SAMPLING_AGENCY_NAME == "ODFW" ~ TRUE
@@ -322,13 +322,13 @@ getArea <- function(
           "area"
         )
       )
-    
+
     noarea <- nrow(removed)
     ncan <- sum(removed[, source] == "PUNCH CARD AREA 20", na.rm = TRUE)
     nsound <- sum(grepl("PUNCH CARD AREA", removed[, source]), na.rm = TRUE) - ncan
     nunk <- sum(removed[, source] %in% c("PUNCH CARD AREA 0"), na.rm = TRUE) +
       sum(is.na(removed[, source]), na.rm = TRUE)
-    
+
     if (verbose) {
       cli::cli_bullets(c(
         " " = "{.fn getArea} summary information -",
@@ -341,10 +341,10 @@ getArea <- function(
         ""
       ))
     }
-    
+
     flag <- TRUE
   }
-  
+
 
   ## MRFSS bds data
   if (source %in% c("AREA_X") & "LNGTH" %in% colnames(data)) {

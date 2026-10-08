@@ -31,9 +31,9 @@ single letters or full names and are available in the column called \code{state}
 or Canada, Mexico, and Puget Sound records are removed.
 }
 \details{
-This function also removes unsuitable data provided \code{clean = TRUE} (default).
+This function removes unsuitable data provided \code{clean = TRUE} (default).
 If \code{clean = FALSE} all data are retained along with an additional column
-"remove" that is populated with the function where data would be removed.
+"remove" that is populated with the functions where data would be removed.
 Using \code{clean = FALSE} is for exploration purposes only and is NOT RECOMMENDED
 for final use within US West Coast assessments.
 }

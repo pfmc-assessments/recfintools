@@ -7,7 +7,8 @@
 getLength(data, source = c("RECFIN_LENGTH_MM"), verbose = TRUE)
 }
 \arguments{
-\item{data}{A loaded R data object from \code{pull_bds_recfin_}.}
+\item{data}{A loaded R data object from \code{pull_bds_recfin_}. Can be either
+length data or age data.}
 
 \item{source}{Column name where length information is located. Depends on the
 era (recent, mrfss). Default value is for recent catch data
