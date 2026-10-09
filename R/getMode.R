@@ -64,8 +64,8 @@ getMode <- function(
   if (verbose) {
     cli::cli_bullets(c(
       " " = "{.fn getMode} summary information -",
-      "i" = "There are {nomode} records for which the mode (i.e., PR, PC, Other)
-      could not be assigned and were labeled as UNK.",
+      "i" = "There were {nomode} records for which the mode (PR, PC, Other)
+      could not be assigned; these were labeled as {.val UNK}.",
       ""
     ))
   }

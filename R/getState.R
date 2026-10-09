@@ -67,8 +67,8 @@ getState <- function(
   if (verbose) {
     cli::cli_bullets(c(
       " " = "{.fn getState} summary information -",
-      "i" = "There are {nostate} records for which the state (i.e., CA, OR, WA)
-      could not be assigned and were labeled as UNK.",
+      "i" = "There were {nostate} records for which the state (CA, OR, WA)
+      could not be assigned; these were labeled as {.val UNK}.",
       ""
     ))
   }

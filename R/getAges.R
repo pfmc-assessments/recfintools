@@ -10,12 +10,13 @@
 #' `NULL` the age data are not added to the length data, and only the age data 
 #' are processed. 
 #'
-#' Additionally, this function removes records from multiple age reads, which are
-#' reported as multiple rows in SD506, by keeping the first occurrence. This
+#' When adding ages to lengths, this function uses only the first occurrence of
+#' multiple age reads, which are reported as multiple rows in SD506. This
 #' does not occur often, and only for ODFW, but when it does the length of the
 #' fish is duplicated for each read, and multiple ages for each fish would be 
 #' including in the comps. These records are flagged in the age data as are 
-#' records where age is not entered.
+#' records where age is not entered. All rows are retained in the returned age
+#' data; [clean_bds()] handles removal of flagged records.
 #'
 #' @export
 #' @seealso [clean_bds()] calls 'getAges'
@@ -75,14 +76,14 @@ getAges <- function(
     nage_omit <- nrow(age_data) - nage
   }
 
-  # Also add column into original age dataset flagging ages that were removed
+  # Add a column to the original age dataset flagging duplicate reads
   # or that are NA
 
   if (!"remove" %in% colnames(age_data)) {
     age_data$remove <- "no"
   }
 
-  # Flag removed records that were multiples reads from the same fish for ODFW
+  # Flag records that were multiple reads from the same fish for ODFW
   # as well as any remaining ages that are NA
   age_data <- age_data |>
     dplyr::mutate(
@@ -100,18 +101,18 @@ getAges <- function(
   nnaAge <- sum(age_data$remove %in% "naAge")
 
   # If length data were provided then add age data to the length data and report
-  # the number of multiple reads and NA ages that were removed. Then return
+  # the number of multiple reads and NA ages flagged for removal. Then return
   # combined length data and age data
   if(!is.null(len_data)){
     
     if (verbose) {
       cli::cli_bullets(c(
         " " = "{.fn getAges} summary information -",
-        "i" = "There are {nage} structures with {nage_read} age reads that were
+        "i" = "There were {nage} structures with {nage_read} age reads
       added to the length data.",
-        "i" = "Some records were not added, and include {nmult} multiple reads
-      from ODFW, and {nage_omit} records not present in the length data.",
-        "i" = "Within the age data, there are {nnaAge} records with age = NA",
+        "i" = "There were {nmult} duplicate age reads omitted before joining age data to lengths.",
+        "i" = "There were {nage_omit} age records not added to the length data, including duplicate reads and unmatched records.",
+        "i" = "There were {nmult} duplicate reads and {nnaAge} records missing {.field USE_THIS_AGE} flagged for removal in the returned age data.",
         ""
       ))
     }
@@ -123,16 +124,15 @@ getAges <- function(
   }
   
   # If length data were not provided then only report the number of multiple 
-  # reads and NA ages that were removed from the age data. Then return the age
+  # reads and NA ages flagged for removal. Then return the age
   # data
   if(is.null(len_data)){
     
     if (verbose) {
       cli::cli_bullets(c(
         " " = "{.fn getAges} summary information -",
-        "i" = "Within the age data, there are {nmult} multiple reads from ODFW 
-        that were removed, and {nnaAge} records with age = NA that were also
-        removed.",
+        "i" = "There were {nmult} duplicate age reads flagged for removal.",
+        "i" = "There were {nnaAge} records missing {.field USE_THIS_AGE}, flagged for removal.",
         ""
       ))
     }

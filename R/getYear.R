@@ -1,5 +1,5 @@
-#' Create a year column based on input column specified in `source` and filters
-#' out some unused records
+#' Create a year column based on input column specified in `source` and flag
+#' records for removal
 #'
 #' @details
 #' This function is used for both catch and composition data
@@ -12,19 +12,21 @@
 #' column. No recoding is applied.
 #'
 #' If `verbose = TRUE`, the function reports how many records have `NA` in
-#' `year` after extraction.
+#' `year` after extraction. Records are flagged in `remove`, not removed by
+#' this function. [clean_catch()] and [clean_bds()] remove flagged records when
+#' `clean = TRUE`.
 #'
 #' @section Oregon MRFSS bds data:
 #' Oregon MRFSS bds data extend through 2003 in SD517. ORBS sampling also
 #' occurred in 2001-2003 and duplication occurred. There is no current way to
 #' determine which samples were duplicates. Therefore MRFSS bds data in 2001-2003
-#' are removed using this function.
+#' are flagged for removal using this function.
 #' @section Oregon ORBS bds data:
 #' Oregon ORBS bds data extend back to 1999 in SD501, overlapping for years
 #' 1999-2000 with MRFSS samples. During 1999-2000, ORBS operated under a different
 #' sampling protocol than it did for years 2001-current, raising doubts on its
 #' representativeness for those years. Therefore, ORBS bds data in 1999-2000 are
-#' removed using this function.
+#' flagged for removal using this function.
 #'
 #' @export
 #' @seealso [clean_catch()] calls 'getYear'
@@ -65,12 +67,12 @@ getYear <- function(
   if (verbose) {
     cli::cli_bullets(c(
       " " = "{.fn getYear} summary information -",
-      "i" = "There are {noyear} records for which the year is NA",
+      "i" = "There were {noyear} records missing a year in {.field {source}}, flagged for removal.",
       ""
     ))
   }
 
-  # Remove records in 1999-2000 for Oregon recent bds data because these years
+  # Flag records in 1999-2000 for Oregon recent bds data because these years
   # overlap in time with MRFSS bds data, and occurred under a different sampling
   # protocol than later years (2001-current).
   if (source == "RECFIN_YEAR" &
@@ -82,7 +84,7 @@ getYear <- function(
 
     if (verbose) {
       cli::cli_bullets(c(
-        "i" = "There were {nrem} Oregon ORBS records removed from 1999-2000
+        "i" = "There were {nrem} Oregon ORBS records from 1999-2000 flagged for removal
         because they were sampled under different protocols than later years,
         and overlap with early (MRFSS) sampling efforts.",
         ""
@@ -90,7 +92,7 @@ getYear <- function(
     }
   }
 
-  # Remove records in 2001-2003 for Oregon MRFSS bds data because these years
+  # Flag records in 2001-2003 for Oregon MRFSS bds data because these years
   # overlap in time with recent bds data sampling efforts, and cannot distinguish
   # whether the same or different fish were sampled.
   if (source == "YEAR" &
@@ -102,7 +104,7 @@ getYear <- function(
 
     if (verbose) {
       cli::cli_bullets(c(
-        "i" = "There were {nrem} Oregon MRFSS records removed from 2001-2003
+        "i" = "There were {nrem} Oregon MRFSS records from 2001-2003 flagged for removal
         because they overlap with recent (ORBS) sampling efforts.",
         ""
       ))
