@@ -18,6 +18,21 @@ pull_bds_recfin_recent(
 name desired. Must be a valid name though case is automatically corrected.
 For list of species codes see sql_species.}
 
+\item{username}{Most often, this is a string containing your username for the
+database of interest. You can use \code{\link[pacfintools:getUserName]{getUserName()}} if you prefer to not
+enter this argument and assume the default search and/or rules for finding
+your username will work. This is the default behavior if you leave
+\code{username} as a missing argument, i.e., \code{username <- getUserName(database = database)}. Sometimes this search will fail because of legacy rules, which
+are unknown to the development team, that were used to create your
+username. Please email the maintainer of this package if you need more
+functionality here.}
+
+\item{password}{Most often, this is a string containing your password for
+the database of interest. You can use the function \code{\link[pacfintools:ask_password]{ask_password()}} if you
+would prefer to be prompted for your password. Please do not share this
+password with anyone or push code to a repository that has your password
+saved in it.}
+
 \item{savedir}{A file path to the directory where the results will be saved.
 The default is the current working directory. If don't want to save use NULL.}
 
@@ -37,14 +52,14 @@ also returned invisibly.
 Read bio data from the various biological reports in recfin:
 'SD001' or 'SD501' for lengths, 'SD506' for ages
 MRFSS bio data:
-'SD508' or 'SD517' for Type 2 and Type 3 data, respectively.
+'SD516' or 'SD517' for Type 2 and Type 3 data, respectively.
 }
 \examples{
 \dontrun{
 bio.recfin.001 <- pull_bds_recfin_recent("QUILLBACK ROCKFISH", apex = "SD001")
 bio.recfin.501 <- pull_bds_recfin_recent("QUILLBACK ROCKFISH", apex = "SD501")
 bio.recfin.506 <- pull_bds_recfin_recent("QUILLBACK ROCKFISH", apex = "SD506")
-bio.mrfss.508 <- pull_bds_recfin_mrfss("QUILLBACK ROCKFISH", apex = "SD508")
+bio.mrfss.516 <- pull_bds_recfin_mrfss("QUILLBACK ROCKFISH", apex = "SD516")
 bio.mrfss.517 <- pull_bds_recfin_mrfss("QUILLBACK ROCKFISH", apex = "SD517")
 }
 

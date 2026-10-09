@@ -4,7 +4,7 @@
 #' This function is used for only composition data. It creates a new column
 #' in units of cm, and also flags lengths beyond max, as well as total length
 #' measurements (as opposed to fork length) or of measurements not directly
-#' measured. Removes lengths with NA or 0
+#' measured. Flags lengths with NA or 0 for removal by [clean_bds()].
 #'
 #' @section Length extraction rules:
 #' `source` can be a vector of candidate column names. The first matching
@@ -15,14 +15,14 @@
 #' column includes mm or cm. Extreme length values are flagged but not removed,
 #' as are measurements in total length for recent data. MRFSS data have separate
 #' columns for fork length (LNGTH) or total length (T_LEN). Lengths that are NA
-#' or 0 are removed.
+#' or 0 are flagged in `remove`; no rows are removed by this function.
 #'
 #' If `verbose = TRUE`, the function reports how many records with unknown or 0
-#' length were removed, along with a message conveying the number of extreme
-#' lengths that were kept, and number of total length measurements.
+#' length were flagged for removal, along with the number of extreme lengths
+#' and total length measurements not flagged for removal.
 #'
 #' @export
-#' @seealso [clean_catch()] calls 'getLength'
+#' @seealso [clean_bds()] calls 'getLength'
 #'
 #' @inheritParams clean_bds
 #'
@@ -70,7 +70,7 @@ getLength <- function(
       data$length_cm <- data[, source]
     }
 
-    # Count number of lengths with NA removed, number outside Max, and number of
+    # Count lengths flagged for removal, lengths outside Max, and number of
     # lengths with total length
     nolen <- nrow(removed)
     outmax <- sum(!data[data$remove %in% "no", "IS_AGENCY_LENGTH_WITHIN_MAX"])
@@ -79,13 +79,13 @@ getLength <- function(
     if (verbose) {
       cli::cli_bullets(c(
         " " = "{.fn getLength} summary information -",
-        "i" = "There are {nolen} records where length was NA or 0 and were removed",
-        "i" = "NOTE: there are {outmax} records flagged by `IS_AGENCY_LENGTH_WITHIN_MAX`
-        as being outside the maximum length for the species and were kept. The
-        user should decide how to handle these",
-        "i" = "NOTE: there are {lentype} records flagged by `RECFIN_LENGTH_TYPE`
-        as being total length as opposed to fork length and were kept. These
-        only occur for Washington. The user should decide how to handle these",
+        "i" = "There were {nolen} records with NA or 0 in {.field {source}}, flagged for removal.",
+        "i" = "There were {outmax} otherwise unflagged records identified by {.field IS_AGENCY_LENGTH_WITHIN_MAX}
+        as being outside the maximum length for the species. These were not
+        flagged for removal; the user should decide how to handle them.",
+        "i" = "There were {lentype} otherwise unflagged records identified by {.field RECFIN_LENGTH_TYPE}
+        as being total length as opposed to fork length. These only occur for
+        Washington and were not flagged for removal; the user should decide how to handle them.",
         ""
       ))
     }
@@ -96,7 +96,7 @@ getLength <- function(
     # Both are in mm so convert to cm
     data$length_cm <- data[, source] / 10
 
-    # Count number of lengths with NA or 0 removed
+    # Count lengths with NA or 0 flagged for removal
     # Note that LENFLAG only occurs in 2004 (for CRFS samples)
     nolen <- nrow(removed)
 
@@ -114,13 +114,14 @@ getLength <- function(
     if (verbose) {
       cli::cli_bullets(c(
         " " = "{.fn getLength} summary information -",
-        "i" = "There are {nolen} records where length was NA or 0 and were removed",
-        "i" = "NOTE: There are records where {source} was likely derived from
-        empirical relationships from another measurement, either from {other_l} or
-        WGT. This can be inferred based on the number of decimal places, using
-        `count_decimals()`. These records were kept. The user should decide how
-        to handle these by checking the number of decimals of {source} compared
-        to {other_l} or WGT. For applications where precision is important, such
+        "i" = "There were {nolen} records with NA or 0 in {.field {source}}, flagged for removal.",
+        "i" = "Some values in {.field {source}} may have been derived from
+        empirical relationships using {.field {other_l}} or {.field WGT}.
+        This can be inferred from the number of decimal places using
+        {.fn count_decimals}. Derived measurements were not flagged for removal
+        solely for being derived. The user should decide how to handle these
+        by comparing decimal places in {.field {source}} with {.field {other_l}}
+        or {.field WGT}. For applications where precision is important, such
         as for W-L or growth relationships, direct measured samples are typically
         used. For compositions, where imprecision in the empirical relationship
         is likely to be less than the bin size used, measurements obtained from

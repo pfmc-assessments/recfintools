@@ -7,7 +7,8 @@
 getLength(data, source = c("RECFIN_LENGTH_MM"), verbose = TRUE)
 }
 \arguments{
-\item{data}{A loaded R data object from \code{pull_bds_recfin_}.}
+\item{data}{A loaded R data object from \code{pull_bds_recfin_}. Can be either
+length data or age data.}
 
 \item{source}{Column name where length information is located. Depends on the
 era (recent, mrfss). Default value is for recent catch data
@@ -22,7 +23,7 @@ Create a length_cm column based on input column specified in \code{source}.
 This function is used for only composition data. It creates a new column
 in units of cm, and also flags lengths beyond max, as well as total length
 measurements (as opposed to fork length) or of measurements not directly
-measured. Removes lengths with NA or 0
+measured. Flags lengths with NA or 0 for removal by \code{\link[=clean_bds]{clean_bds()}}.
 }
 \section{Length extraction rules}{
 
@@ -34,13 +35,13 @@ column. The units are cm and adjusted based on whether the input source
 column includes mm or cm. Extreme length values are flagged but not removed,
 as are measurements in total length for recent data. MRFSS data have separate
 columns for fork length (LNGTH) or total length (T_LEN). Lengths that are NA
-or 0 are removed.
+or 0 are flagged in \code{remove}; no rows are removed by this function.
 
 If \code{verbose = TRUE}, the function reports how many records with unknown or 0
-length were removed, along with a message conveying the number of extreme
-lengths that were kept, and number of total length measurements.
+length were flagged for removal, along with the number of extreme lengths
+and total length measurements not flagged for removal.
 }
 
 \seealso{
-\code{\link[=clean_catch]{clean_catch()}} calls 'getLength'
+\code{\link[=clean_bds]{clean_bds()}} calls 'getLength'
 }

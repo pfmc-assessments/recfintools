@@ -21,6 +21,7 @@ URL: https://pfmc-assessments.github.io/recfintools/
 Depends:
     R (>= 3.5)
 Imports:
+    cli,
     dplyr (>= 1.0.0),
     ggplot2,
     patchwork

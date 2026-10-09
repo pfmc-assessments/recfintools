@@ -2,7 +2,7 @@
 % Please edit documentation in R/getArea.R
 \name{getArea}
 \alias{getArea}
-\title{Filter out records from Puget Sound, Canada, Mexico areas based
+\title{Identify records from Puget Sound, Canada, Mexico areas based
 on input column specified in \code{source}.}
 \usage{
 getArea(data, source = c("RECFIN_WATER_AREA_NAME"), verbose = TRUE)
@@ -17,19 +17,19 @@ Coded to accept a vector of names where the same type or era of data has
 multiple different names. When multiple names within the vector are in the
 dataset, picks the first.
 
-For recent catch data, use \code{RECFIN_WATER_AREA_NAME}, which filters out values
-of Canada, Mexico, and Puget Sound (but keeps area 4B). Areas with \verb{Not Known}
-are kept.
-For Washington historical catch data, use \code{AREA}, which filters out values
-of 5 and greater (i.e. Puget Sound).
-For MRFSS catch data, use \code{AREA_X}, which filters out Mexico records ("M").
+For recent catch data, use \code{RECFIN_WATER_AREA_NAME}, which flags records with values
+of Canada, Mexico, and Puget Sound (but not area 4B) for removal. Areas with
+\verb{Not Known} are not flagged for removal.
+For Washington historical catch data, use \code{AREA}, which flags values
+of 5 and greater (i.e. Puget Sound) for removal.
+For MRFSS catch data, use \code{AREA_X}, which flags Mexico records ("M") for removal.
 
-For recent bds data, use \code{AGENCY_FISHED_AREA_NAME}, which filters out values
-of Canada, Mexico, and Puget Sound. Areas with "Not known" or "Unknown" for
+For recent bds data, use \code{AGENCY_FISHED_AREA_NAME}, which flags records with values
+of Canada, Mexico, and Puget Sound for removal. Areas with "Not known" or "Unknown" for
 Washington are kept if they also have coastal port names, but in Oregon
 and California these are kept. Because California data are NA for
 \code{AGENCY_FISHED_AREA_NAME}, the code instead filters California data using
-"AGENCY_WATER_AREA_NAME" to remove Mexico records. Records with Estuary or
+"AGENCY_WATER_AREA_NAME" to flag Mexico records for removal. Records with Estuary or
 Not Known "AGENCY_WATER_AREA_NAME" in Oregon, and Inland or San Francisco Bay
 AGENCY_WATER_AREA_NAME in California are flagged for the user but not removed.
 For MRFSS bds data, use \code{AREA_X}, which flags the user about \code{AREA_X} values
@@ -43,7 +43,7 @@ specific records outside federal waters are identifiable.}
 process. Default is TRUE.}
 }
 \description{
-Filter out records from Puget Sound, Canada, Mexico areas based
+Identify records from Puget Sound, Canada, Mexico areas based
 on input column specified in \code{source}.
 }
 \details{
@@ -51,13 +51,16 @@ This function is used for both catch and composition data. Because the case
 for values are sometimes different across data sets, fields with values as
 character strings are converted to lowercase when filtering.
 Based on similar function from pacfintools, but modified for recreational data
+Records are flagged in \code{remove} for removal by \code{\link[=clean_catch]{clean_catch()}} or
+\code{\link[=clean_bds]{clean_bds()}}, rather than removed here. The exception is Washington MRFSS
+bds data, which are removed by this function.
 }
 \section{Area filtering rules}{
 
 Values in \code{source} are evaluated using case-insensitive matching.
 
 For recent RecFIN catch data (\code{source = "RECFIN_WATER_AREA_NAME"}), records
-are removed when area is:
+are flagged for removal when area is:
 \itemize{
 \item \code{CANADA}
 \item \code{MEXICO}
@@ -69,7 +72,7 @@ For recent RecFIN bds data (\code{source = "AGENCY_FISHED_AREA_NAME"}):
 \itemize{
 \item For Washington: PUNCH CARD AREAs 1 through 4, and PUNCH CARD AREAs 0 and
 'Not Known' when RECFIN_PORT_NAME also equals coastal ports are kept. All other
-records are removed.
+records are flagged for removal.
 \item For Oregon: All records are kept,
 \item For California: All records are kept. Because AGENCY_FISHED_AREA_NAME is
 empty for California, the script automatically uses "AGENCY_WATER_AREA_NAME"
@@ -77,17 +80,17 @@ for California data.
 }
 
 For Washington historical catch data (\code{source = "AREA"} and \code{AGENCY == "W"}),
-records with \code{AREA >= 5} are removed.
+records with \code{AREA >= 5} are flagged for removal.
 
 For MRFSS catch data (\verb{source = "AREA_X}):
-*For California: Removes Mexico ("M") records
+*For California: Flags Mexico ("M") records for removal
 
 For MRFSS bds data (\code{source = "AREA_X"}):
 *For Washington: Removes Washington bds data
 *For Oregon: All records are kept
 *For California: All records are kept
 
-If \code{verbose = TRUE}, the function reports the number of records removed by
+If \code{verbose = TRUE}, the function reports the number of records identified by
 category.
 }
 

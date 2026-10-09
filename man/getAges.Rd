@@ -9,15 +9,16 @@ getAges(len_data, age_data, verbose = TRUE)
 }
 \arguments{
 \item{len_data}{A loaded Rdata object from pull_bds_recfin_recent for apex
-report SD501.}
+report SD501. If \code{NULL} then the age data are not added to the length data.}
 
 \item{age_data}{A loaded Rdata object from pull_bds_recfin_recent for apex
 report SD506}
 }
 \value{
 Returns two data frames. The first \code{len_data} is the entered length
-data with age information added. The second \code{age_data} is the entered age data
-with a column "remove" added for later filtering because records are either
+data with age information added. If \code{len_data == NULL} then no length data
+are retured. The second \code{age_data} is the entered age data with a column
+"remove" added for later filtering because records are either
 multiple reads of the same fish (\code{remove = "multRead"}) or are NA
 (\code{remove = "naAge"}).
 }
@@ -30,13 +31,17 @@ This function is used for only for recent composition data, and combines the
 length (SD501) and age (SD506) data, which are entered by the user. The fields
 used to match the datasets are fixed as \code{BIO_DETAIL_ID} for length data and
 \code{SAMPLE_ID} for age data. Other fields are matched as well to avoid duplicate
-rows but these two are the primary identifiers.
+rows but these two are the primary identifiers. If length data are entered as
+\code{NULL} the age data are not added to the length data, and only the age data
+are processed.
 
-Additionally, this function removes records from multiple reads, which are
-reported as multiple rows in SD506, by keeping the first occurrence. This
+When adding ages to lengths, this function uses only the first occurrence of
+multiple age reads, which are reported as multiple rows in SD506. This
 does not occur often, and only for ODFW, but when it does the length of the
-fish is duplicated for each read. These records are flagged in the age data
-as are records where age is not entered.
+fish is duplicated for each read, and multiple ages for each fish would be
+including in the comps. These records are flagged in the age data as are
+records where age is not entered. All rows are retained in the returned age
+data; \code{\link[=clean_bds]{clean_bds()}} handles removal of flagged records.
 }
 \seealso{
 \code{\link[=clean_bds]{clean_bds()}} calls 'getAges'

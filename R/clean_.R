@@ -126,11 +126,11 @@ clean_catch <- function(data,
       )
 
 
-      ## Actually removing data if clean == TRUE
+      ## Flag records for removal
 
       # to do: Add function to clean up confusing columns
 
-      # Remove records in non-federal areas. Only applicable for Washington
+      # Flag records in non-federal areas. Only applicable for Washington
       # Note that for Oregon or California, there are no records outside federal waters.
       # Still call this (because need for WA) but this does nothing for OR or CA
       data[[i]] <- getArea(
@@ -151,7 +151,7 @@ clean_catch <- function(data,
       )
 
 
-      cli::cli_inform("Done cleaning historical catches")
+      cli::cli_inform("Done processing historical catches and flagging records for removal")
     }
   }
 
@@ -187,9 +187,9 @@ clean_catch <- function(data,
     )
 
 
-    ## Actually removing data
+    ## Flag records for removal
 
-    # Filter out Oregon and Washington records because they don't use MRFSS data
+    # Flag Oregon and Washington records because they don't use MRFSS data
     data <- data |>
         dplyr::mutate(
           remove = dplyr::if_else(
@@ -199,7 +199,7 @@ clean_catch <- function(data,
           )
         )
 
-    # Filter out non-federal records
+    # Flag non-federal records for removal
     data <- getArea(
       data = data,
       source = c("AREA_X"),
@@ -207,7 +207,7 @@ clean_catch <- function(data,
     )
 
 
-    cli::cli_inform("Done cleaning MRFSS catches")
+    cli::cli_inform("Done processing MRFSS catches and flagging records for removal")
   }
 
   # Recent data
@@ -249,16 +249,16 @@ clean_catch <- function(data,
     )
 
 
-    ## Actually removing data
+    ## Flag records for removal
 
-    # Filter out non-federal records
+    # Flag non-federal records for removal
     data <- getArea(
       data = data,
       source = c("RECFIN_WATER_AREA_NAME"),
       verbose = verbose
     )
 
-    cli::cli_inform("Done cleaning recent catches")
+    cli::cli_inform("Done processing recent catches and flagging records for removal")
   }
 
   # Report removals and remove cleaned records provided clean == "TRUE"
@@ -309,17 +309,15 @@ clean_catch <- function(data,
 
   cli::cli_bullets(c(
     " " = "Summary of data processing and cleaning checks:",
-    " " = "The following records would be removed if clean = TRUE. Users
-    should inspect these records to make sure that those record should be
-    removed from the cleaned data or if the keep arguments should be revised.",
-    " " = "The number of records potentially removed for the various reasons
-    below if clean = TRUE are not mutually exclusive.",
-    "!" = "Number of records not in federal waters: {narea}",
-    "!" = "Number of records without a year or occuring in overlapping years with
-    other data sets: {nyear}",
-    "!" = "Number of records without a state: {nstate}",
-    "!" = "Number of Oregon and Washington MRFSS catch records removed because
-    we dont use these data: {ndontUse}",
+    " " = "The following counts describe records flagged for removal.
+    Flagged records are removed when {.code clean = TRUE}.
+    Use {.code clean = FALSE} to inspect the flagged records.",
+    "!" = "There were {narea} records flagged as outside federal waters.",
+    "!" = "There were {nyear} records flagged for missing years or years overlapping
+    with other data sets.",
+    "!" = "There were {nstate} records flagged for missing state information.",
+    "!" = "There were {ndontuse} Oregon and Washington MRFSS catch records flagged
+    because these data are not used.",
     "i" = "Number of records remaining if clean = TRUE: {nclean}",
     "i" = "Number of records removed if clean = TRUE: {nremoved}"
   ))
@@ -380,22 +378,22 @@ clean_bds <- function(data) {
     )
 
 
-    ## Actually removing data
+    ## Identify records for removal
 
     # # Filter out Washington records because they don't use MRFSS data
     # # Done below in getArea()
     # data <- data |>
     #   dplyr::filter(!state %in% c("WA"))
 
-    # Filter out non-federal records
-    # Also removed Washington records because they don't use MRFSS data
+    # Identify non-federal records
+    # getArea also removes Washington records because they don't use MRFSS data
     data <- getArea(
       data = data,
       source = c("AREA_X"),
       verbose = verbose
     )
 
-    # Remove any records without lengths and add length_cm column
+    # Flag records without lengths and add length_cm column
     # Flags records beyond max length, and also flags different 'total' length
     data <- getLength(
       data = data,
@@ -403,7 +401,7 @@ clean_bds <- function(data) {
       verbose = verbose
     )
 
-    cli::cli_inform("Done cleaning MRFSS bds")
+    cli::cli_inform("Done processing MRFSS bds and flagging records for removal")
   }
 
   ##
@@ -437,9 +435,9 @@ clean_bds <- function(data) {
     )
 
 
-    ## Actually removing data
+    ## Flag records for removal
 
-    # Filter out non-federal records
+    # Flag non-federal records for removal
     # Flags other records with certain qualities that warrant further decisions 
     # but not removed by this function.
     data <- getArea(
@@ -448,7 +446,7 @@ clean_bds <- function(data) {
       verbose = verbose
     )
 
-    # Remove any records without lengths and add length_cm column
+    # Flag records without lengths and add length_cm column
     # Flags records beyond max length, and also flags different 'total' length
     data <- getLength(
       data = data,
@@ -456,7 +454,7 @@ clean_bds <- function(data) {
       verbose = verbose
     )
 
-    # Combine length and age data and remove multiple reads from ages
+    # Combine length and age data and flag multiple reads in the age data
     temp <- getAges(
       len_data = data,
       age_data = age_data,
@@ -468,7 +466,7 @@ clean_bds <- function(data) {
     # aren't in length data
     # Probably will move this to outside the clean function.
 
-    cli::cli_inform("Done cleaning recent bds length data")
+    cli::cli_inform("Done processing recent bds length data and flagging records for removal")
   }
   
   ##
@@ -502,9 +500,9 @@ clean_bds <- function(data) {
     )
     
     
-    ## Actually removing data
+    ## Flag records for removal
     
-    # Filter out non-federal records
+    # Flag non-federal records for removal
     # Flags other records with certain qualities that warrant further decisions 
     # but not removed by this function.
     data <- getArea(
@@ -513,7 +511,7 @@ clean_bds <- function(data) {
       verbose = verbose
     )
     
-    # Remove multiple reads from ages and ages with NA. While this function can 
+    # Flag multiple reads and ages with NA. While this function can
     # also combine length and age data, this is not done when NULL is used for 
     # length data
     temp <- getAges(
@@ -523,7 +521,7 @@ clean_bds <- function(data) {
     )
     data <- temp$age_data
     
-    cli::cli_inform("Done cleaning recent bds age data")
+    cli::cli_inform("Done processing recent bds age data and flagging records for removal")
   }
   
   
@@ -550,17 +548,15 @@ clean_bds <- function(data) {
 
   cli::cli_bullets(c(
     " " = "Summary of data processing and cleaning checks:",
-    " " = "The following records would be removed if clean = TRUE. Users
-    should inspect these records to make sure that those record should be
-    removed from the cleaned data or if the keep arguments should be revised.",
-    " " = "The number of records potentially removed for the various reasons
-    below if clean = TRUE are not mutually exclusive.",
-    "!" = "Number of records not in federal waters: {narea}",
-    "!" = "Number of records without a year: {nyear}",
-    "!" = "Number of records without a state: {nstate}",
-    "!" = "Number of records without length: {nlength}",
-    "!" = "Number of age records without a valid age: {nageNA}",
-    "!" = "Number of multiple age reads of the same fish: {nageMult}",
+    " " = "The following counts describe records flagged for removal.
+    Flagged records are removed when {.code clean = TRUE}.
+    Use {.code clean = FALSE} to inspect the flagged records.",
+    "!" = "There were {narea} records flagged as outside federal waters.",
+    "!" = "There were {nyear} records flagged for missing years.",
+    "!" = "There were {nstate} records flagged for missing state information.",
+    "!" = "There were {nlength} records flagged for missing or zero lengths.",
+    "!" = "There were {nageNA} age records flagged for missing ages.",
+    "!" = "There were {nageMult} age records flagged as duplicate reads of the same fish.",
     "i" = "Number of records remaining if clean = TRUE: {nclean}",
     "i" = "Number of records removed if clean = TRUE: {nremoved}"
   ))

@@ -31,9 +31,9 @@ single letters or full names and are available in the column called \code{state}
 or Canada, Mexico, and Puget Sound records are removed.
 }
 \details{
-This function also removes unsuitable data provided \code{clean = TRUE} (default).
+This function removes unsuitable data provided \code{clean = TRUE} (default).
 If \code{clean = FALSE} all data are retained along with an additional column
-"remove" that is populated with the function where data would be removed.
+"remove" that is populated with the functions where data would be removed.
 Using \code{clean = FALSE} is for exploration purposes only and is NOT RECOMMENDED
 for final use within US West Coast assessments.
 }
@@ -135,7 +135,7 @@ everything is assigned as \code{UNK}
 Values in \code{source} are evaluated using case-insensitive matching.
 
 For recent RecFIN catch data (\code{source = "RECFIN_WATER_AREA_NAME"}), records
-are removed when area is:
+are flagged for removal when area is:
 \itemize{
 \item \code{CANADA}
 \item \code{MEXICO}
@@ -147,7 +147,7 @@ For recent RecFIN bds data (\code{source = "AGENCY_FISHED_AREA_NAME"}):
 \itemize{
 \item For Washington: PUNCH CARD AREAs 1 through 4, and PUNCH CARD AREAs 0 and
 'Not Known' when RECFIN_PORT_NAME also equals coastal ports are kept. All other
-records are removed.
+records are flagged for removal.
 \item For Oregon: All records are kept,
 \item For California: All records are kept. Because AGENCY_FISHED_AREA_NAME is
 empty for California, the script automatically uses "AGENCY_WATER_AREA_NAME"
@@ -155,17 +155,17 @@ for California data.
 }
 
 For Washington historical catch data (\code{source = "AREA"} and \code{AGENCY == "W"}),
-records with \code{AREA >= 5} are removed.
+records with \code{AREA >= 5} are flagged for removal.
 
 For MRFSS catch data (\verb{source = "AREA_X}):
-*For California: Removes Mexico ("M") records
+*For California: Flags Mexico ("M") records for removal
 
 For MRFSS bds data (\code{source = "AREA_X"}):
 *For Washington: Removes Washington bds data
 *For Oregon: All records are kept
 *For California: All records are kept
 
-If \code{verbose = TRUE}, the function reports the number of records removed by
+If \code{verbose = TRUE}, the function reports the number of records identified by
 category.
 }
 
@@ -178,7 +178,9 @@ The selected source column is copied directly into a standardized \code{year}
 column. No recoding is applied.
 
 If \code{verbose = TRUE}, the function reports how many records have \code{NA} in
-\code{year} after extraction.
+\code{year} after extraction. Records are flagged in \code{remove}, not removed by
+this function. \code{\link[=clean_catch]{clean_catch()}} and \code{\link[=clean_bds]{clean_bds()}} remove flagged records when
+\code{clean = TRUE}.
 }
 
 \section{Oregon Historical weights}{
