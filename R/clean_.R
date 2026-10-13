@@ -12,8 +12,7 @@
 #' Using `clean = FALSE` is for exploration purposes only and is NOT RECOMMENDED
 #' for final use within US West Coast assessments.
 #'
-#' @param data A loaded Rdata object from pull_catch_recfin_ or
-#' pull_bds_recfin_.
+#' @param data A loaded Rdata object from `pull_catch_recfin_`.
 #' @param clean A logical value used when you want to remove data from the input
 #' data set. The default is `TRUE`, where the opposite returns the data
 #' with additional columns and reports on what would have been removed.
@@ -329,22 +328,39 @@ clean_catch <- function(data,
 
 
 #' Clean RecFIN biological data
+#' 
+#' #' Clean RecFIN data to provide data in a similar format with consistent
+#' column names and values, and data prepared and ready for analysis.
+#' For example, states are standardized to be state abbreviations rather than
+#' single letters or full names and are available in the column called `state`,
+#' or Canada, Mexico, and Puget Sound records are removed.
 #'
-#' Clean biological datasets from RecFIN and MRFSS so fields are standardized
-#' and prepared for analysis.
+#' This function removes unsuitable data provided `clean = TRUE` (default).
+#' If `clean = FALSE` all data are retained along with an additional column
+#' "remove" that is populated with the functions where data would be removed.
+#' Using `clean = FALSE` is for exploration purposes only and is NOT RECOMMENDED
+#' for final use within US West Coast assessments.
 #'
 #' @param data A loaded R data object from `pull_bds_recfin_`. Can be either
-#' length data or age data. 
-#' @return A data frame with standardized columns along with original and
-#'   added fields.
+#' length data or age data.
+#' #' @param clean A logical value used when you want to remove data from the input
+#' data set. The default is `TRUE`, where the opposite returns the data
+#' with additional columns and reports on what would have been removed.
+#' @param verbose Whether to output detailed information about the cleaning
+#' process. Default is TRUE.
 #'
-#' @seealso [getAges()], [clean_catch()]
+#' @seealso [clean_catch()]
 #'
 #' @inheritSection getYear Oregon MRFSS bds data
 #' @inheritSection getYear Oregon ORBS bds data
 #'
-#' @author Brian Langseth and Kelli Faye Johnson
-clean_bds <- function(data) {
+#' @author Brian Langseth
+#' @return A data frame with standardized columns along with original and
+#' added fields.
+#' 
+clean_bds <- function(data,
+                      clean = TRUE,
+                      verbose = TRUE) {
   type <- NULL
 
   # Dont have historical bds data
