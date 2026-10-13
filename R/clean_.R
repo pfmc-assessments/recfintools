@@ -286,6 +286,21 @@ clean_catch <- function(data,
     nstate <- sapply(nstate, sum)
     nclean <- sapply(nclean, sum)
     nremoved <- sapply(nremoved, sum)
+    
+    cli::cli_bullets(c(
+      " " = "Summary of data processing and cleaning checks:",
+      " " = "The following records would be removed if clean = TRUE. Users
+    should inspect these records to make sure that those record should be
+    removed from the cleaned data or if the keep arguments should be revised.",
+      " " = "The number of records potentially removed for the various reasons
+    below if clean = TRUE are not mutually exclusive.",
+      "!" = "Number of records not in federal waters: {narea}",
+      "!" = "Number of records without a year or occuring in overlapping years with
+    other data sets: {nyear}",
+      "!" = "Number of records without a state: {nstate}",
+      "i" = "Number of records remaining if clean = TRUE: {nclean}",
+      "i" = "Number of records removed if clean = TRUE: {nremoved}"
+    ))
   }
 
   if (type %in% c("recent", "mrfss")) {
@@ -304,24 +319,25 @@ clean_catch <- function(data,
       )
       data <- data[clean_vector[i], ]
     }
-  }
 
-  cli::cli_bullets(c(
-    " " = "Summary of data processing and cleaning checks:",
-    " " = "The following records would be removed if clean = TRUE. Users
-    should inspect these records to make sure that those record should be
-    removed from the cleaned data or if the keep arguments should be revised.",
-    " " = "The number of records potentially removed for the various reasons
-    below if clean = TRUE are not mutually exclusive.",
-    "!" = "Number of records not in federal waters: {narea}",
-    "!" = "Number of records without a year or occuring in overlapping years with
-    other data sets: {nyear}",
-    "!" = "Number of records without a state: {nstate}",
-    "!" = "Number of Oregon and Washington MRFSS catch records removed because
-    we dont use these data: {ndontUse}",
-    "i" = "Number of records remaining if clean = TRUE: {nclean}",
-    "i" = "Number of records removed if clean = TRUE: {nremoved}"
-  ))
+    cli::cli_bullets(c(
+      " " = "Summary of data processing and cleaning checks:",
+      " " = "The following records would be removed if clean = TRUE. Users
+      should inspect these records to make sure that those record should be
+      removed from the cleaned data or if the keep arguments should be revised.",
+      " " = "The number of records potentially removed for the various reasons
+      below if clean = TRUE are not mutually exclusive.",
+      "!" = "Number of records not in federal waters: {narea}",
+      "!" = "Number of records without a year or occuring in overlapping years with
+      other data sets: {nyear}",
+      "!" = "Number of records without a state: {nstate}",
+      "!" = "Number of Oregon and Washington MRFSS catch records removed because
+      we dont use these data: {ndontUse}",
+      "i" = "Number of records remaining if clean = TRUE: {nclean}",
+      "i" = "Number of records removed if clean = TRUE: {nremoved}"
+    ))
+  
+  }
 
   return(data)
 }
