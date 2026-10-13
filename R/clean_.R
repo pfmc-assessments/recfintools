@@ -423,7 +423,7 @@ clean_bds <- function(data,
     # Also removed Washington records because they don't use MRFSS data
     data <- getArea(
       data = data,
-      source = c("AREA_X"),
+      source = c("AREA"),
       verbose = verbose
     )
 

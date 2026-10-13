@@ -347,7 +347,7 @@ getArea <- function(
   
 
   ## MRFSS bds data
-  if (source %in% c("AREA_X") & "LNGTH" %in% colnames(data)) {
+  if (source %in% c("AREA") & "LNGTH" %in% colnames(data)) {
     # Remove Washington bds data if not already done
     removed <- data |>
       dplyr::filter(ST == 53)
@@ -358,15 +358,25 @@ getArea <- function(
           "dontUse",
           .data$remove
       ))
-
     noWA <- nrow(removed)
+    
+    # Remove records from Mexico
+    data <- data |>
+      dplyr::mutate(
+        remove = dplyr::if_else(
+          .data[[source]] %in% "M",
+          "area",
+          .data$remove
+        ))
+    nmex <- sum(grepl("M", data[[source]]))
 
 
     # Flag records that were not removed but which the user should decide what
-    # to do with. These include records with AREA_X = 3 (unavailable) or
-    # 5 (inland) or 6 (not known) or NA.
+    # to do with. These include records from areas expect AREA = 1 (ocean), and 
+    # are AREA = 2 (sound), AREA = 3 (river), AREA = 4 or N (bay or San Franciso bay), 
+    # AREA = 5 (other), AREA = 6 or 9 (unknown), or AREA = \n or NA (NA).
     flag <- data |>
-      dplyr::filter(.data[[source]] %in% c(3, 5, 6, NA))
+      dplyr::filter(!.data[[source]] %in% c(1))
 
     nflag <- nrow(flag)
 
@@ -375,11 +385,13 @@ getArea <- function(
         cli::cli_bullets(c(
           " " = "{.fn getArea} summary information -",
           "i" = "All {noWA} records from Washington were removed.
-          Washington does not use MRFSS bds data for compositions",
+          Washington does not use MRFSS bds data for compositions.",
+          "i" = "There are {nmex} records from Mexico and were removed.",
           "i" = "NOTE: Of the Oregon and California records that were kept,
-          {nflag} records are from Unavailable ({source} = 3),
-          inland ({source} = 5), Unknown ({source} = 6), or NA ({source} = NA)
-          areas. The user should decide how to handle these, which are not
+          {nflag} records are from non-ocean areas, including Sound ({source} = 2),
+          River ({source} = 3), Bay ({source} = 4 or N), Other ({source} = 5),
+          Unknown ({source} = 6 or 9), or NA ({source} = \n or NA) areas.
+          The user should decide how to handle these, which are not
           typically included in compositions, but could be depending on their
           distributions and sample size.",
           ""
@@ -387,11 +399,14 @@ getArea <- function(
       } else {
         cli::cli_bullets(c(
           " " = "{.fn getArea} summary information -",
-          "i" = "NOTE: There are {nflag} records from Unavailable
-          ({source} = 3), inland ({source} = 5), Unknown ({source} = 6), or
-          NA ({source} = NA) areas. The user should decide how to handle these,
-          which are not typically included in compositions, but could be
-          depending on sample size and the similarirty of their distributions.",
+          "i" = "There are {nmex} records from Mexico and were removed.",
+          "i" = "NOTE: There are {nflag} records are from non-ocean areas, 
+          including Sound ({source} = 2), River ({source} = 3), 
+          Bay ({source} = 4 or N), Other ({source} = 5), Unknown ({source} = 6 
+          or 9), or NA ({source} = \n or NA) areas.
+          The user should decide how to handle these, which are not
+          typically included in compositions, but could be depending on their
+          distributions and sample size.",
           ""
         ))
       }
