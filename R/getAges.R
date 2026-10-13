@@ -29,7 +29,7 @@
 #'
 #' @return Returns two data frames. The first `len_data` is the entered length
 #' data with age information added. If `len_data == NULL` then no length data 
-#' are retured. The second `age_data` is the entered age data with a column 
+#' are returned. The second `age_data` is the entered age data with a column 
 #' "remove" added for later filtering because records are either
 #' multiple reads of the same fish (`remove = "multRead"`) or are NA
 #' (`remove = "naAge"`).

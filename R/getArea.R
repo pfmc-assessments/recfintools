@@ -5,7 +5,7 @@
 #' This function is used for both catch and composition data. Because the case
 #' for values are sometimes different across data sets, fields with values as
 #' character strings are converted to lowercase when filtering.
-#' Based on similar function from pacfintools, but modified for recreational data
+#' Based on similar function from pacfintools, but modified for recreational data.
 #'
 #' @section Area filtering rules:
 #' Values in `source` are evaluated using case-insensitive matching.
@@ -352,7 +352,12 @@ getArea <- function(
     removed <- data |>
       dplyr::filter(ST == 53)
     data <- data |>
-      dplyr::filter(ST != 53)
+      dplyr::mutate(
+        remove = dplyr::if_else(
+          ST %in% 53,
+          "dontUse",
+          .data$remove
+      ))
 
     noWA <- nrow(removed)
 
@@ -382,7 +387,7 @@ getArea <- function(
       } else {
         cli::cli_bullets(c(
           " " = "{.fn getArea} summary information -",
-          "i" = "NOTE: There are {nflag} records are from Unavailable
+          "i" = "NOTE: There are {nflag} records from Unavailable
           ({source} = 3), inland ({source} = 5), Unknown ({source} = 6), or
           NA ({source} = NA) areas. The user should decide how to handle these,
           which are not typically included in compositions, but could be
