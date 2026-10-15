@@ -7,8 +7,7 @@
 clean_catch(data, clean = TRUE, verbose = TRUE)
 }
 \arguments{
-\item{data}{A loaded Rdata object from pull_catch_recfin_ or
-pull_bds_recfin_.}
+\item{data}{A loaded Rdata object from \code{pull_catch_recfin_}.}
 
 \item{clean}{A logical value used when you want to remove data from the input
 data set. The default is \code{TRUE}, where the opposite returns the data
@@ -31,9 +30,9 @@ single letters or full names and are available in the column called \code{state}
 or Canada, Mexico, and Puget Sound records are removed.
 }
 \details{
-This function also removes unsuitable data provided \code{clean = TRUE} (default).
+This function removes unsuitable data provided \code{clean = TRUE} (default).
 If \code{clean = FALSE} all data are retained along with an additional column
-"remove" that is populated with the function where data would be removed.
+"remove" that is populated with the functions where data would be removed.
 Using \code{clean = FALSE} is for exploration purposes only and is NOT RECOMMENDED
 for final use within US West Coast assessments.
 }

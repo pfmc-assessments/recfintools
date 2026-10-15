@@ -26,8 +26,9 @@ must specify a valid option.}
 \item{apex}{The specific recfin apex report that you want to reproduce.
 Available options include "SD001" and "SD501" (which are for lengths) and
 "SD506" (which is for ages) when type equals "recent", and "SD508" and "SD517"
-when type equals "mrfss". There is no default so the user must specify a
-valid option. Currently, there is no option to keep just the raw sql data.}
+when type equals "mrfss". Type 2 mrfss bds data are also available using
+"SD516". There is no default so the user must specify a valid option.
+Currently, there is no option to keep just the raw sql data.}
 }
 \value{
 A character string formatted as an sql call. For type = "hist", the

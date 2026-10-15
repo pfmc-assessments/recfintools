@@ -7,13 +7,20 @@
 getLength(data, source = c("RECFIN_LENGTH_MM"), verbose = TRUE)
 }
 \arguments{
-\item{data}{A loaded R data object from \code{pull_bds_recfin_}.}
+\item{data}{A loaded R data object from \code{pull_bds_recfin_}. Can be either
+length data or age data.
+#' @param clean A logical value used when you want to remove data from the input
+data set. The default is \code{TRUE}, where the opposite returns the data
+with additional columns and reports on what would have been removed.}
 
 \item{source}{Column name where length information is located. Depends on the
 era (recent, mrfss). Default value is for recent catch data
 (RECFIN_LENGTH_MM). Coded to accept a vector of names where the same era of
 data has multiple different names. When multiple names within the vector are
 in the dataset, picks the first.}
+
+\item{verbose}{Whether to output detailed information about the cleaning
+process. Default is TRUE.}
 }
 \description{
 Create a length_cm column based on input column specified in \code{source}.
