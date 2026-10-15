@@ -1,15 +1,39 @@
 # recfintools
 
-**NOTE: this package is in active development and not yet intended for
-production use**
+**NOTE: This package is in active development. While it is ready for
+production use for the 2027 assessment cycle, its contents will be
+updated and improved, and therefore scripts using it may need to be
+updated**
 
-Working with recreational data for the US West Coast from Recreational
-Fisheries Information Network ([RecFIN](https://www.recfin.org/)).
+## Introduction
+
+Recreational data for stock assessments along the US West Coast have
+historically been obtained from a mixture of centralized and
+decentralized sources, using online tools or requests from individuals
+via email. This process required extensive coordination, and repeated
+back and forth between data providers and stock assessment teams to
+understand data fields, processing steps, and decision points, and were
+often repeated across species within an assessment cycle, and then again
+for each assessment cycle.
+
+Efforts to standardize recreational data likely started early, but were
+documented and shared via github beginning with the 2021 assessment
+cycle. Early versions of a package to process recreational data occurred
+shortly thereafter, but were not formalized into a working package until
+the 2027 assessment cycle.
 
 We support the efforts of the Pacific States Marine Fisheries Commission
 ([PSMFC](https://www.psmfc.org/)) to provide a clearing house for
 recreational sampling data collected over the years along the US West
-Coast. This package is meant to work with this data.
+Coast called the Recreational Fisheries Information Network
+([RecFIN](https://www.recfin.org/)). This package is meant to work with
+this data, and was developed closely with
+[PSMFC](https://www.psmfc.org/), along with input from Washington,
+Oregon, and California data providers. The intended use of this package
+is specifically for stock assessments conducted by the Northwest
+Fisheries Science Center (\[NWFSC\]\[\]) and Southwest Fisheries Science
+Center (\[SWFSC\]\[\]) in support of the Pacific Fishery Management
+Council (\[PFMC\]\[\]) process.
 
 ## Glossary
 
@@ -18,6 +42,12 @@ Coast. This package is meant to work with this data.
   Commission
 - [RecFIN](https://www.recfin.org/): Recreational Fisheries Information
   Network
+- [OSP](https://www.noaa.gov/information-technology/washington-department-of-fish-and-wildlife-ocean-sampling-program-documentation-id343):
+  Ocean Sampling Program conducted by WDFW
+- [ORBS](https://www.dfw.state.or.us/mrp/salmon/docs/ORBS_Design.pdf):
+  Oregon Recreational Boat Survey conducted by ODFW
+- [CRFS](https://wildlife.ca.gov/Conservation/Marine/CRFS): California
+  Recreational Fisheries Survey conducted by CDFW
 
 ## State Sampling Programs
 
@@ -33,6 +63,7 @@ transmitted to RecFIN:
 - ORBS: Oregon Ocean Recreational Boats Survey
   - [ORBS Sampling
     Design](https://www.dfw.state.or.us/mrp/salmon/docs/ORBS_Design.pdf)
+- OSP: Ocean Sampling Program
 
 ## Installation
 
@@ -47,14 +78,107 @@ Install the most recent, stable version of the package from github using
 
     remotes::install_github("pfmc-assessments/recfintools")
 
+Instructions below assume that the recfintools library has been loaded
+using
+
+    library(recfintools)
+
+and thus function calls are not preceeded by `recfintools::`.
+
 ## Usage
 
-Reading in recreational fisheries data can be done with the
-`RecFIN::read_*()` functions. The `read_*` functions automatically clean
-the data and work towards providing consistent column names such as Year
-instead of YEAR. Consistency is key because there are so many providers
-of data when it comes to recreational fisheries. Users can also clean
-their data themselves using the `RecFIN::clean_*()` functions.
+This package can be used to \* Pull datasets from the RecFIN website and
+saves them locally \* Reads in saved datasets into R for processing \*
+Filters the raw datasets from RecFIN and provides standardized field
+names
+
+The data can then be processed and summarized for catch time series,
+biological relationships, and compositions for use in assessments,
+however the current pacakge does not include functions that automate
+these processes.
+
+## Data
+
+Reading in recreational fisheries data can be done with the `pullData()`
+and
+[`readData()`](https://pfmc-assessments.github.io/recfintools/reference/readData.md)
+functions.
+
+    pullData(path = file.path("Ling"), species = "LINGCOD")
+    readData(path = file.path("Ling"), species = "LINGCOD")
+
+Generally, not all users will have access to all data reports on
+[RecFIN](https://www.recfin.org/) so `pullData()` will generally be
+called by the package maintainer or recreational point of contact. To
+request data from this package, please create a new “Data request” issue
+within the github repository. Once data are provided,
+[`readData()`](https://pfmc-assessments.github.io/recfintools/reference/readData.md)
+can be used to read in the data.
+
+### Data provided
+
+The current list of data reports within
+[RecFIN](https://www.recfin.org/) that are provided by `pullData()` and
+read by
+[`readData()`](https://pfmc-assessments.github.io/recfintools/reference/readData.md)
+include the following \* Recent years of catch data - CTE501 as
+dataframe `catch_recent` \* For Washington, this includes years: \* For
+Oregon, this includes years: \* For California, this includes years: \*
+MRFSS years of catch data - CTE008 as dataframe `catch_mrfss` \*
+Currently, Washington does not use this data \* For Oregon, this
+includes years: \* For California, this includes year: \* Historical
+catch reconstructions - as list `catch_hist` \* For Washington, this is
+CTE503 and includes years: \* For Oregon, this is CTE507 and includes
+years: \* For California, this is CTE508 and includes years: \* Recent
+years of length bio data - SD501 as dataframe `bds_recent_len` \* For
+Washington, this includes years: \* For Oregon, this includes years: \*
+For California, this includes years: \* Recent years of age bio data -
+SD506 as dataframe `bds_recent_age` \* For Washington, this includes
+years: \* For Oregon, this includes years: \* MRFSS years of bio data -
+SD517 (type 3) as dataframe `bds_mrfss` \* Currently, Washington does
+not use this data \* Currently, Oregon does not use this data \* For
+California, this includes years:
+
+## Cleaning data
+
+The
+[`clean_catch()`](https://pfmc-assessments.github.io/recfintools/reference/clean_catch.md)
+and
+[`clean_bds()`](https://pfmc-assessments.github.io/recfintools/reference/clean_bds.md)
+functions automatically clean the data and work towards providing
+consistent column names such as year instead of YEAR or YR. These need
+to be called for each data set, and automatically determine the
+necessary fields to filter on. Consistency is key because there are so
+many providers of data when it comes to recreational fisheries and all
+use a variety of column names.
+
+    #For cleaning catch data for all datasets
+    clean_catch()
+
+    #For cleaning biological data for each dataset
+
+### State
+
+### Year
+
+### Mode
+
+### Area
+
+### Lengths
+
+### Ages
+
+### Columns
+
+## Processing data
+
+There are many decision points for processing recreational data. The
+package currently includes only a few functions that provide default
+choices for processing data. It is expected that as development
+proceeds, the number of processing functions will expand.
+
+### Historical weights
 
 ## Disclaimer
 
@@ -72,8 +196,8 @@ The Department of Commerce seal and logo, or the seal and logo of a DOC
 bureau, shall not be used in any manner to imply endorsement of any
 commercial product or activity by DOC or the United States Government.”
 
-RecFIN was developed by US federal government employees as part of their
-official duties. As such, it is not subject to copyright protection and
-is considered public domain (see 17 USC Section 105). Public domain
-software can be used by anyone for any purpose, and cannot be released
-under a copyright license.
+recfintools was developed by US federal government employees as part of
+their official duties. As such, it is not subject to copyright
+protection and is considered public domain (see 17 USC Section 105).
+Public domain software can be used by anyone for any purpose, and cannot
+be released under a copyright license.
