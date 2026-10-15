@@ -190,13 +190,13 @@ clean_catch <- function(data,
 
     # Filter out Oregon and Washington records because they don't use MRFSS data
     data <- data |>
-        dplyr::mutate(
-          remove = dplyr::if_else(
-            .data[["state"]] %in% c("OR", "WA"),
-            "dontUse",
-            .data$remove
-          )
+      dplyr::mutate(
+        remove = dplyr::if_else(
+          .data[["state"]] %in% c("OR", "WA"),
+          "dontUse",
+          .data$remove
         )
+      )
 
     # Filter out non-federal records
     data <- getArea(
@@ -286,7 +286,7 @@ clean_catch <- function(data,
     nstate <- sapply(nstate, sum)
     nclean <- sapply(nclean, sum)
     nremoved <- sapply(nremoved, sum)
-    
+
     cli::cli_bullets(c(
       " " = "Summary of data processing and cleaning checks:",
       " " = "The following records would be removed if clean = TRUE. Users
@@ -307,7 +307,7 @@ clean_catch <- function(data,
     narea <- sum(data[, remove] %in% "area")
     nyear <- sum(data[, remove] %in% "year")
     nstate <- sum(data[, remove] %in% "state")
-    ndontuse <- sum(data[, remove] %in% "dontUse") 
+    ndontuse <- sum(data[, remove] %in% "dontUse")
     nclean <- sum(data[, remove] %in% "no")
     nremoved <- sum(!data[, remove] %in% "no")
 
@@ -336,7 +336,6 @@ clean_catch <- function(data,
       "i" = "Number of records remaining if clean = TRUE: {nclean}",
       "i" = "Number of records removed if clean = TRUE: {nremoved}"
     ))
-  
   }
 
   return(data)
@@ -344,7 +343,7 @@ clean_catch <- function(data,
 
 
 #' Clean RecFIN biological data
-#' 
+#'
 #' #' Clean RecFIN data to provide data in a similar format with consistent
 #' column names and values, and data prepared and ready for analysis.
 #' For example, states are standardized to be state abbreviations rather than
@@ -373,7 +372,7 @@ clean_catch <- function(data,
 #' @author Brian Langseth
 #' @return A data frame with standardized columns along with original and
 #' added fields.
-#' 
+#'
 clean_bds <- function(data,
                       clean = TRUE,
                       verbose = TRUE) {
@@ -381,10 +380,10 @@ clean_bds <- function(data,
 
   # Dont have historical bds data
 
-  ## 
+  ##
   # MRFSS bds data
   ##
-  
+
   if ("SERVER_PATH" %in% colnames(data)) {
     type <- "mrfss"
 
@@ -441,7 +440,7 @@ clean_bds <- function(data,
   ##
   # Recent bds length data
   ##
-  
+
   if ("RECFIN_YEAR" %in% colnames(data)) {
     type <- "recfin"
 
@@ -472,7 +471,7 @@ clean_bds <- function(data,
     ## Actually removing data
 
     # Filter out non-federal records
-    # Flags other records with certain qualities that warrant further decisions 
+    # Flags other records with certain qualities that warrant further decisions
     # but not removed by this function.
     data <- getArea(
       data = data,
@@ -502,51 +501,51 @@ clean_bds <- function(data,
 
     cli::cli_inform("Done cleaning recent bds length data")
   }
-  
+
   ##
   # Recent bds age data
   ##
-  
+
   if ("SAMPLE_YEAR" %in% colnames(data)) {
     type <- "recfin"
-    
+
     ## Standardize fields
-    
+
     # Rename state
     data <- getState(
       data = data,
       source = c("SAMPLING_AGENCY_NAME"),
       verbose = verbose
     )
-    
+
     # Rename modes
     data <- getMode(
       data = data,
       source = c("RECFIN_MODE_NAME"),
       verbose = verbose
     )
-    
+
     # Set up year column
     data <- getYear(
       data = data,
       source = c("SAMPLING_YEAR"),
       verbose = verbose
     )
-    
-    
+
+
     ## Actually removing data
-    
+
     # Filter out non-federal records
-    # Flags other records with certain qualities that warrant further decisions 
+    # Flags other records with certain qualities that warrant further decisions
     # but not removed by this function.
     data <- getArea(
       data = data,
       source = c("SURVEY_PROGRAM_CATCH_AREA_NAME"),
       verbose = verbose
     )
-    
-    # Remove multiple reads from ages and ages with NA. While this function can 
-    # also combine length and age data, this is not done when NULL is used for 
+
+    # Remove multiple reads from ages and ages with NA. While this function can
+    # also combine length and age data, this is not done when NULL is used for
     # length data
     temp <- getAges(
       len_data = NULL,
@@ -554,11 +553,10 @@ clean_bds <- function(data,
       verbose = verbose
     )
     data <- temp$age_data
-    
+
     cli::cli_inform("Done cleaning recent bds age data")
   }
-  
-  
+
 
   # Report removals and remove cleaned records provided clean == "TRUE"
   narea <- sum(data[, remove] %in% "area")

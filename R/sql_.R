@@ -552,8 +552,8 @@ sql_species <- function() {
 #' @param apex The specific recfin apex report that you want to reproduce.
 #' Available options include "SD001" and "SD501" (which are for lengths) and
 #' "SD506" (which is for ages) when type equals "recent", and "SD508" and "SD517"
-#' when type equals "mrfss". Type 2 mrfss bds data are also available using 
-#' "SD516". There is no default so the user must specify a valid option. 
+#' when type equals "mrfss". Type 2 mrfss bds data are also available using
+#' "SD516". There is no default so the user must specify a valid option.
 #' Currently, there is no option to keep just the raw sql data.
 #'
 sql_bds <- function(species_name, type, apex) {
@@ -810,7 +810,6 @@ sql_bds <- function(species_name, type, apex) {
   # Cuts off data after 2003 to avoid confusion since these legacy data actually
   # have data out to 2016 that is not MRFSS
   if (type == "mrfss") {
-    
     # Cut off data to 2004 and before for CA, 2003 and before for OR and WA
     # if (apex == SD508) {
     #   # Based on SD508 bio data for unavailable catch (Type 2 - B1 and B2)
@@ -923,7 +922,7 @@ sql_bds <- function(species_name, type, apex) {
     #     "
     #   )
     # }
-    
+
     # if (apex == SD509) {
     #   # Based on SD509 bio data for available catch (Type 3 - A)
     #   # Cut off data to 2004 and before for CA, 2003 and before for OR and WA
@@ -1070,7 +1069,7 @@ sql_bds <- function(species_name, type, apex) {
     #     "
     #   )
     # }
-    
+
     if (apex == "SD516") {
       # Based on SD516 bio data for unavailable catch (Type 2 - B1 and B2)
       # This is an update of what was SD508 and is what is currently available
@@ -1102,7 +1101,7 @@ sql_bds <- function(species_name, type, apex) {
             NUM_TYP2,
             NUM2,
             SUB_REG,
-            SUB_REG_NAME,        
+            SUB_REG_NAME,
             NUM_FISH,
             WAVE,
             PUNCH,
@@ -1131,18 +1130,18 @@ sql_bds <- function(species_name, type, apex) {
             HLOC,
             RECFIN_VDATE,
             RECFIN_LOG_ID
-          FROM 
+          FROM
             RECFIN_MARTS.COMPREHENSIVE_REC_LEGACY_TYPE_2
           WHERE
             YEAR <= 2003
             AND SPECIES_NAME = ANY ({toupper(species)})
         )
-        SELECT * 
+        SELECT *
         FROM SRC
         "
       )
     }
-      
+
     if (apex == "SD517") {
       # Based on SD517 bio data for available catch (Type 3 - A)
       # This is an update of what was SD509 and is what is currently available

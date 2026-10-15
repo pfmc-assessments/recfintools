@@ -4,18 +4,35 @@
 \alias{clean_bds}
 \title{Clean RecFIN biological data}
 \usage{
-clean_bds(data)
+clean_bds(data, clean = TRUE, verbose = TRUE)
 }
 \arguments{
-\item{data}{A loaded R data object from \code{pull_bds_recfin_}.}
+\item{data}{A loaded R data object from \code{pull_bds_recfin_}. Can be either
+length data or age data.
+#' @param clean A logical value used when you want to remove data from the input
+data set. The default is \code{TRUE}, where the opposite returns the data
+with additional columns and reports on what would have been removed.}
+
+\item{verbose}{Whether to output detailed information about the cleaning
+process. Default is TRUE.}
 }
 \value{
 A data frame with standardized columns along with original and
 added fields.
 }
 \description{
-Clean biological datasets from RecFIN and MRFSS so fields are standardized
-and prepared for analysis.
+#' Clean RecFIN data to provide data in a similar format with consistent
+column names and values, and data prepared and ready for analysis.
+For example, states are standardized to be state abbreviations rather than
+single letters or full names and are available in the column called \code{state},
+or Canada, Mexico, and Puget Sound records are removed.
+}
+\details{
+This function removes unsuitable data provided \code{clean = TRUE} (default).
+If \code{clean = FALSE} all data are retained along with an additional column
+"remove" that is populated with the functions where data would be removed.
+Using \code{clean = FALSE} is for exploration purposes only and is NOT RECOMMENDED
+for final use within US West Coast assessments.
 }
 \section{Oregon MRFSS bds data}{
 
@@ -35,8 +52,8 @@ removed using this function.
 }
 
 \seealso{
-\code{\link[=getAges]{getAges()}}, \code{\link[=clean_catch]{clean_catch()}}
+\code{\link[=clean_catch]{clean_catch()}}
 }
 \author{
-Brian Langseth and Kelli Faye Johnson
+Brian Langseth
 }

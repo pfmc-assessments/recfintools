@@ -7,8 +7,7 @@
 getState(data, source = c("AGENCY", "STATE_NAME"), verbose = TRUE)
 }
 \arguments{
-\item{data}{A loaded Rdata object from pull_catch_recfin_ or
-pull_bds_recfin_.}
+\item{data}{A loaded Rdata object from \code{pull_catch_recfin_}.}
 
 \item{source}{Column name where state information is located. Depends on the
 type of data (catch or bds) and era (recent, mrfss, or historical). Default

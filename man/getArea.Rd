@@ -8,8 +8,7 @@ on input column specified in \code{source}.}
 getArea(data, source = c("RECFIN_WATER_AREA_NAME"), verbose = TRUE)
 }
 \arguments{
-\item{data}{A loaded Rdata object from pull_catch_recfin_ or
-pull_bds_recfin_.}
+\item{data}{A loaded Rdata object from \code{pull_catch_recfin_}.}
 
 \item{source}{Column name where area information is located. Depends on the
 type of data (catch or bds) and era (recent, mrfss, or historical).
@@ -50,7 +49,7 @@ on input column specified in \code{source}.
 This function is used for both catch and composition data. Because the case
 for values are sometimes different across data sets, fields with values as
 character strings are converted to lowercase when filtering.
-Based on similar function from pacfintools, but modified for recreational data
+Based on similar function from pacfintools, but modified for recreational data.
 }
 \section{Area filtering rules}{
 
