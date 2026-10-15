@@ -21,8 +21,13 @@
 #'
 #' @param path A file path to the directory where the files are to be saved.
 #'   The default is the current working directory.
-#' @param species The species name that the files represent. The user
-#'   must enter a value for this. Is case insensitive.
+#' @param species The species name that the files represent. Can be a single
+#'   name, or a vector of multiple names. The user must enter a value for this. 
+#'   Is case insensitive.
+#' @param username Username to access the recfin database of interest. Default is to 
+#'   automatically set using `pacfintools::getUserName()`
+#' @param password Password to access the recfin database. Default is to prompt
+#'   user to enter using `pacfintools::ask_password()` 
 #' @param verbose Whether to print a message about the files that were saved.
 #'   Default is TRUE.
 #'
@@ -31,11 +36,16 @@
 #'
 #' @export
 #' @seealso [readData()] Reads the data pulled by this function
+#' @seealso [pacfintools::getUserName()], [pacfintools::ask_password] which are
+#' inputs to this function
 #' @author Brian Langseth
 #'
-readData <- function(path = getwd(),
-                     species = NULL, 
+pullData <- function(path = getwd(),
+                     species = NULL,
+                     username = pacfintools::getUserName("PacFIN"),
+                     password = pacfintools:::ask_password(),
                      verbose = TRUE) {
+  
   if (is.null(species)) {
     cli::cli_abort(c(
       "{.fn pullData} will not work because {species} was not assigned a value.
@@ -60,14 +70,28 @@ readData <- function(path = getwd(),
   #To Do: All ability to save password to each of these so only need to call once
   
   #Pull the catch data and save to path
-  pull_catch_recfin_recent(species, apex = "CTE501", savedir = path)
-  pull_catch_recfin_mrfss(species, savedir = path)
-  pull_catch_recfin_hist(species, savedir = path)
+  cli::cli_inform("Pulling catch datasets...")
+  pull_catch_recfin_recent(species, apex = "CTE501", savedir = path, 
+                           username = username, password = password)
+  cli::cli_inform("...done pulling recent catch CTE501...")
+  pull_catch_recfin_mrfss(species, savedir = path, 
+                          username = username, password = password)
+  cli::cli_inform("...done pulling MRFSS catch CTE008...")
+  pull_catch_recfin_hist(species, savedir = path, 
+                         username = username, password = password)
+  cli::cli_inform("...done pulling historical catch CTE503, 507, and 508.")
   
   #Pull the bio data and save to path
-  pull_bds_recfin_recent(species, apex = "SD501", savedir = path)
-  pull_bds_recfin_recent(species, apex = "SD506", savedir = path)
-  pull_bds_recfin_mrfss(species, apex = "SD517", savedir = path)
+  cli::cli_inform("Pulling biological datasets...")
+  pull_bds_recfin_recent(species, apex = "SD501", savedir = path, 
+                         username = username, password = password)
+  cli::cli_inform("...done pulling recent bds lengths SD501...")
+  pull_bds_recfin_recent(species, apex = "SD506", savedir = path, 
+                         username = username, password = password)
+  cli::cli_inform("...done pulling recent bds ages SD506...")
+  pull_bds_recfin_mrfss(species, apex = "SD517", savedir = path, 
+                        username = username, password = password)
+  cli::cli_inform("...done pulling MRFSS bds SD517.")
   
   files_new <- list.files(
     path = path,
