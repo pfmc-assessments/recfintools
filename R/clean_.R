@@ -370,6 +370,7 @@ clean_catch <- function(data,
 #' @inheritSection getYear Oregon MRFSS bds data
 #' @inheritSection getYear Oregon ORBS bds data
 #'
+#' @export
 #' @author Brian Langseth
 #' @return A data frame with standardized columns along with original and
 #' added fields.
