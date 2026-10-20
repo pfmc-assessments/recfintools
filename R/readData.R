@@ -17,13 +17,13 @@
 #' @param envir The environment to which the loaded objects should be assigned.
 #'   The default is the calling environment.
 #' @param species The species name that the `.Rdata` files represent, and which
-#'   resides within the file's name. The user must enter a value for this. 
+#'   resides within the file's name. The user must enter a value for this.
 #'   Is case insensitive.
 #' @param verbose Whether to print a message about the files that were loaded.
 #'   Default is TRUE.
 #'
 #' @return An invisible named list of loaded objects. See \linkSections{details}
-#' for the names of the loaded objects. The number of data files that were read 
+#' for the names of the loaded objects. The number of data files that were read
 #' and their names are also returned.
 #'
 #' @export

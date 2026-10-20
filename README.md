@@ -67,7 +67,7 @@ Instructions below assume that the recfintools library has been loaded using
 library(recfintools)
 ```
 
-and thus function calls are not preceeded by `recfintools::`.
+and thus function calls are not preceded by `recfintools::`.
 
 ## Usage
 
@@ -78,7 +78,7 @@ This package can be used to
 
 The data can then be processed and summarized for catch time series, biological
 relationships, and compositions for use in assessments, however the current
-pacakge does not include functions that automate these processes.
+package does not include functions that automate these processes.
 
 ## Data
 

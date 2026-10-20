@@ -12,8 +12,7 @@ check_catch(
 )
 }
 \arguments{
-\item{data}{A loaded Rdata object from pull_catch_recfin_ or
-pull_bds_recfin_.}
+\item{data}{A loaded Rdata object from \code{pull_catch_recfin_}.}
 
 \item{source}{Column keywords where the information is located. Can depend
 on era (recent, mrfss, or historical) however currently this is only used
