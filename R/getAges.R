@@ -14,7 +14,7 @@
 #' reported as multiple rows in SD506, by keeping the first occurrence. This
 #' does not occur often, and only for ODFW, but when it does the length of the
 #' fish is duplicated for each read, and multiple ages for each fish would be 
-#' including in the comps. These records are flagged in the age data as are 
+#' included in the comps. These records are flagged in the age data as are 
 #' records where age is not entered.
 #'
 #' @export

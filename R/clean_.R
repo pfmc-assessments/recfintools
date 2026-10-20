@@ -140,14 +140,15 @@ clean_catch <- function(data,
 
 
       ## Adding columns
-
-      # Add calculated weight column - Only applies for Oregon
-      data[[i]] <- getWeightHist(
-        catch_data = data[[i]],
-        bds_data = bds_mrfss,
-        state = unique(data[[i]]$state),
-        figure = TRUE
-      )
+      
+      # MOVE THIS SCRIPT OUTSIDE OF clean_catch. 
+      # # Add calculated weight column - Only applies for Oregon
+      # data[[i]] <- getWeightHist(
+      #   catch_data = data[[i]],
+      #   bds_data = bds_mrfss,
+      #   state = unique(data[[i]]$state),
+      #   figure = TRUE
+      # )
 
 
       cli::cli_inform("Done cleaning historical catches")
@@ -489,17 +490,18 @@ clean_bds <- function(data,
       verbose = verbose
     )
 
-    # Combine length and age data and remove multiple reads from ages
-    temp <- getAges(
-      len_data = data,
-      age_data = age_data,
-      verbose = verbose
-    )
-    data <- temp$len_data
-    age_data <- temp$age_data
-    # to do: This is working but still need to figure out why some age data
-    # aren't in length data
-    # Probably will move this to outside the clean function.
+    # MOVE THIS SCRIPT OUTSIDE OF clean_bds for length data.
+    # # Combine length and age data and remove multiple reads from ages
+    # temp <- getAges(
+    #   len_data = data,
+    #   age_data = age_data,
+    #   verbose = verbose
+    # )
+    # data <- temp$len_data
+    # age_data <- temp$age_data
+    # # to do: This is working but still need to figure out why some age data
+    # # aren't in length data
+    # # Probably will move this to outside the clean function.
 
     cli::cli_inform("Done cleaning recent bds length data")
   }
