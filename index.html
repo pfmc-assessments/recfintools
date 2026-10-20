@@ -111,45 +111,72 @@
 <div class="section level2">
 <h2 id="cleaning-data">Cleaning data<a class="anchor" aria-label="anchor" href="#cleaning-data"></a>
 </h2>
-<p>The <code><a href="reference/clean_catch.html">clean_catch()</a></code> and <code><a href="reference/clean_bds.html">clean_bds()</a></code> functions automatically clean the data and work towards providing consistent column names such as year instead of YEAR or YR. These functions need to be called for each data set, and automatically determine the necessary fields to filter on. Consistency is key because there are so many providers of data when it comes to recreational fisheries and all use a variety of column names.</p>
+<p>The <code><a href="reference/clean_catch.html">clean_catch()</a></code> and <code><a href="reference/clean_bds.html">clean_bds()</a></code> functions automatically clean the data and work towards providing consistent column names such as year instead of YEAR or YR. These functions need to be called for each data set, and automatically determine the necessary fields to filter on. Consistency is key because there are so many providers of data when it comes to recreational fisheries and all use a variety of column names. Any fields added are written as lowercase column names, whereas original column names are uppercase.</p>
+<p>These two functions call a series of sub-functions described below. While each can be called independently, it is recommended to use <code>clean_catch</code> or <code>clean_bds</code> to call these. Both <code>clean_catch</code> and <code>clean_bds</code> include an option to remove records flagged by the various sub-functions using <code>clean = TRUE</code>. A summary of each of the sub-functions is provided below.</p>
 <pre><code><span><span class="co">#For cleaning catch data for all datasets</span></span>
 <span><span class="fu"><a href="reference/clean_catch.html">clean_catch</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">#For cleaning biological data for each dataset</span></span></code></pre>
+<span><span class="co">#For cleaning biological data for each dataset.</span></span>
+<span></span>
+<span><span class="co">#Use clean = FALSE to see the data sub-functions suggest should be removed.</span></span>
+<span><span class="co">#This option is recommended for exploring the data, but does not produce data</span></span>
+<span><span class="co">#ready for use within a stock assessment. For that use clean = TRUE.</span></span>
+<span><span class="va">bds_recent_len</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clean_bds.html">clean_bds</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">bds_recent_len</span>, clean <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">bds_recent_age</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clean_bds.html">clean_bds</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">bds_recent_age</span>, clean <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">bds_mrfss</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clean_bds.html">clean_bds</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">bds_mrfss</span>, clean <span class="op">=</span> <span class="cn">FALSE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#Use clean = TRUE if you want the records suggested for removal by the</span></span>
+<span><span class="co">#sub-functions to be removed. This option results in data ready for inclusion</span></span>
+<span><span class="co">#in a stock assessment.</span></span>
+<span><span class="va">bds_recent_len</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clean_bds.html">clean_bds</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">bds_recent_len</span>, clean <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">bds_recent_age</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clean_bds.html">clean_bds</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">bds_recent_age</span>, clean <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">bds_mrfss</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/clean_bds.html">clean_bds</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">bds_mrfss</span>, clean <span class="op">=</span> <span class="cn">TRUE</span>, verbose <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre>
 <div class="section level3">
 <h3 id="state-getstate">State <code>getState()</code>
 <a class="anchor" aria-label="anchor" href="#state-getstate"></a>
 </h3>
+<p>Adds a standardized column “state” that equals WA, OR, or CA. Any records without a state designation are assigned as UNK, but this is very rare. Function alerts user of the number of records without a state designation.</p>
 </div>
 <div class="section level3">
 <h3 id="year-getyear">Year <code>getYear()</code>
 <a class="anchor" aria-label="anchor" href="#year-getyear"></a>
 </h3>
+<p>Adds a standardized column “year”. Function alerts user of the number of records without a year designation. Additionally, notifies user that MRFSS bds records in Oregon should extend only through 2000, and ORBS bds records in Oregon should start in 2001, and prepares data beyond these bounds for removal.</p>
 </div>
 <div class="section level3">
 <h3 id="mode-getmode">Mode <code>getMode()</code>
 <a class="anchor" aria-label="anchor" href="#mode-getmode"></a>
 </h3>
+<p>Adds a standardized column “mode” that equals PR, PC, other, or unknown. Function alerts user of the number of records without a mode designation. Note that Washington historical data does not contain mode information so everything is assigned as unknown.</p>
 </div>
 <div class="section level3">
-<h3 id="area-getstate">Area <code>getState()</code>
-<a class="anchor" aria-label="anchor" href="#area-getstate"></a>
+<h3 id="mode-getarea">Mode <code>getArea()</code>
+<a class="anchor" aria-label="anchor" href="#mode-getarea"></a>
 </h3>
+<p>Notifies the user of the number of records from Canada, Puget Sound, or Mexico waters and prepares them for removal. Also notifies the user that Washington does not use MRFSS bds data, so also prepares these for removal. Additionally, this function alerts user of the number of records outside ocean areas (e.g. inland, sound, bays). Catch records in these areas are generally kept, but composition data in these areas are often removed.</p>
 </div>
 <div class="section level3">
 <h3 id="lengths-getlengths">Lengths <code>getLengths()</code>
 <a class="anchor" aria-label="anchor" href="#lengths-getlengths"></a>
 </h3>
+<p>This is used only for length bds data. Function adds a standardized column “length_cm” reported in cm. Alerts user of the number of records outside the agency determined maximum values, if lengths are reported as total lengths (and so assumes fork length as the desired measurement), or if lengths are likely not directly measured but rather derived from empirical relationships. Additionally, notifies user of any lengths that are 0 or NA, and prepares these records for removal.</p>
 </div>
 <div class="section level3">
-<h3 id="ages-getages">Ages <code>getAges()</code>
-<a class="anchor" aria-label="anchor" href="#ages-getages"></a>
+<h3 id="check-catches-check_catch">Check catches <code>check_catch()</code>
+<a class="anchor" aria-label="anchor" href="#check-catches-check_catch"></a>
 </h3>
+<p>This is used only for recent years of catch data. It notifies the user if the <code>TOTAL_MORTALITY_MT</code> field does not equals the sum of <code>RELEASED_DEAD_MT</code> and <code>RETAINED_MT</code>. It also checks, and notifies the user when there is catch in numbers but catch in weight is zero, implying missing weight values.</p>
 </div>
 <div class="section level3">
 <h3 id="columns-cleancolumns">Columns <code>cleanColumns()</code>
 <a class="anchor" aria-label="anchor" href="#columns-cleancolumns"></a>
 </h3>
+<p>This removes columns that are not commonly used from the datasets. Currently, columns consisting entirely of NA values, that have a percentage of NA values above a user specified amount (currently set to 100 percent, so for columns with all NA values), and some pre-specified columns.</p>
+</div>
+<div class="section level3">
+<h3 id="additional-records-removed">Additional records removed<a class="anchor" aria-label="anchor" href="#additional-records-removed"></a>
+</h3>
+<p>The <code>clean_catch</code> function also notifies the user that MRFSS catch records are not currently used by Washington and Oregon, and prepares these records for removal.</p>
 </div>
 </div>
 <div class="section level2">
@@ -159,6 +186,11 @@
 <div class="section level3">
 <h3 id="historical-weights-getweighthist">Historical weights <code>getWeightHist()</code>
 <a class="anchor" aria-label="anchor" href="#historical-weights-getweighthist"></a>
+</h3>
+</div>
+<div class="section level3">
+<h3 id="ages-getages">Ages <code>getAges()</code>
+<a class="anchor" aria-label="anchor" href="#ages-getages"></a>
 </h3>
 </div>
 </div>
