@@ -45,7 +45,11 @@
 
 
 <dl><dt id="arg-data">data<a class="anchor" aria-label="anchor" href="#arg-data"></a></dt>
-<dd><p>A loaded R data object from <code>pull_bds_recfin_</code>.</p></dd>
+<dd><p>A loaded R data object from <code>pull_bds_recfin_</code>. Can be either
+length data or age data.
+#' @param clean A logical value used when you want to remove data from the input
+data set. The default is <code>TRUE</code>, where the opposite returns the data
+with additional columns and reports on what would have been removed.</p></dd>
 
 
 <dt id="arg-source">source<a class="anchor" aria-label="anchor" href="#arg-source"></a></dt>
@@ -54,6 +58,11 @@ era (recent, mrfss). Default value is for recent catch data
 (RECFIN_LENGTH_MM). Coded to accept a vector of names where the same era of
 data has multiple different names. When multiple names within the vector are
 in the dataset, picks the first.</p></dd>
+
+
+<dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
+<dd><p>Whether to output detailed information about the cleaning
+process. Default is TRUE.</p></dd>
 
 </dl></div>
     <div class="section level2">

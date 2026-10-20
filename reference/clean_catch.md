@@ -16,7 +16,7 @@ clean_catch(data, clean = TRUE, verbose = TRUE)
 
 - data:
 
-  A loaded Rdata object from pull_catch_recfin\_ or pull_bds_recfin\_.
+  A loaded Rdata object from `pull_catch_recfin_`.
 
 - clean:
 
@@ -37,12 +37,11 @@ descriptions of column names and their contents.
 
 ## Details
 
-This function also removes unsuitable data provided `clean = TRUE`
-(default). If `clean = FALSE` all data are retained along with an
-additional column "remove" that is populated with the function where
-data would be removed. Using `clean = FALSE` is for exploration purposes
-only and is NOT RECOMMENDED for final use within US West Coast
-assessments.
+This function removes unsuitable data provided `clean = TRUE` (default).
+If `clean = FALSE` all data are retained along with an additional column
+"remove" that is populated with the functions where data would be
+removed. Using `clean = FALSE` is for exploration purposes only and is
+NOT RECOMMENDED for final use within US West Coast assessments.
 
 ## Missing years
 

@@ -12,7 +12,7 @@ getState(data, source = c("AGENCY", "STATE_NAME"), verbose = TRUE)
 
 - data:
 
-  A loaded Rdata object from pull_catch_recfin\_ or pull_bds_recfin\_.
+  A loaded Rdata object from `pull_catch_recfin_`.
 
 - source:
 

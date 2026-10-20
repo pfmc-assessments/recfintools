@@ -28,8 +28,9 @@ readData(
 
 - species:
 
-  The species name that the `.Rdata` files represent. The user must
-  enter a value for this. Is case insensitive.
+  The species name that the `.Rdata` files represent, and which resides
+  within the file's name. The user must enter a value for this. Is case
+  insensitive.
 
 - verbose:
 
@@ -38,8 +39,9 @@ readData(
 
 ## Value
 
-An invisible named list of loaded objects. The number of data files that
-were read and their names.
+An invisible named list of loaded objects. See details for the names of
+the loaded objects. The number of data files that were read and their
+names are also returned.
 
 ## Details
 

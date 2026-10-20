@@ -54,6 +54,9 @@
   Create a year column based on input column specified in `source` and
   filters out some unused records
 
+- [`pullData()`](https://pfmc-assessments.github.io/recfintools/reference/pullData.md)
+  : Pull all RecFIN data files from the server
+
 - [`pull_bds_recfin_recent()`](https://pfmc-assessments.github.io/recfintools/reference/pull_bds_recfin_recent.md)
   : Functions to pull bio data from recfin, which includes lengths and
   ages

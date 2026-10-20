@@ -13,7 +13,7 @@ getArea(data, source = c("RECFIN_WATER_AREA_NAME"), verbose = TRUE)
 
 - data:
 
-  A loaded Rdata object from pull_catch_recfin\_ or pull_bds_recfin\_.
+  A loaded Rdata object from `pull_catch_recfin_`.
 
 - source:
 
@@ -57,7 +57,7 @@ This function is used for both catch and composition data. Because the
 case for values are sometimes different across data sets, fields with
 values as character strings are converted to lowercase when filtering.
 Based on similar function from pacfintools, but modified for
-recreational data
+recreational data.
 
 ## Area filtering rules
 

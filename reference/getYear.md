@@ -13,7 +13,7 @@ getYear(data, source = c("RECFIN_YEAR"), verbose = TRUE)
 
 - data:
 
-  A loaded Rdata object from pull_catch_recfin\_ or pull_bds_recfin\_.
+  A loaded Rdata object from `pull_catch_recfin_`.
 
 - source:
 

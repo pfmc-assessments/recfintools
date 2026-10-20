@@ -78,7 +78,7 @@ using
 
     library(recfintools)
 
-and thus function calls are not preceeded by `recfintools::`.
+and thus function calls are not preceded by `recfintools::`.
 
 ## Usage
 
@@ -88,12 +88,13 @@ Filters the raw datasets and provides standardized field names
 
 The data can then be processed and summarized for catch time series,
 biological relationships, and compositions for use in assessments,
-however the current pacakge does not include functions that automate
+however the current package does not include functions that automate
 these processes.
 
 ## Data
 
-Reading in recreational fisheries data can be done with the `pullData()`
+Reading in recreational fisheries data can be done with the
+[`pullData()`](https://pfmc-assessments.github.io/recfintools/reference/pullData.md)
 and
 [`readData()`](https://pfmc-assessments.github.io/recfintools/reference/readData.md)
 functions.
@@ -102,17 +103,21 @@ functions.
     readData(path = file.path("Ling"), species = "LINGCOD")
 
 Generally, not all users will have access to all data reports on RecFIN
-so `pullData()` should be called by the package maintainer or
-recreational point of contact. To request data from this package
-obtained from `pullData()`, please create a new “Data request” issue
-within the github repository. Once data are provided,
+so
+[`pullData()`](https://pfmc-assessments.github.io/recfintools/reference/pullData.md)
+should be called by the package maintainer or recreational point of
+contact. To request data from this package obtained from
+[`pullData()`](https://pfmc-assessments.github.io/recfintools/reference/pullData.md),
+please create a new “Data request” issue within the github repository.
+Once data are provided,
 [`readData()`](https://pfmc-assessments.github.io/recfintools/reference/readData.md)
 can be used to read them into R for processing.
 
 ### Data provided
 
 The current list of data reports within RecFIN that are provided by
-`pullData()` and read by
+[`pullData()`](https://pfmc-assessments.github.io/recfintools/reference/pullData.md)
+and read by
 [`readData()`](https://pfmc-assessments.github.io/recfintools/reference/readData.md)
 include the following \* Recent years of catch data - CTE501 as
 dataframe `catch_recent` \* For Washington, this includes years: \* For
@@ -250,6 +255,9 @@ be released under a copyright license.
 
   Create a year column based on input column specified in `source` and
   filters out some unused records
+
+- [`pullData()`](https://pfmc-assessments.github.io/recfintools/reference/pullData.md)
+  : Pull all RecFIN data files from the server
 
 - [`pull_bds_recfin_recent()`](https://pfmc-assessments.github.io/recfintools/reference/pull_bds_recfin_recent.md)
   : Functions to pull bio data from recfin, which includes lengths and
