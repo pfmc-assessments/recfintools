@@ -133,27 +133,93 @@ instead of YEAR or YR. These functions need to be called for each data set, and
 automatically determine the necessary fields to filter on.
 Consistency is key because there are so many providers of data when
 it comes to recreational fisheries and all use a variety of column names.
+Any fields added are written as lowercase column names, whereas original column 
+names are uppercase.
+
+These two functions call a series of sub-functions described below. While each
+can be called independently, it is recommended to use `clean_catch` or 
+`clean_bds` to call these. Both `clean_catch` and `clean_bds` include an option
+to remove records flagged by the various sub-functions using `clean = TRUE`.
+A summary of each of the sub-functions is provided below.  
 
 ```
 #For cleaning catch data for all datasets
 clean_catch()
 
-#For cleaning biological data for each dataset
+#For cleaning biological data for each dataset.
+
+#Use clean = FALSE to see the data sub-functions suggest should be removed.
+#This option is recommended for exploring the data, but does not produce data
+#ready for use within a stock assessment. For that use clean = TRUE. 
+bds_recent_len <- clean_bds(data = bds_recent_len, clean = FALSE, verbose = TRUE)
+bds_recent_age <- clean_bds(data = bds_recent_age, clean = FALSE, verbose = TRUE)
+bds_mrfss <- clean_bds(data = bds_mrfss, clean = FALSE, verbose = TRUE)
+
+#Use clean = TRUE if you want the records suggested for removal by the 
+#sub-functions to be removed. This option results in data ready for inclusion
+#in a stock assessment. 
+bds_recent_len <- clean_bds(data = bds_recent_len, clean = TRUE, verbose = TRUE)
+bds_recent_age <- clean_bds(data = bds_recent_age, clean = TRUE, verbose = TRUE)
+bds_mrfss <- clean_bds(data = bds_mrfss, clean = TRUE, verbose = TRUE)
 ```
 
 ### State `getState()`
 
+Adds a standardized column "state" that equals WA, OR, or CA. Any records
+without a state designation are assigned as UNK, but this is very rare. 
+Function alerts user of the number of records without a state designation.
+
 ### Year `getYear()`
+
+Adds a standardized column "year". Function alerts user of the number of records 
+without a year designation. Additionally, notifies user that MRFSS bds 
+records in Oregon should extend only through 2000, and ORBS bds records in Oregon
+should start in 2001, and prepares data beyond these bounds for removal. 
 
 ### Mode `getMode()`
 
-### Area `getState()`
+Adds a standardized column "mode" that equals PR, PC, other, or unknown. 
+Function alerts user of the number of records without a mode designation. 
+Note that Washington historical data does not contain mode information so 
+everything is assigned as unknown.
+
+### Mode `getArea()`
+
+Notifies the user of the number of records from Canada, Puget Sound, or Mexico
+waters and prepares them for removal. Also notifies the user that Washington 
+does not use MRFSS bds data, so also prepares these for removal. 
+Additionally, this function alerts user of the number of records outside ocean
+areas (e.g. inland, sound, bays). Catch records in these areas are generally kept,
+but composition data in these areas are often removed. 
 
 ### Lengths `getLengths()`
 
-### Ages `getAges()`
+This is used only for length bds data. Function adds a standardized column "length_cm" 
+reported in cm. Alerts user of the number of records outside the agency determined
+maximum values, if lengths are reported as total lengths (and so assumes fork
+length as the desired measurement), or if lengths are likely not directly measured but 
+rather derived from empirical relationships. Additionally, notifies user of any
+lengths that are 0 or NA, and prepares these records for removal. 
+
+### Check catches `check_catch()`
+
+This is used only for recent years of catch data. It notifies the user if 
+the `TOTAL_MORTALITY_MT` field does not equals the sum of `RELEASED_DEAD_MT` and
+`RETAINED_MT`. It also checks, and notifies the user when there is catch in 
+numbers but catch in weight is zero, implying missing weight values.
 
 ### Columns `cleanColumns()`
+
+This removes columns that are not commonly used from the datasets. Currently,
+columns consisting entirely of NA values, that have a percentage of NA values
+above a user specified amount (currently set to 100 percent, so for columns with
+all NA values), and some pre-specified columns.
+
+### Additional records removed
+
+The `clean_catch` function also notifies the user that MRFSS catch records are
+not currently used by Washington and Oregon, and prepares these records for
+removal. 
 
 
 ## Processing data
@@ -161,9 +227,11 @@ clean_catch()
 There are many decision points for processing recreational data. The package
 currently includes only a few functions that provide default choices for 
 processing data. It is expected that as development proceeds, the number of 
-processing functions will expand. 
+processing functions will expand.
 
 ### Historical weights `getWeightHist()`
+
+### Ages `getAges()`
 
 
 ## Disclaimer
