@@ -190,14 +190,18 @@ waters and prepares them for removal. Also notifies the user that Washington
 does not use MRFSS bds data, so also prepares these for removal. 
 Additionally, this function alerts user of the number of records outside ocean
 areas (e.g. inland, sound, bays). Catch records in these areas are generally kept,
-but composition data in these areas are often removed. 
+but composition data in these areas are often removed. Also alerts user of recent
+bds records from fish landed in Oregon but caught in Washington or California. 
+We generally treat port of landing as the location, so these should be 
+treated as Oregon fish in most case, however for some species (like black rockfish 
+in 2023) location of catch may be used. 
 
-### Lengths `getLengths()`
+### Length `getLength()`
 
 This is used only for length bds data. Function adds a standardized column "length_cm" 
 reported in cm. Alerts user of the number of records outside the agency determined
-maximum values, if lengths are reported as total lengths (and so assumes fork
-length as the desired measurement), or if lengths are likely not directly measured but 
+maximum values, if lengths are reported as total lengths (and so fork length is 
+assumed as the desired measurement), or if lengths are likely not directly measured but 
 rather derived from empirical relationships. Additionally, notifies user of any
 lengths that are 0 or NA, and prepares these records for removal. 
 
