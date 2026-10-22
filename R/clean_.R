@@ -265,12 +265,12 @@ clean_catch <- function(data,
   if (type == "hist") {
     narea <- nyear <- nstate <- nclean <- nlength <- nremoved <- clean_vector <- list()
     for (i in 1:length(data)) {
-      narea[i] <- sum(data[, remove] %in% "area")
-      nyear[i] <- sum(data[, remove] %in% "year")
-      nstate[i] <- sum(data[, remove] %in% "state")
-      nlength[i] <- sum(data[, remove] %in% "length")
-      nclean[i] <- sum(data[, remove] %in% "no")
-      nremoved[i] <- sum(!data[, remove] %in% "no")
+      narea[i] <- sum(data[, "remove"] %in% "area")
+      nyear[i] <- sum(data[, "remove"] %in% "year")
+      nstate[i] <- sum(data[, "remove"] %in% "state")
+      nlength[i] <- sum(data[, "remove"] %in% "length")
+      nclean[i] <- sum(data[, "remove"] %in% "no")
+      nremoved[i] <- sum(!data[, "remove"] %in% "no")
 
       if (clean) {
         clean_vector[i] <- ifelse(
@@ -305,12 +305,12 @@ clean_catch <- function(data,
   }
 
   if (type %in% c("recent", "mrfss")) {
-    narea <- sum(data[, remove] %in% "area")
-    nyear <- sum(data[, remove] %in% "year")
-    nstate <- sum(data[, remove] %in% "state")
-    ndontuse <- sum(data[, remove] %in% "dontUse")
-    nclean <- sum(data[, remove] %in% "no")
-    nremoved <- sum(!data[, remove] %in% "no")
+    narea <- sum(data[, "remove"] %in% "area")
+    nyear <- sum(data[, "remove"] %in% "year")
+    nstate <- sum(data[, "remove"] %in% "state")
+    ndontuse <- sum(data[, "remove"] %in% "dontUse")
+    nclean <- sum(data[, "remove"] %in% "no")
+    nremoved <- sum(!data[, "remove"] %in% "no")
 
     if (clean) {
       clean_vector <- ifelse(
@@ -559,44 +559,88 @@ clean_bds <- function(data,
 
     cli::cli_inform("Done cleaning recent bds age data")
   }
-
-
+  
+  
   # Report removals and remove cleaned records provided clean == "TRUE"
-  narea <- sum(data[, remove] %in% "area")
-  nyear <- sum(data[, remove] %in% "year")
-  nstate <- sum(data[, remove] %in% "state")
-  nlength <- sum(data[, remove] %in% "length")
-  nageNA <- sum(age_data[, remove] %in% "naAge")
-  nageMult <- sum(age_data[, remove] %in% "multRead")
-  nclean <- sum(data[, remove] %in% "no")
-  nremoved <- sum(!data[, remove] %in% "no")
+  # Needs to be different if doing for lengths (recent or mrfss) or ages (recent)
+  
+  #For age data first
+  if(type %in% "recfin" & "SAMPLE_YEAR" %in% colnames(data)) {
 
-  if (clean) {
-    clean_vector <- ifelse(
-      data[, "remove"] == "no",
-      FALSE,
-      TRUE
-    )
-    data <- data[clean_vector[i], ]
+    narea <- sum(data[, "remove"] %in% "area")
+    nyear <- sum(data[, "remove"] %in% "year")
+    nstate <- sum(data[, "remove"] %in% "state")
+    nlength <- sum(data[, "remove"] %in% "length")
+    nageNA <- sum(age_data[, "remove"] %in% "naAge")
+    nageMult <- sum(age_data[, "remove"] %in% "multRead")
+    nclean <- sum(data[, "remove"] %in% "no")
+    nremoved <- sum(!data[, "remove"] %in% "no")
+  
+    if (clean) {
+      clean_vector <- ifelse(
+        data[, "remove"] == "no",
+        FALSE,
+        TRUE
+      )
+      data <- data[clean_vector[i], ]
+    }
+  
+  
+    cli::cli_bullets(c(
+      " " = "Summary of data processing and cleaning checks:",
+      " " = "The following records would be removed if clean = TRUE. Users
+      should inspect these records to make sure that those record should be
+      removed from the cleaned data or if the keep arguments should be revised.",
+      " " = "The number of records potentially removed for the various reasons
+      below if clean = TRUE are not mutually exclusive.",
+      "!" = "Number of records not in federal waters: {narea}",
+      "!" = "Number of records without a year or occuring in overlapping years with
+      other data sets: {nyear}",
+      "!" = "Number of records without a state: {nstate}",
+      "!" = "Number of records without length: {nlength}",
+      "!" = "Number of age records without a valid age: {nageNA}",
+      "!" = "Number of multiple age reads of the same fish: {nageMult}",
+      "i" = "Number of records remaining if clean = TRUE: {nclean}",
+      "i" = "Number of records removed if clean = TRUE: {nremoved}"
+    ))
   }
-
-
-  cli::cli_bullets(c(
-    " " = "Summary of data processing and cleaning checks:",
-    " " = "The following records would be removed if clean = TRUE. Users
-    should inspect these records to make sure that those record should be
-    removed from the cleaned data or if the keep arguments should be revised.",
-    " " = "The number of records potentially removed for the various reasons
-    below if clean = TRUE are not mutually exclusive.",
-    "!" = "Number of records not in federal waters: {narea}",
-    "!" = "Number of records without a year: {nyear}",
-    "!" = "Number of records without a state: {nstate}",
-    "!" = "Number of records without length: {nlength}",
-    "!" = "Number of age records without a valid age: {nageNA}",
-    "!" = "Number of multiple age reads of the same fish: {nageMult}",
-    "i" = "Number of records remaining if clean = TRUE: {nclean}",
-    "i" = "Number of records removed if clean = TRUE: {nremoved}"
-  ))
+  
+  #Now for length data
+  if(type %in% c("recfin", "mrfss") & !("SAMPLE_YEAR" %in% colnames(data))) {
+    
+    narea <- sum(data[, "remove"] %in% "area")
+    nyear <- sum(data[, "remove"] %in% "year")
+    nstate <- sum(data[, "remove"] %in% "state")
+    nlength <- sum(data[, "remove"] %in% "length")
+    nclean <- sum(data[, "remove"] %in% "no")
+    nremoved <- sum(!data[, "remove"] %in% "no")
+    
+    if (clean) {
+      clean_vector <- ifelse(
+        data[, "remove"] == "no",
+        FALSE,
+        TRUE
+      )
+      data <- data[clean_vector[i], ]
+    }
+    
+    
+    cli::cli_bullets(c(
+      " " = "Summary of data processing and cleaning checks:",
+      " " = "The following records would be removed if clean = TRUE. Users
+      should inspect these records to make sure that those record should be
+      removed from the cleaned data or if the keep arguments should be revised.",
+      " " = "The number of records potentially removed for the various reasons
+      below if clean = TRUE are not mutually exclusive.",
+      "!" = "Number of records not in federal waters: {narea}",
+      "!" = "Number of records without a year or occuring in overlapping years with
+      other data sets: {nyear}",
+      "!" = "Number of records without a state: {nstate}",
+      "!" = "Number of records without length: {nlength}",
+      "i" = "Number of records remaining if clean = TRUE: {nclean}",
+      "i" = "Number of records removed if clean = TRUE: {nremoved}"
+    ))
+  }
 
   return(data)
 }
