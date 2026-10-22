@@ -79,13 +79,13 @@ getLength <- function(
     if (verbose) {
       cli::cli_bullets(c(
         " " = "{.fn getLength} summary information -",
-        "i" = "There are {nolen} records where length was NA or 0 and were removed",
+        "i" = "There are {nolen} records where length was NA or 0 and were removed.",
         "i" = "NOTE: there are {outmax} records flagged by `IS_AGENCY_LENGTH_WITHIN_MAX`
         as being outside the maximum length for the species and were kept. The
-        user should decide how to handle these",
+        user should decide how to handle these.",
         "i" = "NOTE: there are {lentype} records flagged by `RECFIN_LENGTH_TYPE`
         as being total length as opposed to fork length and were kept. These
-        only occur for Washington. The user should decide how to handle these",
+        only occur for Washington. The user should decide how to handle these.",
         ""
       ))
     }
@@ -114,7 +114,7 @@ getLength <- function(
     if (verbose) {
       cli::cli_bullets(c(
         " " = "{.fn getLength} summary information -",
-        "i" = "There are {nolen} records where length was NA or 0 and were removed",
+        "i" = "There are {nolen} records where length was NA or 0 and were removed.",
         "i" = "NOTE: There are records where {source} was likely derived from
         empirical relationships from another measurement, either from {other_l} or
         WGT. This can be inferred based on the number of decimal places, using
