@@ -39,9 +39,9 @@ getArea(data, source = c("RECFIN_WATER_AREA_NAME"), verbose = TRUE)
   records. Records with Estuary or Not Known "AGENCY_WATER_AREA_NAME" in
   Oregon, and Inland or San Francisco Bay AGENCY_WATER_AREA_NAME in
   California are flagged for the user but not removed. For MRFSS bds
-  data, use `AREA_X`, which flags the user about `AREA_X` values that
-  are "3" (unavailable), "5" (inland) or "6" (unknown") but does not
-  remove them.
+  data, use `AREA`, which flags the user about `AREA` values that are 2
+  (sound), 3 (river), 4 or N (bay or San Franciso bay), 5 (other), 6 or
+  9 (unknown), or NA (NA) but does not remove them.
 
   For all other data sets, use any valid column, since for these areas
   no specific records outside federal waters are identifiable.
@@ -92,7 +92,7 @@ For Washington historical catch data (`source = "AREA"` and
 For MRFSS catch data (`source = "AREA_X`): \*For California: Removes
 Mexico ("M") records
 
-For MRFSS bds data (`source = "AREA_X"`): \*For Washington: Removes
+For MRFSS bds data (`source = "AREA"`): \*For Washington: Removes
 Washington bds data \*For Oregon: All records are kept \*For California:
 All records are kept
 

@@ -172,7 +172,7 @@ For Washington historical catch data (`source = "AREA"` and
 For MRFSS catch data (`source = "AREA_X`): \*For California: Removes
 Mexico ("M") records
 
-For MRFSS bds data (`source = "AREA_X"`): \*For Washington: Removes
+For MRFSS bds data (`source = "AREA"`): \*For Washington: Removes
 Washington bds data \*For Oregon: All records are kept \*For California:
 All records are kept
 
