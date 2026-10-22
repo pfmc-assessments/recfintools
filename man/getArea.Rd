@@ -31,9 +31,9 @@ and California these are kept. Because California data are NA for
 "AGENCY_WATER_AREA_NAME" to remove Mexico records. Records with Estuary or
 Not Known "AGENCY_WATER_AREA_NAME" in Oregon, and Inland or San Francisco Bay
 AGENCY_WATER_AREA_NAME in California are flagged for the user but not removed.
-For MRFSS bds data, use \code{AREA_X}, which flags the user about \code{AREA_X} values
-that are "3" (unavailable), "5" (inland) or "6" (unknown") but does not
-remove them.
+For MRFSS bds data, use \code{AREA}, which flags the user about \code{AREA} values
+that are 2 (sound), 3 (river), 4 or N (bay or San Franciso bay),
+5 (other), 6 or 9 (unknown), \n or NA (NA) but does not remove them.
 
 For all other data sets, use any valid column, since for these areas no
 specific records outside federal waters are identifiable.}
@@ -81,7 +81,7 @@ records with \code{AREA >= 5} are removed.
 For MRFSS catch data (\verb{source = "AREA_X}):
 *For California: Removes Mexico ("M") records
 
-For MRFSS bds data (\code{source = "AREA_X"}):
+For MRFSS bds data (\code{source = "AREA"}):
 *For Washington: Removes Washington bds data
 *For Oregon: All records are kept
 *For California: All records are kept

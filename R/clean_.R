@@ -559,14 +559,13 @@ clean_bds <- function(data,
 
     cli::cli_inform("Done cleaning recent bds age data")
   }
-  
-  
+
+
   # Report removals and remove cleaned records provided clean == "TRUE"
   # Needs to be different if doing for lengths (recent or mrfss) or ages (recent)
-  
-  #For age data first
-  if(type %in% "recfin" & "SAMPLE_YEAR" %in% colnames(data)) {
 
+  # For age data first
+  if (type %in% "recfin" & "SAMPLE_YEAR" %in% colnames(data)) {
     narea <- sum(data[, "remove"] %in% "area")
     nyear <- sum(data[, "remove"] %in% "year")
     nstate <- sum(data[, "remove"] %in% "state")
@@ -575,7 +574,7 @@ clean_bds <- function(data,
     nageMult <- sum(age_data[, "remove"] %in% "multRead")
     nclean <- sum(data[, "remove"] %in% "no")
     nremoved <- sum(!data[, "remove"] %in% "no")
-  
+
     if (clean) {
       clean_vector <- ifelse(
         data[, "remove"] == "no",
@@ -584,8 +583,8 @@ clean_bds <- function(data,
       )
       data <- data[clean_vector[i], ]
     }
-  
-  
+
+
     cli::cli_bullets(c(
       " " = "Summary of data processing and cleaning checks:",
       " " = "The following records would be removed if clean = TRUE. Users
@@ -604,17 +603,16 @@ clean_bds <- function(data,
       "i" = "Number of records removed if clean = TRUE: {nremoved}"
     ))
   }
-  
-  #Now for length data
-  if(type %in% c("recfin", "mrfss") & !("SAMPLE_YEAR" %in% colnames(data))) {
-    
+
+  # Now for length data
+  if (type %in% c("recfin", "mrfss") & !("SAMPLE_YEAR" %in% colnames(data))) {
     narea <- sum(data[, "remove"] %in% "area")
     nyear <- sum(data[, "remove"] %in% "year")
     nstate <- sum(data[, "remove"] %in% "state")
     nlength <- sum(data[, "remove"] %in% "length")
     nclean <- sum(data[, "remove"] %in% "no")
     nremoved <- sum(!data[, "remove"] %in% "no")
-    
+
     if (clean) {
       clean_vector <- ifelse(
         data[, "remove"] == "no",
@@ -623,8 +621,8 @@ clean_bds <- function(data,
       )
       data <- data[clean_vector[i], ]
     }
-    
-    
+
+
     cli::cli_bullets(c(
       " " = "Summary of data processing and cleaning checks:",
       " " = "The following records would be removed if clean = TRUE. Users

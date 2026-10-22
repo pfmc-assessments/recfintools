@@ -67,7 +67,7 @@
 #' Not Known "AGENCY_WATER_AREA_NAME" in Oregon, and Inland or San Francisco Bay
 #' AGENCY_WATER_AREA_NAME in California are flagged for the user but not removed.
 #' For MRFSS bds data, use `AREA`, which flags the user about `AREA` values
-#' that are 2 (sound), 3 (river), 4 or N (bay or San Franciso bay), 
+#' that are 2 (sound), 3 (river), 4 or N (bay or San Franciso bay),
 #' 5 (other), 6 or 9 (unknown), \n or NA (NA) but does not remove them.
 #'
 #' For all other data sets, use any valid column, since for these areas no
@@ -374,8 +374,8 @@ getArea <- function(
 
 
     # Flag records that were not removed but which the user should decide what
-    # to do with. These include records from areas except AREA = 1 (ocean), and 
-    # are AREA = 2 (sound), AREA = 3 (river), AREA = 4 or N (bay or San Franciso bay), 
+    # to do with. These include records from areas except AREA = 1 (ocean), and
+    # are AREA = 2 (sound), AREA = 3 (river), AREA = 4 or N (bay or San Franciso bay),
     # AREA = 5 (other), AREA = 6 or 9 (unknown), or AREA = \n or NA (NA).
     flag <- data |>
       dplyr::filter(!.data[[source]] %in% c(1))

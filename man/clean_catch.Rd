@@ -159,7 +159,7 @@ records with \code{AREA >= 5} are removed.
 For MRFSS catch data (\verb{source = "AREA_X}):
 *For California: Removes Mexico ("M") records
 
-For MRFSS bds data (\code{source = "AREA_X"}):
+For MRFSS bds data (\code{source = "AREA"}):
 *For Washington: Removes Washington bds data
 *For Oregon: All records are kept
 *For California: All records are kept
