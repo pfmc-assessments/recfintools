@@ -156,7 +156,7 @@ clean_catch <- function(data,
   }
 
   # MRFSS data
-  if ("SERVER_PATH" %in% colnames(data)) {
+  if ("WGT_AB1" %in% colnames(data)) {
     type <- "mrfss"
 
     ##
@@ -386,7 +386,7 @@ clean_bds <- function(data,
   # MRFSS bds data
   ##
 
-  if ("SERVER_PATH" %in% colnames(data)) {
+  if ("ID_CODE" %in% colnames(data)) {
     type <- "mrfss"
 
     ## Standardize fields
@@ -531,7 +531,7 @@ clean_bds <- function(data,
     # Set up year column
     data <- getYear(
       data = data,
-      source = c("SAMPLING_YEAR"),
+      source = c("SAMPLE_YEAR"),
       verbose = verbose
     )
 
