@@ -570,8 +570,8 @@ clean_bds <- function(data,
     nyear <- sum(data[, "remove"] %in% "year")
     nstate <- sum(data[, "remove"] %in% "state")
     nlength <- sum(data[, "remove"] %in% "length")
-    nageNA <- sum(age_data[, "remove"] %in% "naAge")
-    nageMult <- sum(age_data[, "remove"] %in% "multRead")
+    nageNA <- sum(data[, "remove"] %in% "naAge")
+    nageMult <- sum(data[, "remove"] %in% "multRead")
     nclean <- sum(data[, "remove"] %in% "no")
     nremoved <- sum(!data[, "remove"] %in% "no")
 
