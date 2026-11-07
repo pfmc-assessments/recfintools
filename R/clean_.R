@@ -275,8 +275,8 @@ clean_catch <- function(data,
       if (clean) {
         clean_vector[i] <- ifelse(
           data[i][, "remove"] == "no",
-          FALSE,
-          TRUE
+          TRUE,
+          FALSE
         )
         data[i] <- data[i][clean_vector[i], ]
       }
@@ -315,10 +315,10 @@ clean_catch <- function(data,
     if (clean) {
       clean_vector <- ifelse(
         data[, "remove"] == "no",
-        FALSE,
-        TRUE
+        TRUE,
+        FALSE
       )
-      data <- data[clean_vector[i], ]
+      data <- data[clean_vector, ]
     }
 
     cli::cli_bullets(c(
@@ -578,10 +578,10 @@ clean_bds <- function(data,
     if (clean) {
       clean_vector <- ifelse(
         data[, "remove"] == "no",
-        FALSE,
-        TRUE
+        TRUE,
+        FALSE
       )
-      data <- data[clean_vector[i], ]
+      data <- data[clean_vector, ]
     }
 
 
@@ -616,10 +616,10 @@ clean_bds <- function(data,
     if (clean) {
       clean_vector <- ifelse(
         data[, "remove"] == "no",
-        FALSE,
-        TRUE
+        TRUE,
+        FALSE
       )
-      data <- data[clean_vector[i], ]
+      data <- data[clean_vector, ]
     }
 
 
