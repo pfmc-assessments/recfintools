@@ -1,6 +1,6 @@
 # recfintools
 **NOTE: This package is in active development. While it is ready for production
-use for the 2027 assessment cycle, its contents will be updated and 
+use for the 2027 assessment cycle as of v0.1.0, its contents will be updated and 
 improved, and therefore scripts using it may need to be updated**
 
 ## Introduction
@@ -55,10 +55,10 @@ The latter is a dependency of the former so you can just install
 from [CRAN](https://cran.r-project.org/).
 
 Install the most recent, stable version of the package from
-github using
+github (v0.1.0 for 2027 groundfish stock assessments) using
 
 ```
-remotes::install_github("pfmc-assessments/recfintools")
+remotes::install_github("pfmc-assessments/recfintools@v0.1.0")
 ```
 
 Instructions below assume that the recfintools library has been loaded using
