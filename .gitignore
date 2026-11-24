@@ -4,4 +4,5 @@
 docs
 R/others scripts*
 *.Rproj
+requests*
 
